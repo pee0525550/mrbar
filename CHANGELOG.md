@@ -1,3 +1,10 @@
+# v1.30.13 — Customer Branch Logo
+
+- Connected the customer shop Header and Footer to the Logo saved for the selected Branch.
+- Resolved uploaded `branch-media.php` paths against the installation root so canonical `/shop/{slug}/` URLs do not request media from the wrong nested path.
+- Added responsive contain-fit Logo presentation with a safe animated-star fallback when a configured image is missing or cannot load.
+- Schema remains v26; no migration is required.
+
 # v1.30.12 — Reproducible Full Source Baseline
 
 - Corrected PowerShell argument handling in the Full Source ZIP builder so Git receives the archive prefix and output path atomically.
