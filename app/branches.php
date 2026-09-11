@@ -18,6 +18,13 @@ function branch_public_base(): string {
     if(preg_match('#^(.*?/it)(?:/|$)#',$script,$m))return rtrim((string)$m[1],'/');
     return '';
 }
+
+function branch_public_asset_url(string $value): string {
+    $value=trim($value);
+    if($value===''||stripos($value,'javascript:')===0)return '';
+    if(preg_match('#^https?://#i',$value)||strpos($value,'//')===0||strpos($value,'/')===0)return $value;
+    return branch_public_base().'/'.ltrim($value,'/');
+}
 function branch_slug_path(array $branch,string $tail=''): string {
     $slug=rawurlencode((string)($branch['slug']??'shop'));
     $path=branch_public_base().'/shop/'.$slug.'/';
