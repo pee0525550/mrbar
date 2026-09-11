@@ -1,0 +1,59 @@
+/* MR BAR v1.27.3 — Admin Sidebar Group Hierarchy */
+:root{--admin-sidebar-expanded:292px}
+.admin-v14-sidebar .admin-nav-groups{padding-bottom:10px}
+.admin-v14-sidebar .nav-group{margin:0 0 11px}
+.admin-v14-sidebar .nav-group-title{display:grid;grid-template-columns:40px minmax(0,1fr);gap:11px;align-items:center;margin:10px 4px 5px;padding:8px 9px;border:1px solid rgba(136,98,255,.18);border-radius:13px;background:linear-gradient(145deg,rgba(130,73,255,.09),rgba(45,126,255,.045));box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.admin-v14-sidebar .nav-group:first-child .nav-group-title{margin-top:2px}
+.admin-v14-sidebar .nav-group-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#6f3fe0,#287fe7);color:#fff;font-size:20px;font-weight:900;line-height:1;box-shadow:0 7px 19px rgba(77,54,196,.24),inset 0 1px 0 rgba(255,255,255,.2)}
+.admin-v14-sidebar .nav-group:nth-child(1) .nav-group-icon{background:linear-gradient(145deg,#4f46e5,#3287e8)}
+.admin-v14-sidebar .nav-group:nth-child(2) .nav-group-icon{background:linear-gradient(145deg,#c13fd7,#7652e9)}
+.admin-v14-sidebar .nav-group:nth-child(3) .nav-group-icon{background:linear-gradient(145deg,#e29a27,#7a55e8)}
+.admin-v14-sidebar .nav-group:nth-child(4) .nav-group-icon{background:linear-gradient(145deg,#1aabc8,#3b6fe4)}
+.admin-v14-sidebar .nav-group:nth-child(5) .nav-group-icon{background:linear-gradient(145deg,#7652e9,#4b62c9)}
+.admin-v14-sidebar .nav-group-copy{display:block;min-width:0}
+.admin-v14-sidebar .nav-group-copy b{display:block;color:#f1edff;font-size:15px;font-weight:950;line-height:1.25;letter-spacing:.05px}
+.admin-v14-sidebar .nav-group-copy small{display:block;margin-top:2px;color:#8e91b8;font-size:8px;font-weight:850;line-height:1.2;letter-spacing:1.05px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.admin-v14-sidebar .nav-group-items{position:relative;margin-left:21px;padding-left:10px;border-left:1px solid rgba(139,93,255,.19)}
+.admin-v14-sidebar .nav-group-items a{position:relative;grid-template-columns:30px minmax(0,1fr)!important;padding:8px 9px!important;margin:3px 0!important;border-radius:11px!important;min-height:46px}
+.admin-v14-sidebar .nav-group-items a>span{font-size:18px!important;color:#aa82ff!important}
+.admin-v14-sidebar .nav-group-items a b{font-size:12.5px!important;line-height:1.25!important}
+.admin-v14-sidebar .nav-group-items a small{font-size:9.5px!important;line-height:1.35!important;margin-top:1px}
+.admin-v14-sidebar .nav-group-items a:hover,.admin-v14-sidebar .nav-group-items a.active{transform:translateX(2px)!important}
+.admin-v14-sidebar .nav-group-items a.active:before{content:'';position:absolute;left:-12px;top:50%;width:3px;height:24px;border-radius:999px;background:linear-gradient(180deg,#f052dc,#6b73ff);box-shadow:0 0 12px rgba(210,74,255,.65);transform:translateY(-50%)}
+.admin-v14-sidebar nav a.settings-featured:after{display:none!important}
+.admin-v14-sidebar .nav-account-zone{margin:15px 4px 0;padding-top:12px;border-top:1px solid rgba(126,104,180,.16)}
+.admin-v14-sidebar .nav-account-title{display:block;padding:0 8px 4px;color:#797d9f;font-size:9px;font-weight:900;letter-spacing:1px;text-transform:uppercase}
+.admin-v14-sidebar .nav-account-zone .admin-signout{margin:2px 0!important;border-color:rgba(220,74,180,.14)!important;background:rgba(180,46,120,.035)!important}
+
+html[data-mr-theme="light"] .admin-v14-sidebar .nav-group-title{background:linear-gradient(145deg,#f4f0ff,#f1f7ff);border-color:rgba(86,75,164,.16);box-shadow:0 4px 13px rgba(63,77,119,.045)}
+html[data-mr-theme="light"] .admin-v14-sidebar .nav-group-icon{background:linear-gradient(145deg,#8253e6,#3985df);box-shadow:0 7px 18px rgba(74,73,152,.16)}
+html[data-mr-theme="light"] .admin-v14-sidebar .nav-group-copy b{color:#26304b}
+html[data-mr-theme="light"] .admin-v14-sidebar .nav-group-copy small{color:#8990a8}
+html[data-mr-theme="light"] .admin-v14-sidebar .nav-group-items{border-left-color:rgba(93,83,176,.17)}
+html[data-mr-theme="light"] .admin-v14-sidebar .nav-group-items a>span{color:#7450d3!important}
+html[data-mr-theme="light"] .admin-v14-sidebar .nav-account-zone{border-top-color:rgba(49,67,103,.12)}
+html[data-mr-theme="light"] .admin-v14-sidebar .nav-account-title{color:#979caf}
+
+html.admin-sidebar-collapsed .admin-v14-sidebar .nav-group{margin:0!important}
+html.admin-sidebar-collapsed .admin-v14-sidebar .nav-group-title,
+html.admin-sidebar-collapsed .admin-v14-sidebar .nav-account-title{display:none!important}
+html.admin-sidebar-collapsed .admin-v14-sidebar .nav-group-items{margin:0!important;padding:0!important;border-left:0!important}
+html.admin-sidebar-collapsed .admin-v14-sidebar .nav-group-items a.active:before{display:none!important}
+html.admin-sidebar-collapsed .admin-v14-sidebar .nav-account-zone{margin:6px 0 0!important;padding-top:6px!important}
+
+@media(max-width:900px){
+  html.admin-sidebar-collapsed .admin-v14-sidebar .nav-group-title{display:grid!important}
+  html.admin-sidebar-collapsed .admin-v14-sidebar .nav-group-copy,html.admin-sidebar-collapsed .admin-v14-sidebar .nav-group-copy b,html.admin-sidebar-collapsed .admin-v14-sidebar .nav-group-copy small{display:block!important}
+  html.admin-sidebar-collapsed .admin-v14-sidebar .nav-group-items{margin-left:20px!important;padding-left:10px!important;border-left:1px solid rgba(139,93,255,.19)!important}
+  html.admin-sidebar-collapsed .admin-v14-sidebar .nav-account-title{display:block!important}
+  .admin-v14-sidebar .nav-group{margin-bottom:11px!important}
+  .admin-v14-sidebar .nav-group-title{display:grid!important;margin:9px 3px 5px!important;padding:8px 9px!important}
+  .admin-v14-sidebar .nav-group-copy{display:block!important}
+  .admin-v14-sidebar .nav-group-copy b{display:block!important}
+  .admin-v14-sidebar .nav-group-copy small{display:block!important}
+  .admin-v14-sidebar .nav-group-items{margin-left:20px!important;padding-left:10px!important;border-left:1px solid rgba(139,93,255,.19)!important}
+  .admin-v14-sidebar .nav-group-items a{grid-template-columns:30px 1fr!important;grid-template-rows:auto auto!important;place-items:initial!important;min-height:46px!important;padding:8px 9px!important;margin:3px 0!important}
+  .admin-v14-sidebar .nav-group-items a>span{grid-row:1/3!important;font-size:18px!important;align-self:center!important}
+  .admin-v14-sidebar .nav-group-items a b,.admin-v14-sidebar .nav-group-items a small{display:block!important}
+  .admin-v14-sidebar .nav-account-title{display:block!important}
+}

@@ -1,0 +1,7 @@
+/* MR BAR Customer Web Admin — Floor Preview Upload v1.29.3 */
+.cwa-floor-preview-admin-note{margin:16px 0 20px;border:1px solid #806bff2f;background:linear-gradient(120deg,#0c1425cc,#121127cc);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:inset 0 1px #ffffff0c}
+.cwa-floor-preview-admin-note>b{font-size:9px;letter-spacing:.14em;color:#8f8cff}.cwa-floor-preview-admin-note>span{font-size:11px;font-weight:800;color:#d9e2f5}.cwa-floor-preview-admin-note>i{font-style:normal;color:#677b9d}.cwa-floor-preview-admin-note>small{flex-basis:100%;color:#8494af;font-size:10px;line-height:1.55}
+.cwa-visual-grid .cwa-quick-media:nth-child(4){grid-column:1/-1;border-color:#795fff3d;background:linear-gradient(145deg,#10152bd8,#0a1222d8)}
+.cwa-visual-grid .cwa-quick-media:nth-child(4) .cwa-qm-preview{min-height:320px}.cwa-visual-grid .cwa-quick-media:nth-child(4) .cwa-qm-preview img{object-fit:contain;background:#07111d}
+html[data-mr-theme="light"] .cwa-floor-preview-admin-note{background:#f7f5ff;border-color:#7c6bd82c}.admin-v14-page.light .cwa-floor-preview-admin-note{background:#f7f5ff;border-color:#7c6bd82c}
+@media(max-width:900px){.cwa-visual-grid .cwa-quick-media:nth-child(4){grid-column:auto}.cwa-visual-grid .cwa-quick-media:nth-child(4) .cwa-qm-preview{min-height:240px}}

@@ -1,0 +1,26 @@
+/* MR BAR Customer Floor Plan — v1.29.10 image hotspots */
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-map-stage,
+.cw-floor-preview-stage.is-hotspot-preview{background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important}
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-map-stage::before,
+.cw-floor-preview-stage.is-hotspot-preview::before{background-size:100% 100%!important;background-position:center!important;opacity:var(--floor-bg-opacity,var(--preview-bg-opacity,1))!important}
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table{background:rgba(7,16,29,.02)!important;border:2px solid transparent!important;border-radius:max(8px,var(--fi-radius))!important;box-shadow:none!important;opacity:1!important;cursor:pointer;transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,filter .18s ease}
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table .cw-floor-seat,
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table .cw-floor-sofa{display:none!important}
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table .cw-floor-label{left:50%;top:50%;right:auto;bottom:auto;transform:translate(-50%,-50%);max-width:90%;padding:5px 8px;border-radius:8px;background:rgba(5,12,24,.9);color:#fff;font-size:clamp(8px,1.1vw,12px);font-weight:900;white-space:nowrap;opacity:0!important}
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table:hover,
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table:focus-visible,
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table.is-selected,
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table.is-recommended{background:rgba(27,221,160,.12)!important;border-color:#58f2bf!important;box-shadow:0 0 0 3px rgba(8,20,31,.68),0 0 24px rgba(40,236,174,.52)!important;outline:none}
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table.status-occupied:hover,
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table.status-occupied.is-selected{background:rgba(255,94,119,.12)!important;border-color:#ff6e84!important;box-shadow:0 0 20px rgba(255,74,104,.35)!important}
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table.status-blocked:hover,
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table.status-blocked.is-selected{background:rgba(151,161,180,.12)!important;border-color:#9ba6ba!important;box-shadow:none!important}
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table:hover .cw-floor-label,
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table:focus-visible .cw-floor-label,
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table.is-selected .cw-floor-label,
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table.is-recommended .cw-floor-label{opacity:1!important}
+.cw-floor-map-wrap.is-hotspot-mode .cw-floor-status-dot{display:block!important;width:10px!important;height:10px!important;right:5px!important;top:5px!important;border:2px solid #fff!important;box-shadow:0 0 0 3px rgba(5,13,24,.72),0 0 12px currentColor!important;opacity:1!important}
+.cw-floor-map-wrap.is-hotspot-mode .status-available .cw-floor-status-dot{background:#35e6a1!important;color:#35e6a1}.cw-floor-map-wrap.is-hotspot-mode .status-occupied .cw-floor-status-dot{background:#ff657e!important;color:#ff657e}.cw-floor-map-wrap.is-hotspot-mode .status-blocked .cw-floor-status-dot{background:#8d98ad!important;color:#8d98ad}.cw-floor-map-wrap.is-hotspot-mode .status-mockup .cw-floor-status-dot{background:#ffc75a!important;color:#ffc75a}
+.cw-floor-preview-stage.is-hotspot-preview .cw-floor-preview-item{background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+.cw-floor-preview-stage.is-hotspot-preview .cw-floor-preview-item i{display:none!important}.cw-floor-preview-stage.is-hotspot-preview .cw-floor-preview-item::after{content:"";position:absolute;right:2px;top:2px;width:5px;height:5px;border-radius:50%;background:#8d98ad;box-shadow:0 0 0 1px #fff,0 0 7px currentColor}.cw-floor-preview-stage.is-hotspot-preview .cw-floor-preview-item.status-available::after{background:#35e6a1;color:#35e6a1}.cw-floor-preview-stage.is-hotspot-preview .cw-floor-preview-item.status-occupied::after{background:#ff657e;color:#ff657e}.cw-floor-preview-stage.is-hotspot-preview .cw-floor-preview-item.status-mockup::after{background:#ffc75a;color:#ffc75a}
+@media(max-width:700px){.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table .cw-floor-status-dot{width:8px!important;height:8px!important;right:2px!important;top:2px!important}.cw-floor-map-wrap.is-hotspot-mode .cw-floor-item.is-table.is-selected .cw-floor-label{font-size:9px}}

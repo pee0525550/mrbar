@@ -1,0 +1,16 @@
+{
+  "version": "1.30.10",
+  "build_id": "MRBAR-v1.30.10-20260911",
+  "name": "Fixed Compact Logo Preview",
+  "date": "2026-09-11",
+  "schema": "v26",
+  "migration_required": false,
+  "base": "1.30.9",
+  "highlights": [
+    "Fixed v1.30.9 Logo preview overflow regression",
+    "Explicit 76 by 62 pixel Logo preview",
+    "Dedicated non-overlapping controls and URL column",
+    "Portal Cover preview remains unchanged"
+  ],
+  "production_data_included": false
+}

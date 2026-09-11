@@ -1,0 +1,39 @@
+/* MR BAR v1.30.10 — Fixed Compact Logo Preview
+   Explicit dimensions prevent inherited aspect/min-height rules from expanding into text. */
+body.admin-v14-page.mb-page .mb-media-item:not(.cover) .mb-media-row{
+  grid-template-columns:82px minmax(0,1fr)!important;
+  align-items:start!important;
+}
+body.admin-v14-page.mb-page .mb-media-item:not(.cover) .mb-media-preview.logo{
+  display:block!important;
+  justify-self:start!important;
+  align-self:start!important;
+  width:76px!important;
+  max-width:76px!important;
+  height:62px!important;
+  min-width:0!important;
+  min-height:62px!important;
+  aspect-ratio:auto!important;
+  overflow:hidden!important;
+}
+body.admin-v14-page.mb-page .mb-media-item:not(.cover) .mb-media-preview.logo img{
+  width:100%!important;
+  height:100%!important;
+  padding:4px!important;
+  object-fit:contain!important;
+}
+body.admin-v14-page.mb-page .mb-media-item:not(.cover) .mb-media-controls{
+  width:100%!important;
+  min-width:0!important;
+  overflow:hidden!important;
+}
+body.admin-v14-page.mb-page .mb-media-item:not(.cover) .mb-media-controls input{
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+@media(max-width:620px){
+  body.admin-v14-page.mb-page .mb-media-item:not(.cover) .mb-media-row{
+    grid-template-columns:82px minmax(0,1fr)!important;
+  }
+}

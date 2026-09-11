@@ -1,0 +1,45 @@
+/* MR BAR v1.17.4 — semantic GPS icons + interaction polish */
+.branch-strip .branch-location-icon{
+  position:relative;isolation:isolate;width:46px;height:46px;border-radius:50%;
+  border:1px solid rgba(83,183,255,.62);
+  background:radial-gradient(circle at 38% 30%,rgba(49,165,255,.24),rgba(10,34,61,.74) 58%,rgba(7,14,29,.92));
+  color:#9bd7ff;box-shadow:0 0 0 1px rgba(40,135,255,.08) inset,0 10px 24px rgba(0,0,0,.32),0 0 22px rgba(33,145,255,.14);
+  overflow:visible;
+}
+.branch-strip .branch-location-icon::before{
+  content:"";position:absolute;inset:-5px;border-radius:inherit;border:1px solid rgba(64,169,255,.16);
+  box-shadow:0 0 20px rgba(42,156,255,.10);pointer-events:none;
+}
+.branch-strip .branch-location-icon svg{width:24px;height:24px;display:block;filter:drop-shadow(0 0 8px rgba(54,171,255,.42))}
+.branch-strip .branch-location-icon svg path{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.branch-strip .branch-location-icon svg circle{fill:#188cff;stroke:#dff3ff;stroke-width:1.35}
+
+.live-map-wrap .map-locate-btn{
+  display:grid;place-items:center;width:52px;height:52px;padding:0;
+  border:1px solid rgba(121,199,255,.78);
+  background:radial-gradient(circle at 38% 30%,rgba(47,143,255,.20),rgba(7,18,36,.94) 62%);
+  color:#eaf7ff;box-shadow:0 10px 26px rgba(0,0,0,.48),0 0 0 4px rgba(26,136,255,.08),0 0 24px rgba(32,148,255,.22);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.live-map-wrap .map-locate-btn::before{
+  content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(74,174,255,.13);pointer-events:none;
+}
+.live-map-wrap .map-locate-btn svg{width:27px;height:27px;overflow:visible;filter:drop-shadow(0 0 7px rgba(75,179,255,.42))}
+.live-map-wrap .map-locate-btn svg circle,.live-map-wrap .map-locate-btn svg path{
+  fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;
+}
+.live-map-wrap .map-locate-btn svg .locate-ring{stroke:rgba(139,211,255,.48);stroke-width:1.1}
+.live-map-wrap .map-locate-btn:hover{transform:translateY(-1px);border-color:#a8dcff;box-shadow:0 12px 30px rgba(0,0,0,.5),0 0 0 5px rgba(26,136,255,.10),0 0 30px rgba(32,148,255,.32)}
+.live-map-wrap .map-locate-btn:active{transform:scale(.93)}
+.live-map-wrap .map-locate-btn.is-locating{border-color:#65c1ff;box-shadow:0 10px 26px rgba(0,0,0,.45),0 0 0 8px rgba(26,136,255,.08),0 0 34px rgba(32,148,255,.42)}
+.live-map-wrap .map-locate-btn.is-locating svg{animation:mrbarLocatePulse .72s ease-out both}
+@keyframes mrbarLocatePulse{0%{transform:scale(.82);opacity:.7}45%{transform:scale(1.14);opacity:1}100%{transform:scale(1);opacity:1}}
+
+@media(max-width:430px){
+  .branch-strip .branch-location-icon{width:40px;height:40px}
+  .branch-strip .branch-location-icon svg{width:21px;height:21px}
+  .live-map-wrap .map-locate-btn{width:48px;height:48px;right:12px;bottom:15px}
+  .live-map-wrap .map-locate-btn svg{width:25px;height:25px}
+}
+@media(prefers-reduced-motion:reduce){.live-map-wrap .map-locate-btn,.live-map-wrap .map-locate-btn.is-locating svg{transition:none;animation:none}}

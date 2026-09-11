@@ -1,0 +1,28 @@
+/* MR BAR v1.29.16 — Complete Night Operations controls */
+.nf-detail{min-height:340px}
+.nf-state.state-available{color:#8fffd0;border-color:#38e8a14d;background:#2adf9210}
+.nf-state.state-requested{color:#ffe09a;border-color:#ffcb574d;background:#ffc74a10}
+.nf-state.state-occupied{color:#ffb1bd;border-color:#ff667d4d;background:#ff667d10}
+.nf-state.state-blocked{color:#b7c0d0;border-color:#7c879d4d;background:#68758a12}
+.nf-control-card{padding:13px;border:1px solid #ffffff12;border-radius:15px;background:#ffffff05}
+.nf-control-card.reservation{border-color:#ffca5b30;background:#ffc14c09}
+.nf-control-card.walkin{border-color:#3ce5a12e;background:#25d99708}
+.nf-control-card.status{border-color:#678cff30;background:#4774ff08}
+.nf-control-card.checkout{border-color:#ff6c8630;background:#ff536b08}
+.nf-control-title{display:grid;gap:2px;margin-bottom:9px}
+.nf-control-title b{font-size:12px;color:#edf3ff}
+.nf-control-title small{font-size:9px;line-height:1.55;color:#8392ac}
+.nf-action label{font-size:10px;font-weight:750}
+.nf-action input,.nf-action select{width:100%;min-height:40px;padding:0 10px;border:1px solid #ffffff16;border-radius:10px;background:#080f1d;color:#eaf1ff;font:inherit;font-size:11px}
+.nf-form-row{display:grid;grid-template-columns:.65fr 1.35fr;gap:7px}
+.nf-form-row label{display:grid;gap:5px}
+.nf-control-card>.mini{width:100%;min-height:40px;font-size:11px;font-weight:900}
+.nf-request-heading{display:flex;align-items:center;justify-content:space-between;color:#aab7cc;font-size:9px;font-weight:850}
+.nf-request-heading b{display:grid;place-items:center;min-width:22px;height:22px;border-radius:999px;background:#ffc8581a;color:#ffd77e}
+.nf-checkout-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.nf-checkout-actions form{margin:0}
+.nf-checkout-actions button{width:100%;min-height:40px}
+.nf-checkout-actions .danger{border:1px solid #ff657a55;background:#ff526418;color:#ffb4bf}
+.nf-no-action{line-height:1.6}
+@media(max-width:1100px){.nf-detail{position:relative;bottom:auto}}
+@media(max-width:700px){.nf-form-row,.nf-checkout-actions{grid-template-columns:1fr}.nf-control-card{padding:12px}}

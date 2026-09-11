@@ -1,0 +1,56 @@
+# MR BAR — source control exclusions
+
+# Runtime database and all generated/private storage
+/storage/*
+!/storage/.htaccess
+!/storage/index.php
+!/storage/.gitkeep
+
+# User uploads and generated media
+/uploads/
+/upload/
+/tmp/
+/cache/
+/logs/
+/backups/
+/backup/
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.bak
+/config/*.local.php
+*.pem
+*.key
+*.pfx
+*.p12
+
+# POS imports, database exports and office files
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+*.csv
+*.xls
+*.xlsx
+
+# Deployment artifacts and historical packs
+/_deploy_pack/
+/deploy/
+/dist/
+*.zip
+*.tar
+*.tar.gz
+/checksums.sha256
+/deploy-manifest.json
+/DEPLOY_INSTRUCTIONS.md
+/README-v*.txt
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp

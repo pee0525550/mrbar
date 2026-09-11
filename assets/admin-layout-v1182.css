@@ -1,0 +1,224 @@
+/* MR BAR v1.18.2 — Shared Admin Layout Engine
+   One sidebar geometry for every admin page. */
+:root{
+  --admin-sidebar-expanded:270px;
+  --admin-sidebar-collapsed:84px;
+  --admin-sidebar-space:var(--admin-sidebar-expanded);
+  --sidebar:var(--admin-sidebar-space);
+  --admin-content-gap:clamp(18px,2vw,32px);
+}
+html.admin-sidebar-collapsed{
+  --admin-sidebar-space:var(--admin-sidebar-collapsed);
+  --sidebar:var(--admin-sidebar-space);
+}
+html,body{min-width:0}
+body{overflow-x:hidden}
+
+/* ---------- Sidebar geometry ---------- */
+.admin-v14-sidebar{
+  width:var(--admin-sidebar-space)!important;
+  transition:width .24s ease,transform .24s ease,padding .24s ease,box-shadow .24s ease!important;
+  overflow-x:hidden!important;
+  scrollbar-width:thin;
+}
+.admin-v14-sidebar .brand,
+.admin-v14-sidebar nav a,
+.admin-v14-sidebar .version-card{
+  transition:padding .22s ease,margin .22s ease,background .22s ease,border-color .22s ease,box-shadow .22s ease;
+}
+.admin-sidebar-collapse{
+  position:absolute;
+  top:22px;
+  right:8px;
+  z-index:4;
+  width:31px;
+  height:31px;
+  border:1px solid rgba(173,104,255,.72);
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  background:linear-gradient(145deg,#16152c,#20143f);
+  box-shadow:0 8px 25px rgba(83,35,190,.36),0 0 18px rgba(177,76,255,.18);
+  cursor:pointer;
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,top .22s ease;
+}
+.admin-sidebar-collapse:hover{transform:scale(1.06);box-shadow:0 10px 30px rgba(83,35,190,.48),0 0 22px rgba(177,76,255,.3)}
+.admin-sidebar-collapse .collapse-icon{font:800 25px/1 MRBAR Thai,Noto Sans Thai,Tahoma,Leelawadee UI,Thonburi,Segoe UI,Arial,sans-serif;transform:translateY(-1px);transition:transform .24s ease}
+html.admin-sidebar-collapsed .admin-sidebar-collapse{top:76px;right:50%;transform:translateX(50%)}
+html.admin-sidebar-collapsed .admin-sidebar-collapse:hover{transform:translateX(50%) scale(1.06)}
+html.admin-sidebar-collapsed .admin-sidebar-collapse .collapse-icon{transform:rotate(180deg) translateY(1px)}
+
+/* ---------- Compact desktop sidebar ---------- */
+html.admin-sidebar-collapsed .admin-v14-sidebar{padding-left:10px!important;padding-right:10px!important}
+html.admin-sidebar-collapsed .admin-v14-sidebar .brand{justify-content:center;padding:10px 4px 24px;gap:0}
+html.admin-sidebar-collapsed .admin-v14-sidebar .brand-icon{font-size:36px}
+html.admin-sidebar-collapsed .admin-v14-sidebar .brand>span:last-child,
+html.admin-sidebar-collapsed .admin-v14-sidebar nav a b,
+html.admin-sidebar-collapsed .admin-v14-sidebar nav a small,
+html.admin-sidebar-collapsed .admin-v14-sidebar .nav-label,
+html.admin-sidebar-collapsed .admin-v14-sidebar .version-card span,
+html.admin-sidebar-collapsed .admin-v14-sidebar .version-card small,
+html.admin-sidebar-collapsed .admin-v14-sidebar .version-card em{display:none!important}
+html.admin-sidebar-collapsed .admin-v14-sidebar nav a{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  grid-template-rows:1fr!important;
+  place-items:center;
+  min-height:52px;
+  padding:9px 6px!important;
+  margin:6px 0!important;
+  transform:none!important;
+}
+html.admin-sidebar-collapsed .admin-v14-sidebar nav a>span{
+  grid-row:auto!important;
+  font-size:24px!important;
+  line-height:1!important;
+  align-self:center!important;
+}
+html.admin-sidebar-collapsed .admin-v14-sidebar nav a.settings-featured:after{display:none!important}
+html.admin-sidebar-collapsed .admin-v14-sidebar .version-card{margin:18px 2px 0!important;padding:9px 4px!important;min-height:42px;display:grid;place-items:center}
+html.admin-sidebar-collapsed .admin-v14-sidebar .version-card b{font-size:11px!important;margin:0!important;white-space:nowrap}
+
+/* ---------- Universal content lane ----------
+   This rule intentionally wins over page-specific margin:auto / old sidebar offsets. */
+.admin-v14-sidebar ~ main{
+  box-sizing:border-box!important;
+  margin-left:var(--admin-sidebar-space)!important;
+  margin-right:0!important;
+  width:calc(100% - var(--admin-sidebar-space))!important;
+  max-width:none!important;
+  min-width:0!important;
+  padding-left:var(--admin-content-gap)!important;
+  padding-right:var(--admin-content-gap)!important;
+  transition:margin-left .24s ease,width .24s ease,padding .2s ease!important;
+}
+.admin-v14-sidebar ~ .pa-bg{left:var(--admin-sidebar-space)!important;transition:left .24s ease!important}
+
+/* Normalize pages that previously centered themselves or used old offsets */
+.admin-v14-sidebar ~ main.schedule-shell,
+.admin-v14-sidebar ~ main.emp-shell,
+.admin-v14-sidebar ~ main.manage-shell,
+.admin-v14-sidebar ~ main.pa-wrap,
+.admin-v14-sidebar ~ main.leave-admin,
+.admin-v14-sidebar ~ main.pv-shell,
+.admin-v14-sidebar ~ main.cwa-shell,
+.admin-v14-sidebar ~ main.evidence-shell,
+.admin-v14-sidebar ~ main.wrap{
+  margin-top:0!important;
+}
+.admin-v14-sidebar ~ main > header:first-child,
+.admin-v14-sidebar ~ main .topbar:first-child{
+  min-width:0;
+}
+.admin-v14-sidebar ~ main img,
+.admin-v14-sidebar ~ main video,
+.admin-v14-sidebar ~ main canvas{max-width:100%}
+.admin-v14-sidebar ~ main table{max-width:100%}
+
+/* Header breathing room after sidebar fix */
+.admin-v14-sidebar ~ main .topbar,
+.admin-v14-sidebar ~ main .emp-head,
+.admin-v14-sidebar ~ main .pa-head,
+.admin-v14-sidebar ~ main .la-head,
+.admin-v14-sidebar ~ main .evidence-hero{
+  position:relative;
+  min-width:0;
+}
+.admin-v14-sidebar ~ main .topbar>div,
+.admin-v14-sidebar ~ main .emp-head>div,
+.admin-v14-sidebar ~ main .pa-head>div,
+.admin-v14-sidebar ~ main .la-head>div{min-width:0}
+
+/* Make wide operational pages use gained space sensibly */
+.admin-v14-sidebar ~ main.schedule-shell .schedule-layout{min-width:0}
+.admin-v14-sidebar ~ main.schedule-shell .calendar-panel,
+.admin-v14-sidebar ~ main.schedule-shell .day-panel{min-width:0}
+.admin-v14-sidebar ~ main.manage-shell .card-grid,
+.admin-v14-sidebar ~ main.emp-shell .emp-grid{min-width:0}
+
+html[data-mr-theme="light"] .admin-sidebar-collapse,
+html[data-mr-theme="light"] .admin-mobile-launcher{
+  color:#263251;
+  background:linear-gradient(145deg,#ffffff,#edf2ff);
+  border-color:rgba(106,74,211,.35);
+  box-shadow:0 10px 26px rgba(59,71,120,.15),0 0 18px rgba(139,80,255,.12);
+}
+
+/* ---------- Mobile drawer ---------- */
+.admin-sidebar-backdrop,.admin-mobile-launcher{display:none}
+@media(max-width:900px){
+  :root,html.admin-sidebar-collapsed{
+    --admin-sidebar-space:0px;
+    --sidebar:0px;
+  }
+  .admin-v14-sidebar{
+    width:270px!important;
+    padding:24px 16px!important;
+    transform:translateX(-104%)!important;
+    box-shadow:18px 0 60px #000a!important;
+  }
+  .admin-v14-sidebar.open{transform:translateX(0)!important}
+  .admin-v14-sidebar .brand{justify-content:flex-start!important;padding:8px 12px 24px!important;gap:12px!important}
+  .admin-v14-sidebar .brand-icon{font-size:48px!important}
+  .admin-v14-sidebar .brand>span:last-child,
+  .admin-v14-sidebar nav a b,
+  .admin-v14-sidebar nav a small,
+  .admin-v14-sidebar .nav-label,
+  .admin-v14-sidebar .version-card span,
+  .admin-v14-sidebar .version-card small,
+  .admin-v14-sidebar .version-card em{display:block!important}
+  .admin-v14-sidebar nav a{display:grid!important;grid-template-columns:36px 1fr!important;grid-template-rows:auto auto!important;place-items:initial!important;min-height:0!important;padding:11px 12px!important;margin:5px 0!important}
+  .admin-v14-sidebar nav a>span{grid-row:1/3!important;font-size:22px!important;align-self:center!important}
+  .admin-v14-sidebar nav a::after{display:none!important}
+  .admin-v14-sidebar nav a.settings-featured:after{display:block!important}
+  .admin-v14-sidebar .version-card{display:block!important;margin:28px 5px 0!important;padding:16px!important;min-height:0!important}
+  .admin-v14-sidebar .version-card b{font-size:20px!important;margin:5px!important}
+  .admin-sidebar-collapse{display:none!important}
+  .admin-v14-sidebar ~ main{
+    margin-left:0!important;
+    width:100%!important;
+    max-width:100%!important;
+    padding-left:14px!important;
+    padding-right:14px!important;
+  }
+  .admin-v14-sidebar ~ .pa-bg{left:0!important}
+  .admin-sidebar-backdrop{
+    display:block;
+    position:fixed;
+    inset:0;
+    z-index:19;
+    background:rgba(2,4,12,.68);
+    backdrop-filter:blur(4px);
+    opacity:0;
+    visibility:hidden;
+    transition:.22s ease;
+  }
+  body.admin-mobile-nav-open .admin-sidebar-backdrop{opacity:1;visibility:visible}
+  .admin-mobile-launcher{
+    position:fixed;
+    left:12px;
+    bottom:16px;
+    z-index:18;
+    width:48px;
+    height:48px;
+    display:grid;
+    place-items:center;
+    border:1px solid rgba(156,91,255,.65);
+    border-radius:15px;
+    background:linear-gradient(145deg,#19162d,#30145a);
+    color:#fff;
+    box-shadow:0 12px 34px #0008,0 0 22px rgba(143,57,255,.25);
+    cursor:pointer;
+  }
+  .admin-mobile-launcher span{font-size:22px;line-height:1}
+  body.admin-mobile-nav-open .admin-mobile-launcher{opacity:0;pointer-events:none}
+}
+
+@media(max-width:580px){
+  .admin-v14-sidebar ~ main{padding-left:11px!important;padding-right:11px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .admin-v14-sidebar,.admin-v14-sidebar ~ main,.admin-sidebar-collapse,.admin-sidebar-backdrop{transition:none!important}
+}

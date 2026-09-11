@@ -1,0 +1,19 @@
+/* MR BAR v1.30.9 — Compact Branch Logo Preview */
+@media(min-width:621px){
+  body.admin-v14-page.mb-page .mb-media-item:not(.cover) .mb-media-row{
+    grid-template-columns:118px minmax(0,1fr)!important;
+  }
+  body.admin-v14-page.mb-page .mb-media-item:not(.cover) .mb-media-preview.logo{
+    min-height:92px!important;
+    aspect-ratio:1.25/1!important;
+  }
+}
+body.admin-v14-page.mb-page .mb-media-item:not(.cover) .mb-media-preview.logo img{
+  padding:7px!important;
+}
+@media(max-width:620px){
+  body.admin-v14-page.mb-page .mb-media-item:not(.cover) .mb-media-preview.logo{
+    width:118px;
+    min-height:92px!important;
+  }
+}

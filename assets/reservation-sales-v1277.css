@@ -1,0 +1,9 @@
+/* MR BAR v1.27.7 — Reservation sales / PR attribution */
+.sales-select-field{display:grid!important;gap:6px!important;padding:12px 13px!important;border:1px solid rgba(119,91,225,.18)!important;border-radius:14px!important;background:linear-gradient(145deg,rgba(126,75,230,.055),rgba(58,132,238,.035))!important}
+.sales-select-field>span{font-weight:900!important;color:inherit!important}
+.sales-select-field>small{display:block!important;margin:0!important;color:var(--muted,#8490aa)!important;font-size:10px!important;line-height:1.5!important}
+.sales-select-field select{width:100%!important;min-height:48px!important;margin-top:2px!important;border-radius:12px!important;border:1px solid rgba(112,91,196,.22)!important;padding:0 12px!important;background:rgba(248,250,255,.96)!important;color:#1e2940!important;font:inherit!important;outline:none!important}
+.sales-select-field select:focus{border-color:#6f55e7!important;box-shadow:0 0 0 3px rgba(111,85,231,.10)!important}
+.reservation-sales-ref{display:block!important;margin-top:4px!important;color:#8e74dc!important;font-size:10px!important;font-weight:800!important;line-height:1.35!important}
+html[data-mr-theme="dark"] .sales-select-field select{background:#0b1020!important;color:#f5f4ff!important;border-color:rgba(172,136,255,.25)!important}
+@media(max-width:650px){.sales-select-field{padding:10px 11px!important}.sales-select-field select{min-height:50px!important}}

@@ -1,0 +1,4 @@
+.avatar.profile-avatar{position:relative;overflow:hidden;isolation:isolate;border:2px solid rgba(255,255,255,.72);box-shadow:0 6px 18px rgba(50,52,100,.18)}
+.profile-avatar-fallback{position:absolute;inset:0;display:grid;place-items:center;z-index:0;width:100%;height:100%}
+.avatar.profile-avatar img{position:absolute;inset:0;z-index:1;width:100%;height:100%;display:block;object-fit:cover;object-position:center;background:inherit}
+[data-mr-theme="dark"] .avatar.profile-avatar{border-color:rgba(255,255,255,.28);box-shadow:0 6px 18px rgba(0,0,0,.28)}

@@ -1,0 +1,87 @@
+/* MR BAR v1.29.14 — Night Operations uploaded floor artwork */
+.nf-panel.is-image-hotspot .nf-shell{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+}
+.nf-panel.is-image-hotspot .nf-stage.has-floor-artwork{
+  width:min(100%,920px);
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  aspect-ratio:var(--nf-ratio)!important;
+  margin-inline:auto;
+  background:#07101b;
+}
+.nf-stage.has-floor-artwork::after{
+  display:none!important;
+  background-image:none!important;
+}
+.nf-stage.has-floor-artwork::before{
+  z-index:2;
+  opacity:.32;
+}
+.nf-floor-artwork{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:none;
+  object-fit:fill;
+  object-position:center;
+  pointer-events:none;
+  user-select:none;
+}
+.nf-panel.is-image-hotspot .nf-stage .nf-item{
+  z-index:3!important;
+}
+.nf-panel.is-image-hotspot .nf-item.type-table{
+  background:rgba(8,17,29,.28);
+  border:2px solid rgba(235,244,255,.72);
+  box-shadow:0 3px 14px rgba(0,0,0,.4),inset 0 0 18px rgba(5,12,24,.4);
+  backdrop-filter:blur(1px);
+}
+.nf-panel.is-image-hotspot .nf-item.type-table span{
+  padding:3px 7px;
+  border-radius:999px;
+  background:rgba(3,9,17,.78);
+  color:#fff;
+  font-size:clamp(8px,.82vw,12px);
+  letter-spacing:.02em;
+}
+.nf-panel.is-image-hotspot .nf-item.state-available{border-color:#47ebb0}
+.nf-panel.is-image-hotspot .nf-item.state-requested{border-color:#ffd064}
+.nf-panel.is-image-hotspot .nf-item.state-occupied{border-color:#ff7187}
+.nf-panel.is-image-hotspot .nf-item.state-blocked{border-color:#7d899d}
+.nf-floor-artwork-error{
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:50;
+  transform:translate(-50%,-50%);
+  width:min(86%,520px);
+  padding:15px 18px;
+  border:1px solid rgba(255,190,82,.55);
+  border-radius:14px;
+  background:rgba(31,21,7,.94);
+  color:#ffe5ad;
+  text-align:center;
+  font-size:13px;
+  font-weight:850;
+  line-height:1.55;
+  box-shadow:0 20px 55px rgba(0,0,0,.48);
+}
+.nf-stage.artwork-load-error{background:linear-gradient(145deg,#111a28,#08111d)}
+@media(max-width:700px){
+  .nf-panel.is-image-hotspot .nf-stage.has-floor-artwork{
+    width:680px;
+    min-width:680px;
+    max-width:none;
+    min-height:0!important;
+    height:auto!important;
+    max-height:none!important;
+    aspect-ratio:var(--nf-ratio)!important;
+  }
+}

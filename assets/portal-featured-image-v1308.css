@@ -1,0 +1,13 @@
+/* MR BAR v1.30.8 — Wider Featured Portal Image */
+@media(min-width:1121px){
+  body.portal-body .portal-card.featured>a{
+    grid-template-columns:minmax(0,1.65fr) minmax(320px,.68fr)!important;
+  }
+  body.portal-body .portal-card.featured .portal-copy{
+    padding:36px 28px!important;
+  }
+  body.portal-body .portal-card.featured .portal-copy h2{
+    font-size:clamp(34px,2.7vw,48px)!important;
+    line-height:1.14!important;
+  }
+}

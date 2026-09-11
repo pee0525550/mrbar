@@ -1,0 +1,13 @@
+/* MR BAR v1.29.1 — Mobile gallery dynamic rows fix
+   Prevents empty reserved rows when Gallery has fewer than 3 items. */
+@media(max-width:700px){
+  .cw-gallery{
+    grid-template-columns:1fr;
+    grid-template-rows:none;
+    grid-auto-rows:180px;
+  }
+  .cw-gallery .g1{
+    grid-row:auto;
+    min-height:300px;
+  }
+}

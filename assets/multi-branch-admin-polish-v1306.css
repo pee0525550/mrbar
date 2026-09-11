@@ -1,0 +1,575 @@
+/* MR BAR v1.30.6 — Readable Multi-Branch Admin Themes
+   Dedicated visual layer for Branch Manager and Portal Config. */
+
+/* Shared scale and structure */
+body.admin-v14-page.mb-page{
+  font-size:14px;
+  line-height:1.5;
+}
+body.admin-v14-page.mb-page .mb-shell{
+  padding:34px 32px 104px;
+}
+body.admin-v14-page.mb-page .mb-top{
+  gap:24px;
+  padding-bottom:24px;
+}
+body.admin-v14-page.mb-page .mb-top p{
+  margin:0 0 8px;
+  font-size:10px;
+  line-height:1.35;
+  letter-spacing:.16em;
+}
+body.admin-v14-page.mb-page .mb-top h1{
+  font-size:clamp(30px,2.25vw,38px);
+  line-height:1.16;
+  letter-spacing:-.025em;
+}
+body.admin-v14-page.mb-page .mb-top span{
+  margin-top:8px;
+  font-size:13px;
+  line-height:1.55;
+}
+body.admin-v14-page.mb-page .mb-top nav{
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:10px;
+}
+body.admin-v14-page.mb-page .mb-top nav a,
+body.admin-v14-page.mb-page .mb-primary{
+  min-height:42px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 15px;
+  border-radius:12px;
+  font-size:12px;
+  line-height:1.2;
+  font-weight:900;
+}
+body.admin-v14-page.mb-page .mb-notice{
+  margin:20px 0;
+  padding:14px 17px;
+  border-radius:14px;
+  font-size:13px;
+  line-height:1.5;
+}
+body.admin-v14-page.mb-page .mb-kpis{
+  gap:16px;
+  margin:20px 0;
+}
+body.admin-v14-page.mb-page .mb-kpis article{
+  min-height:106px;
+  padding:20px;
+  border-radius:18px;
+}
+body.admin-v14-page.mb-page .mb-kpis span{
+  font-size:11px;
+  line-height:1.4;
+  font-weight:800;
+}
+body.admin-v14-page.mb-page .mb-kpis b{
+  margin-top:7px;
+  font-size:36px;
+  line-height:1;
+  letter-spacing:-.04em;
+}
+body.admin-v14-page.mb-page .mb-grid{
+  gap:20px;
+}
+body.admin-v14-page.mb-page .mb-panel{
+  padding:22px;
+  border-radius:22px;
+}
+body.admin-v14-page.mb-page .mb-panel>header{
+  margin-bottom:18px;
+}
+body.admin-v14-page.mb-page .mb-panel>header small{
+  font-size:10px;
+  line-height:1.3;
+  letter-spacing:.16em;
+}
+body.admin-v14-page.mb-page .mb-panel>header h2{
+  margin:5px 0 0;
+  font-size:24px;
+  line-height:1.25;
+  letter-spacing:-.015em;
+}
+body.admin-v14-page.mb-page .mb-panel>header p{
+  margin:7px 0 0;
+  font-size:12px;
+  line-height:1.55;
+}
+body.admin-v14-page.mb-page .mb-branch-list{
+  gap:11px;
+}
+body.admin-v14-page.mb-page .mb-branch-list article{
+  grid-template-columns:76px minmax(0,1fr) auto;
+  gap:14px;
+  min-height:88px;
+  padding:12px;
+  border-radius:15px;
+}
+body.admin-v14-page.mb-page .mb-branch-list article.muted{
+  opacity:.72;
+}
+body.admin-v14-page.mb-page .mb-thumb{
+  width:76px;
+  height:68px;
+  border-radius:12px;
+}
+body.admin-v14-page.mb-page .mb-thumb b{
+  font-size:19px;
+}
+body.admin-v14-page.mb-page .mb-branch-list h3{
+  font-size:16px;
+  line-height:1.35;
+}
+body.admin-v14-page.mb-page .mb-branch-list code{
+  margin:5px 0;
+  font-size:11px;
+  line-height:1.4;
+}
+body.admin-v14-page.mb-page .mb-branch-list p{
+  margin:4px 0;
+  font-size:10px;
+  line-height:1.5;
+}
+body.admin-v14-page.mb-page .mb-branch-list span{
+  font-size:9px;
+  line-height:1.45;
+  font-weight:750;
+}
+body.admin-v14-page.mb-page .mb-branch-list nav{
+  gap:7px;
+}
+body.admin-v14-page.mb-page .mb-branch-list nav a{
+  min-width:60px;
+  padding:8px 10px;
+  border-radius:9px;
+  font-size:10px;
+  line-height:1.25;
+  font-weight:800;
+}
+body.admin-v14-page.mb-page .mb-form{
+  gap:17px;
+}
+body.admin-v14-page.mb-page .mb-form-grid{
+  gap:13px;
+}
+body.admin-v14-page.mb-page .mb-form label{
+  gap:7px;
+}
+body.admin-v14-page.mb-page .mb-form label>span{
+  font-size:11px;
+  line-height:1.35;
+  font-weight:900;
+}
+body.admin-v14-page.mb-page .mb-form input,
+body.admin-v14-page.mb-page .mb-form textarea,
+body.admin-v14-page.mb-page .mb-form select{
+  min-height:45px;
+  padding:11px 13px;
+  border-radius:10px;
+  font-size:13px;
+  line-height:1.45;
+}
+body.admin-v14-page.mb-page .mb-form textarea{
+  min-height:76px;
+  resize:vertical;
+}
+body.admin-v14-page.mb-page .mb-form label>small{
+  font-size:10px;
+  line-height:1.45;
+}
+body.admin-v14-page.mb-page .mb-slug{
+  min-height:45px;
+  border-radius:10px;
+}
+body.admin-v14-page.mb-page .mb-slug i{
+  padding:0 11px;
+  font-size:11px;
+  font-weight:850;
+}
+body.admin-v14-page.mb-page .mb-switches{
+  gap:10px;
+}
+body.admin-v14-page.mb-page .mb-switches label{
+  min-height:44px;
+  gap:8px;
+  padding:9px 12px;
+  border-radius:11px;
+  font-size:11px;
+  line-height:1.3;
+  font-weight:800;
+}
+body.admin-v14-page.mb-page .mb-switches input,
+body.admin-v14-page.mb-page .mb-team-grid input{
+  width:16px;
+  height:16px;
+  accent-color:#6f55ff;
+}
+body.admin-v14-page.mb-page .mb-save{
+  min-height:50px;
+  border-radius:12px;
+  font-size:13px;
+  letter-spacing:.01em;
+}
+body.admin-v14-page.mb-page .mb-team{
+  margin-top:20px;
+}
+body.admin-v14-page.mb-page .mb-team-grid{
+  gap:12px;
+}
+body.admin-v14-page.mb-page .mb-team-grid form{
+  grid-template-columns:190px minmax(0,1fr) auto;
+  gap:14px;
+  padding:14px;
+  border-radius:14px;
+}
+body.admin-v14-page.mb-page .mb-team-grid b{
+  font-size:13px;
+  line-height:1.4;
+}
+body.admin-v14-page.mb-page .mb-team-grid small{
+  margin-top:3px;
+  font-size:10px;
+  line-height:1.4;
+}
+body.admin-v14-page.mb-page .mb-team-grid fieldset{
+  gap:7px;
+}
+body.admin-v14-page.mb-page .mb-team-grid fieldset label{
+  gap:6px;
+  min-height:34px;
+  padding:7px 9px;
+  border-radius:9px;
+  font-size:10px;
+  font-weight:750;
+}
+body.admin-v14-page.mb-page .mb-team-grid button{
+  min-height:38px;
+  padding:9px 12px;
+  border-radius:10px;
+  font-size:10px;
+}
+body.admin-v14-page.mb-page .portal-config-grid{
+  margin-top:22px;
+}
+body.admin-v14-page.mb-page .mb-preview article{
+  grid-template-columns:20px minmax(0,1fr) auto;
+  gap:11px;
+  min-height:58px;
+  padding:13px 10px;
+}
+body.admin-v14-page.mb-page .mb-preview article div{
+  gap:3px;
+}
+body.admin-v14-page.mb-page .mb-preview article b{
+  font-size:14px;
+  line-height:1.4;
+}
+body.admin-v14-page.mb-page .mb-preview article small{
+  font-size:10px;
+  line-height:1.4;
+}
+body.admin-v14-page.mb-page .mb-preview article a{
+  font-size:10px;
+  font-weight:800;
+}
+
+/* Media uploader scale */
+body.admin-v14-page.mb-page .mb-media-item{
+  gap:12px;
+  padding:15px;
+  border-radius:15px;
+}
+body.admin-v14-page.mb-page .mb-media-title>span{
+  font-size:12px;
+}
+body.admin-v14-page.mb-page .mb-media-title>small{
+  font-size:10px;
+}
+body.admin-v14-page.mb-page .mb-media-row{
+  grid-template-columns:160px minmax(0,1fr);
+  gap:14px;
+}
+body.admin-v14-page.mb-page .mb-media-item.cover .mb-media-row{
+  grid-template-columns:250px minmax(0,1fr);
+}
+body.admin-v14-page.mb-page .mb-media-preview{
+  min-height:122px;
+  border-radius:13px;
+}
+body.admin-v14-page.mb-page .mb-media-preview b{
+  font-size:11px;
+}
+body.admin-v14-page.mb-page .mb-media-controls{
+  gap:9px;
+}
+body.admin-v14-page.mb-page .mb-media-controls>em,
+body.admin-v14-page.mb-page .mb-media-controls>small{
+  font-size:10px;
+  line-height:1.45;
+}
+body.admin-v14-page.mb-page .mb-upload-button>span{
+  min-height:44px;
+  font-size:12px!important;
+}
+
+/* Dark theme — deliberate contrast instead of washed-out gray */
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page{
+  background:radial-gradient(circle at 24% 3%,rgba(103,35,150,.18),transparent 28%),#070c18!important;
+  color:#f2f6ff!important;
+}
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-top h1,
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-panel h2,
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-branch-list h3,
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-preview b,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-top h1,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-panel h2,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-branch-list h3,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-preview b{
+  color:#f7f9ff!important;
+}
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-top span,
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-panel>header p,
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-branch-list p,
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-preview article small,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-top span,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-panel>header p,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-branch-list p,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-preview article small{
+  color:#aebbd4!important;
+}
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-kpis article,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-kpis article{
+  border-color:#2b3b5b!important;
+  background:linear-gradient(145deg,#121c31,#0d1628)!important;
+}
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-kpis span,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-kpis span{
+  color:#aab7d1!important;
+}
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-kpis b,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-kpis b{
+  color:#f5f8ff!important;
+}
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-panel,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-panel{
+  border-color:#2c3a58!important;
+  background:linear-gradient(150deg,#111a2d,#0c1526)!important;
+}
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-branch-list article,
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-team-grid form,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-branch-list article,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-team-grid form{
+  border-color:#2a3957!important;
+  background:#121d31!important;
+}
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-form label>span,
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-media-title>span,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-form label>span,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-media-title>span{
+  color:#dce5f8!important;
+}
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-form input,
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-form textarea,
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-form select,
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-slug,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-form input,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-form textarea,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-form select,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-slug{
+  border-color:#394967!important;
+  background:#091323!important;
+  color:#f4f7ff!important;
+}
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-form input::placeholder,
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-form textarea::placeholder,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-form input::placeholder,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-form textarea::placeholder{
+  color:#7585a5!important;
+  opacity:1;
+}
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-switches label,
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-team-grid fieldset label,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-switches label,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-team-grid fieldset label{
+  border-color:#31415f!important;
+  background:#101b30!important;
+  color:#dfe7f7!important;
+}
+html:not([data-mr-theme="light"]) body.admin-v14-page.mb-page .mb-media-item,
+html[data-mr-theme="dark"] body.admin-v14-page.mb-page .mb-media-item{
+  border-color:#30415f!important;
+  background:linear-gradient(135deg,#121e34,#0b1527)!important;
+}
+
+/* Light theme — cards, text and fields all use the same readable palette */
+html[data-mr-theme="light"] body.admin-v14-page.mb-page{
+  background:
+    radial-gradient(circle at 18% 0,rgba(207,84,255,.13),transparent 28%),
+    radial-gradient(circle at 93% 7%,rgba(55,174,255,.14),transparent 32%),
+    #f4f7fc!important;
+  color:#17233d!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-top{
+  border-bottom-color:#ccd6e7!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-top p,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-panel>header small{
+  color:#6450d8!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-top h1,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-panel h2,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-branch-list h3,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-preview b,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-team-grid b{
+  color:#111d36!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-top span,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-panel>header p,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-branch-list p,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-preview article small,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-team-grid small{
+  color:#5e6d88!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-top nav a,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-primary{
+  border-color:#baaaf6!important;
+  background:linear-gradient(145deg,#f4f0ff,#e8edff)!important;
+  color:#33256e!important;
+  box-shadow:0 7px 18px rgba(80,66,155,.09);
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-notice.ok{
+  border-color:#72c8aa!important;
+  background:#e6f8f1!important;
+  color:#12674e!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-notice.err{
+  border-color:#ef9cac!important;
+  background:#fff0f3!important;
+  color:#a52544!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-kpis article{
+  border-color:#d3ddeb!important;
+  background:rgba(255,255,255,.9)!important;
+  box-shadow:0 12px 32px rgba(46,65,102,.08)!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-kpis span{
+  color:#596985!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-kpis b{
+  color:#17294a!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-panel{
+  border-color:#d1daea!important;
+  background:rgba(255,255,255,.94)!important;
+  box-shadow:0 18px 45px rgba(37,54,90,.11)!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-branch-list article,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-team-grid form{
+  border-color:#d8e0ec!important;
+  background:#f7f9fd!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-branch-list article:hover{
+  border-color:#a999ed!important;
+  background:#f3f0ff!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-branch-list code,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-preview article a{
+  color:#176a9e!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-branch-list span,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-preview article>span{
+  color:#087d5c!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-branch-list nav a{
+  border-color:#cbd5e5!important;
+  background:#fff!important;
+  color:#263652!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-form label>span,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-media-title>span{
+  color:#263653!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-form label>small,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-media-title>small,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-media-controls>em,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-media-controls>small{
+  color:#657691!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-form input,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-form textarea,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-form select,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-slug{
+  border-color:#bfcbe0!important;
+  background:#fff!important;
+  color:#15223b!important;
+  box-shadow:inset 0 1px 2px rgba(35,51,80,.035)!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-form input::placeholder,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-form textarea::placeholder{
+  color:#8794aa!important;
+  opacity:1;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-form input:focus,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-form textarea:focus,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-form select:focus{
+  border-color:#7356df!important;
+  box-shadow:0 0 0 3px rgba(115,86,223,.14)!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-slug i{
+  color:#176a9e!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-switches label,
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-team-grid fieldset label{
+  border-color:#d1d9e7!important;
+  background:#f1f4fa!important;
+  color:#263653!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-team-grid button{
+  border-color:#7053d4!important;
+  background:#5e42bd!important;
+  color:#fff!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-preview article{
+  border-bottom-color:#dce3ee!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-media-item{
+  border-color:#d0d9e8!important;
+  background:linear-gradient(145deg,#f7f9fd,#eef3fb)!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-media-preview{
+  border-color:#aebddb!important;
+  background:radial-gradient(circle at 30% 20%,rgba(129,68,229,.12),transparent 55%),#edf2fa!important;
+  color:#596b8c!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page.mb-page .mb-media-preview.logo img{
+  background:#edf2fa!important;
+}
+
+/* Responsive readability */
+@media(max-width:1180px){
+  body.admin-v14-page.mb-page .mb-grid{grid-template-columns:1fr}
+  body.admin-v14-page.mb-page .mb-team-grid{grid-template-columns:1fr}
+}
+@media(max-width:850px){
+  body.admin-v14-page.mb-page .mb-shell{margin-left:0;padding:22px 15px 110px}
+  body.admin-v14-page.mb-page .mb-top{align-items:flex-start;flex-direction:column}
+  body.admin-v14-page.mb-page .mb-top nav{width:100%;justify-content:flex-start}
+  body.admin-v14-page.mb-page .mb-kpis{grid-template-columns:1fr}
+  body.admin-v14-page.mb-page .mb-form-grid{grid-template-columns:1fr}
+  body.admin-v14-page.mb-page .mb-team-grid form{grid-template-columns:1fr}
+  body.admin-v14-page.mb-page .mb-branch-list article{grid-template-columns:64px minmax(0,1fr)}
+  body.admin-v14-page.mb-page .mb-thumb{width:64px;height:64px}
+  body.admin-v14-page.mb-page .mb-branch-list nav{grid-column:1/-1;grid-template-columns:1fr 1fr}
+  body.admin-v14-page.mb-page .mb-panel{padding:17px}
+}
+@media(max-width:620px){
+  body.admin-v14-page.mb-page .mb-top nav a{flex:1}
+  body.admin-v14-page.mb-page .mb-media-row,
+  body.admin-v14-page.mb-page .mb-media-item.cover .mb-media-row{grid-template-columns:1fr}
+  body.admin-v14-page.mb-page .mb-media-preview.logo{max-width:170px}
+}

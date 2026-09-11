@@ -1,0 +1,366 @@
+/* MR BAR Global Theme Engine v1.12.1 */
+html{color-scheme:dark}html[data-mr-theme="light"]{color-scheme:light;--bg:#f4f7ff;--panel:#ffffffed;--text:#172033;--txt:#172033;--muted:#69748c;--line:#26324a1f;--sidebar:270px}
+html[data-mr-theme] body,html[data-mr-theme] body *{transition-property:background-color,border-color,color,box-shadow,filter;transition-duration:.22s;transition-timing-function:ease}
+@media(prefers-reduced-motion:reduce){html[data-mr-theme] body,html[data-mr-theme] body *{transition:none!important}}
+/* Theme switch */
+.mr-theme-toggle{appearance:none!important;-webkit-appearance:none!important;display:inline-flex!important;align-items:center!important;gap:8px!important;width:auto!important;min-width:0!important;min-height:0!important;height:38px!important;padding:4px 5px 4px 9px!important;margin:0!important;border:1px solid #8b63ff59!important;border-radius:999px!important;background:#0b0e18d9!important;color:#c9c5d8!important;box-shadow:0 8px 28px #0005,0 0 20px #743cff18!important;font:800 8px/1 MRBAR Thai,Noto Sans Thai,Tahoma,Leelawadee UI,Thonburi,Segoe UI,Arial,sans-serif!important;letter-spacing:.12em!important;cursor:pointer!important;backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);isolation:isolate;white-space:nowrap;z-index:8400}.mr-theme-toggle:focus-visible{outline:3px solid #5ea9ff66!important;outline-offset:2px}.mr-theme-track{position:relative;display:block;width:52px;height:28px;border-radius:999px;overflow:hidden;background:linear-gradient(135deg,#101730,#29205a);border:1px solid #8e76ff55;box-shadow:inset 0 0 18px #0008}.mr-theme-knob{position:absolute;z-index:3;left:2px;top:2px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#f5f1ff,#c9d8ff);color:#4f4382;box-shadow:0 3px 10px #0008;transform:translateX(0);transition:transform .32s cubic-bezier(.2,.9,.2,1),background .25s!important}.mr-theme-knob span{font-size:13px;line-height:1}.mr-theme-stars,.mr-theme-sun{position:absolute;font-style:normal;top:50%;transform:translateY(-50%);font-size:10px;transition:opacity .2s!important}.mr-theme-stars{right:7px;color:#b29cff;text-shadow:0 0 7px #a16cff}.mr-theme-sun{left:7px;color:#ffb728;opacity:0}.mr-theme-floating{position:fixed!important;right:16px!important;top:16px!important}.mr-theme-inline{position:relative!important;flex:0 0 auto!important}
+html[data-mr-theme="light"] .mr-theme-toggle{background:#fffffff2!important;color:#525d72!important;border-color:#e4b04f88!important;box-shadow:0 8px 25px #8291b52b,0 0 18px #ffcf5520!important}html[data-mr-theme="light"] .mr-theme-track{background:linear-gradient(135deg,#fff4bd,#dff0ff);border-color:#e9c56b99;box-shadow:inset 0 0 15px #f7c84a26}html[data-mr-theme="light"] .mr-theme-knob{transform:translateX(24px);background:linear-gradient(145deg,#ffd84d,#ff9d2f);color:#fff7db;box-shadow:0 3px 10px #c56c2545}html[data-mr-theme="light"] .mr-theme-knob span{font-size:0}html[data-mr-theme="light"] .mr-theme-knob span:after{content:'☀';font-size:13px}html[data-mr-theme="light"] .mr-theme-stars{opacity:0}html[data-mr-theme="light"] .mr-theme-sun{opacity:1}
+/* Light mode baseline */
+html[data-mr-theme="light"] body{background:radial-gradient(circle at 15% 5%,#c9b6ff45,transparent 30%),radial-gradient(circle at 92% 15%,#a9dcff55,transparent 34%),linear-gradient(180deg,#f9fbff,#edf3fb 65%,#f7f9fd)!important;color:#172033!important}
+html[data-mr-theme="light"] body:before,html[data-mr-theme="light"] .gridfx,html[data-mr-theme="light"] .gridlines{background-image:linear-gradient(#29466d0a 1px,transparent 1px),linear-gradient(90deg,#29466d0a 1px,transparent 1px)!important}
+html[data-mr-theme="light"] .aurora,html[data-mr-theme="light"] .ambient i,html[data-mr-theme="light"] .fx:before,html[data-mr-theme="light"] .fx:after{opacity:.08!important}
+html[data-mr-theme="light"] .pa-bg{background:radial-gradient(circle at 12% 8%,#ae7cff20,transparent 30%),radial-gradient(circle at 92% 18%,#72c8ff22,transparent 32%),linear-gradient(180deg,#f7f9ff,#edf3fb)!important}
+/* Main surfaces used across admin, PR, staff, customer and auth */
+html[data-mr-theme="light"] .card,html[data-mr-theme="light"] .panel,html[data-mr-theme="light"] .glass,html[data-mr-theme="light"] .person-card,html[data-mr-theme="light"] .empty-card,html[data-mr-theme="light"] .secondary-zone,html[data-mr-theme="light"] .today-card,html[data-mr-theme="light"] .time-home,html[data-mr-theme="light"] .attendance-card,html[data-mr-theme="light"] .profile-hero,html[data-mr-theme="light"] .profile-dialog,html[data-mr-theme="light"] .settings-card,html[data-mr-theme="light"] .permission-kpis article,html[data-mr-theme="light"] .role-list,html[data-mr-theme="light"] .permission-matrix,html[data-mr-theme="light"] .user-access,html[data-mr-theme="light"] .sticky-save,html[data-mr-theme="light"] .version-card{background:#fffffff0!important;border-color:#31466b22!important;box-shadow:0 18px 50px #5268871a!important;color:#172033!important}
+html[data-mr-theme="light"] .sidebar{background:linear-gradient(180deg,#fbfcfffa,#eef4fffa)!important;border-color:#5572b324!important;box-shadow:14px 0 45px #48607c14!important;color:#172033!important}
+html[data-mr-theme="light"] .pr-drawer{background:linear-gradient(180deg,#fbfcff,#eef4ff)!important;border-color:#5572b324!important;color:#172033!important}
+html[data-mr-theme="light"] .mobile-dock{background:#f9fbfff5!important;border-color:#304b7220!important;box-shadow:0 -10px 32px #47617f18!important}html[data-mr-theme="light"] .mobile-dock .active{color:#6c3cff!important}
+html[data-mr-theme="light"] .topbar,html[data-mr-theme="light"] .appbar{border-color:#324a701d!important}
+/* Typography */
+html[data-mr-theme="light"] h1,html[data-mr-theme="light"] h2,html[data-mr-theme="light"] h3,html[data-mr-theme="light"] h4,html[data-mr-theme="light"] strong,html[data-mr-theme="light"] b{color:#172033}html[data-mr-theme="light"] p,html[data-mr-theme="light"] small,html[data-mr-theme="light"] .muted,html[data-mr-theme="light"] .eyebrow{color:#66728a}html[data-mr-theme="light"] a{color:inherit}
+/* Inputs and neutral controls */
+html[data-mr-theme="light"] input,html[data-mr-theme="light"] select,html[data-mr-theme="light"] textarea{background:#f8faff!important;color:#182136!important;border-color:#344d7526!important;box-shadow:none}html[data-mr-theme="light"] input::placeholder,html[data-mr-theme="light"] textarea::placeholder{color:#8b96aa}html[data-mr-theme="light"] input:focus,html[data-mr-theme="light"] select:focus,html[data-mr-theme="light"] textarea:focus{border-color:#6b72ff88!important;box-shadow:0 0 0 4px #586bff12!important}
+html[data-mr-theme="light"] option{background:#fff;color:#172033}
+/* Common dark hard-coded blocks */
+html[data-mr-theme="light"] .account,html[data-mr-theme="light"] .who,html[data-mr-theme="light"] .activity,html[data-mr-theme="light"] .table-card,html[data-mr-theme="light"] .status-btn,html[data-mr-theme="light"] .notify-list>div,html[data-mr-theme="light"] .job,html[data-mr-theme="light"] .today-times article,html[data-mr-theme="light"] .person-kpis span,html[data-mr-theme="light"] .status-legend div,html[data-mr-theme="light"] .quick a,html[data-mr-theme="light"] .role-item,html[data-mr-theme="light"] .perm-card,html[data-mr-theme="light"] .role-home,html[data-mr-theme="light"] .drawer-diagnostics{background:#f4f7fc!important;border-color:#344d751c!important;color:#172033!important}
+html[data-mr-theme="light"] th{background:#edf2fa!important;color:#5d6b82!important;border-color:#3048691a!important}html[data-mr-theme="light"] td{color:#263149!important;border-color:#30486912!important}
+/* Authentication */
+html[data-mr-theme="light"] .wrap .card,html[data-mr-theme="light"] main.card{background:#fffffff3!important;border-color:#6d73ff32!important}html[data-mr-theme="light"] .hero h1 span{background:linear-gradient(90deg,#273555,#763cff,#168bd8);-webkit-background-clip:text;background-clip:text;color:transparent!important}html[data-mr-theme="light"] .roles span{background:#ffffffb8!important;border-color:#344d751a!important;color:#5f6c83!important}html[data-mr-theme="light"] .version{background:#ffffffd9!important;border-color:#344d751f!important;color:#66728a!important}
+/* PR attendance home */
+html[data-mr-theme="light"] .branch-strip{color:#172033}html[data-mr-theme="light"] .branch-refresh{background:#f4f7ff!important;color:#2779ba!important;border-color:#4482b92b!important}html[data-mr-theme="light"] .permission-line{color:#172033}html[data-mr-theme="light"] .drawer-nav a,html[data-mr-theme="light"] .drawer-nav button{color:#273149!important}html[data-mr-theme="light"] .drawer-nav a:hover,html[data-mr-theme="light"] .drawer-nav button:hover{background:#eaf0fb!important}
+/* Keep primary/action controls vivid and readable in both themes */
+html[data-mr-theme="light"] .primary,html[data-mr-theme="light"] .login-btn,html[data-mr-theme="light"] .btn,html[data-mr-theme="light"] .save-big,html[data-mr-theme="light"] .mini.primary,html[data-mr-theme="light"] .filters button,html[data-mr-theme="light"] .pay-form button,html[data-mr-theme="light"] .neon-btn,html[data-mr-theme="light"] .clock-btn,html[data-mr-theme="light"] .accept,html[data-mr-theme="light"] .reject,html[data-mr-theme="light"] .start,html[data-mr-theme="light"] .complete{color:#fff!important}
+/* Customer light surfaces */
+html[data-mr-theme="light"] .customer-shell .glass,html[data-mr-theme="light"] .maintenance .glass{background:#ffffffe8!important;border-color:#334d7422!important;color:#172033!important}html[data-mr-theme="light"] .customer-shell .secure,html[data-mr-theme="light"] .customer-shell .features span{color:#66728a!important}
+@media(max-width:700px){.mr-theme-toggle{height:34px!important;padding-left:6px!important}.mr-theme-label{display:none}.mr-theme-track{width:50px;height:26px}.mr-theme-knob{width:20px;height:20px}.mr-theme-floating{top:10px!important;right:10px!important}}
+
+/* =========================================================
+   MR BAR v1.19.1 — Global Theme Contrast & Gold Accent Pass
+   IMPORTANT: visual-only stabilization; no layout/business logic changes.
+   ========================================================= */
+html[data-mr-theme="light"]{
+  --mr-bg:#f4f7ff;
+  --mr-surface:#ffffff;
+  --mr-surface-soft:#f1f5fb;
+  --mr-surface-strong:#e9eef8;
+  --mr-text:#14213d;
+  --mr-text-2:#3f4f6f;
+  --mr-muted:#697792;
+  --mr-border:#d6deed;
+  --mr-border-strong:#b9c5db;
+  --mr-purple:#7048dc;
+  --mr-blue:#246fc5;
+  --mr-gold:#a87518;
+  --mr-gold-bright:#d6a33a;
+  --mr-gold-soft:#fff1c9;
+  --mr-green:#087c58;
+  --mr-red:#b73858;
+  --mr-shadow:0 14px 34px rgba(38,55,92,.10);
+}
+html[data-mr-theme="dark"]{
+  --mr-bg:#070b16;
+  --mr-surface:#0f1729;
+  --mr-surface-soft:#131d32;
+  --mr-surface-strong:#19243d;
+  --mr-text:#f2f5ff;
+  --mr-text-2:#cbd4ea;
+  --mr-muted:#98a6c3;
+  --mr-border:#313d59;
+  --mr-border-strong:#4b5878;
+  --mr-purple:#b18aff;
+  --mr-blue:#73b9ff;
+  --mr-gold:#e5bb59;
+  --mr-gold-bright:#ffd47c;
+  --mr-gold-soft:#372b15;
+  --mr-green:#63e3b0;
+  --mr-red:#ff8da5;
+  --mr-shadow:0 18px 42px rgba(0,0,0,.30);
+}
+
+/* ----- Admin typography: never wash out into the current theme ----- */
+html[data-mr-theme="light"] body.admin-v14-page,
+html[data-mr-theme="light"] body.admin-v14-page main{color:var(--mr-text)!important}
+html[data-mr-theme="light"] body.admin-v14-page h1,
+html[data-mr-theme="light"] body.admin-v14-page h2,
+html[data-mr-theme="light"] body.admin-v14-page h3,
+html[data-mr-theme="light"] body.admin-v14-page h4,
+html[data-mr-theme="light"] body.admin-v14-page strong,
+html[data-mr-theme="light"] body.admin-v14-page b{color:var(--mr-text)!important}
+html[data-mr-theme="light"] body.admin-v14-page p,
+html[data-mr-theme="light"] body.admin-v14-page small,
+html[data-mr-theme="light"] body.admin-v14-page .muted,
+html[data-mr-theme="light"] body.admin-v14-page .eyebrow,
+html[data-mr-theme="light"] body.admin-v14-page label{color:var(--mr-text-2)!important}
+html[data-mr-theme="dark"] body.admin-v14-page,
+html[data-mr-theme="dark"] body.admin-v14-page main{color:var(--mr-text)!important}
+html[data-mr-theme="dark"] body.admin-v14-page h1,
+html[data-mr-theme="dark"] body.admin-v14-page h2,
+html[data-mr-theme="dark"] body.admin-v14-page h3,
+html[data-mr-theme="dark"] body.admin-v14-page h4,
+html[data-mr-theme="dark"] body.admin-v14-page strong,
+html[data-mr-theme="dark"] body.admin-v14-page b{color:var(--mr-text)!important}
+html[data-mr-theme="dark"] body.admin-v14-page p,
+html[data-mr-theme="dark"] body.admin-v14-page small,
+html[data-mr-theme="dark"] body.admin-v14-page .muted,
+html[data-mr-theme="dark"] body.admin-v14-page .eyebrow,
+html[data-mr-theme="dark"] body.admin-v14-page label{color:var(--mr-text-2)!important}
+
+/* Section identifiers and small emphasis use gold rather than low-contrast gray. */
+html[data-mr-theme] body.admin-v14-page .eyebrow,
+html[data-mr-theme] body.admin-v14-page .nav-label,
+html[data-mr-theme] body.admin-v14-page .section-badge,
+html[data-mr-theme] body.admin-v14-page .panel-head>small{
+  color:var(--mr-gold)!important;
+}
+
+/* ----- Neutral toolbar / navigation actions ----- */
+html[data-mr-theme="light"] body.admin-v14-page :is(
+  .head-actions a,.top-actions a,.logout,.ghost,.secondary,.detail-toggle,.schedule-btn,
+  .pv-back,.pv-actions button,.la-head a,.emp-head>a,.cwa-actions a,.admin-settings-shortcuts a,
+  .month-head>a,.shift-summary button
+){
+  color:var(--mr-text)!important;
+  background:linear-gradient(180deg,#fffdf7,#f3f6fc)!important;
+  border:1px solid rgba(168,117,24,.34)!important;
+  box-shadow:0 8px 20px rgba(47,62,96,.08),inset 0 1px 0 #fff!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page :is(
+  .head-actions a,.top-actions a,.logout,.ghost,.secondary,.detail-toggle,.schedule-btn,
+  .pv-back,.pv-actions button,.la-head a,.emp-head>a,.cwa-actions a,.admin-settings-shortcuts a,
+  .month-head>a,.shift-summary button
+):hover{
+  color:#684811!important;
+  border-color:var(--mr-gold-bright)!important;
+  box-shadow:0 10px 24px rgba(179,127,25,.14),0 0 0 3px rgba(214,163,58,.10)!important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page :is(
+  .head-actions a,.top-actions a,.logout,.ghost,.secondary,.detail-toggle,.schedule-btn,
+  .pv-back,.pv-actions button,.la-head a,.emp-head>a,.cwa-actions a,.admin-settings-shortcuts a,
+  .month-head>a,.shift-summary button
+){
+  color:var(--mr-text)!important;
+  background:linear-gradient(180deg,#151e34,#10172a)!important;
+  border:1px solid rgba(229,187,89,.34)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 9px 24px rgba(0,0,0,.16)!important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page :is(
+  .head-actions a,.top-actions a,.logout,.ghost,.secondary,.detail-toggle,.schedule-btn,
+  .pv-back,.pv-actions button,.la-head a,.emp-head>a,.cwa-actions a,.admin-settings-shortcuts a,
+  .month-head>a,.shift-summary button
+):hover{
+  color:var(--mr-gold-bright)!important;
+  border-color:var(--mr-gold)!important;
+  box-shadow:0 0 22px rgba(229,187,89,.12),inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+
+/* ----- Primary action controls -----
+   Light theme intentionally avoids white text: pale neon surface + navy label. */
+html[data-mr-theme="light"] body.admin-v14-page :is(
+  .primary,.save-big,.mini.primary,.filters button,.pay-form button,.la-filter button,
+  .create-card button,.save-bar button,.pv-actions a,.approve,.reject,.cwa-save button
+){
+  color:#15213f!important;
+  background:linear-gradient(100deg,#eadcff 0%,#cfe3ff 58%,#ffe4a3 130%)!important;
+  border:1px solid rgba(145,105,215,.30)!important;
+  box-shadow:0 9px 24px rgba(86,82,174,.16),inset 0 1px 0 rgba(255,255,255,.95)!important;
+  text-shadow:none!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page :is(.primary,.save-big,.mini.primary,.filters button,.pay-form button,.la-filter button,.create-card button,.save-bar button,.pv-actions a):hover{
+  border-color:var(--mr-gold-bright)!important;
+  box-shadow:0 12px 28px rgba(90,83,185,.18),0 0 0 3px rgba(214,163,58,.10)!important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page :is(
+  .primary,.save-big,.mini.primary,.filters button,.pay-form button,.la-filter button,
+  .create-card button,.save-bar button,.pv-actions a,.approve,.reject,.cwa-save button
+){
+  color:#f8f6ff!important;
+  background:linear-gradient(100deg,#7f31df,#2d79dc 68%,#bd8f37 145%)!important;
+  border:1px solid rgba(196,155,255,.30)!important;
+  box-shadow:0 10px 28px rgba(73,44,180,.24),0 0 20px rgba(121,70,232,.10)!important;
+}
+
+/* Export / report actions get the requested gold accent. */
+html[data-mr-theme="light"] body.admin-v14-page :is(.export,.export-btn,[href*="export"],button[name="export"]){
+  color:#65440b!important;
+  background:linear-gradient(180deg,#fff8df,#ffedbc)!important;
+  border:1px solid #d6a33a!important;
+  box-shadow:0 8px 22px rgba(178,124,21,.13)!important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page :is(.export,.export-btn,[href*="export"],button[name="export"]){
+  color:#ffd77d!important;
+  background:linear-gradient(180deg,#2c2416,#171b27)!important;
+  border:1px solid rgba(229,187,89,.72)!important;
+  box-shadow:0 0 20px rgba(229,187,89,.09)!important;
+}
+
+/* Disabled controls must remain readable, not disappear. */
+html[data-mr-theme] body.admin-v14-page :is(button,input,select,a)[disabled],
+html[data-mr-theme] body.admin-v14-page :is(button,input,select,a).disabled{
+  opacity:.56!important;
+  filter:saturate(.55)!important;
+}
+
+/* ----- Inputs / selects / textarea ----- */
+html[data-mr-theme="light"] body.admin-v14-page :is(input,select,textarea,.name-edit){
+  color:var(--mr-text)!important;
+  background:#fbfcff!important;
+  border-color:var(--mr-border)!important;
+  box-shadow:inset 0 1px 2px rgba(41,58,90,.025)!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page :is(input,textarea)::placeholder{color:#8996ad!important}
+html[data-mr-theme="light"] body.admin-v14-page :is(input,select,textarea):focus{
+  border-color:#8b6ad4!important;
+  box-shadow:0 0 0 3px rgba(115,82,203,.10),0 0 0 1px rgba(214,163,58,.18)!important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page :is(input,select,textarea,.name-edit){
+  color:var(--mr-text)!important;
+  background:#0d1425!important;
+  border-color:var(--mr-border)!important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page :is(input,textarea)::placeholder{color:#7e8baa!important}
+html[data-mr-theme="dark"] body.admin-v14-page :is(input,select,textarea):focus{
+  border-color:#8a6bda!important;
+  box-shadow:0 0 0 3px rgba(138,107,218,.13),0 0 18px rgba(229,187,89,.05)!important;
+}
+
+/* ----- Tables ----- */
+html[data-mr-theme="light"] body.admin-v14-page table th{
+  color:#34435f!important;
+  background:#eaf0f8!important;
+  border-color:var(--mr-border)!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page table td{color:#22304d!important;border-color:#e1e7f0!important}
+html[data-mr-theme="dark"] body.admin-v14-page table th{
+  color:#cbd6ed!important;
+  background:#151e31!important;
+  border-color:var(--mr-border)!important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page table td{color:#e6ecfb!important;border-color:#222d43!important}
+
+/* ----- Generic admin surfaces ----- */
+html[data-mr-theme="light"] body.admin-v14-page :is(
+  .panel,.person-card,.empty-card,.entity-card,.calendar-panel,.day-panel,.schedule-toolbar,
+  .la-kpis article,.la-card,.la-filter,.pv-control-card,.pv-preview-card,.pv-empty,.employee-card,
+  .emp-kpis article,.permission-kpis article,.role-list,.permission-matrix,.user-access,.sticky-save,
+  .settings-index,.setting-section.panel,.cwa-card,.cwa-panel
+){
+  color:var(--mr-text)!important;
+  background:rgba(255,255,255,.90)!important;
+  border-color:var(--mr-border)!important;
+  box-shadow:var(--mr-shadow)!important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page :is(
+  .panel,.person-card,.empty-card,.entity-card,.calendar-panel,.day-panel,.schedule-toolbar,
+  .la-kpis article,.la-card,.la-filter,.pv-control-card,.pv-preview-card,.pv-empty,.employee-card,
+  .emp-kpis article,.permission-kpis article,.role-list,.permission-matrix,.user-access,.sticky-save,
+  .settings-index,.setting-section.panel,.cwa-card,.cwa-panel
+){
+  color:var(--mr-text)!important;
+  background:rgba(13,19,34,.91)!important;
+  border-color:var(--mr-border)!important;
+  box-shadow:var(--mr-shadow)!important;
+}
+
+/* PR View was historically keyed to [data-theme=dark]; normalize it to the global engine. */
+html[data-mr-theme="dark"] body.pr-view-page{
+  --pv-card:rgba(12,17,31,.94)!important;
+  --pv-line:rgba(130,149,197,.20)!important;
+  --pv-text:#f2f5ff!important;
+  --pv-muted:#9eabc6!important;
+}
+html[data-mr-theme="light"] body.pr-view-page{
+  --pv-card:rgba(255,255,255,.93)!important;
+  --pv-line:rgba(55,73,112,.17)!important;
+  --pv-text:#14213d!important;
+  --pv-muted:#657490!important;
+}
+html[data-mr-theme="dark"] body.pr-view-page :is(.pv-control-card,.pv-preview-card,.pv-empty,.pv-tabs button,.pv-actions button,.pv-meta span){
+  color:var(--pv-text)!important;
+  background:rgba(13,19,34,.92)!important;
+  border-color:var(--pv-line)!important;
+}
+html[data-mr-theme="light"] body.pr-view-page :is(.pv-tabs button,.pv-actions button,.pv-meta span){
+  color:var(--pv-text)!important;
+  background:#f4f7fc!important;
+  border-color:var(--pv-line)!important;
+}
+html[data-mr-theme="dark"] body.pr-view-page .pv-stage{background:radial-gradient(circle at 25% 10%,#8b2cff0f,transparent 28%),radial-gradient(circle at 85% 25%,#258dff10,transparent 28%),#09101f!important}
+html[data-mr-theme="light"] body.pr-view-page .pv-stage{background:radial-gradient(circle at 20% 8%,#a77bff16,transparent 26%),radial-gradient(circle at 88% 22%,#6fbaff14,transparent 28%),#eef3fa!important}
+
+/* Payroll: fix toolbar links that became dark text on dark buttons in Light mode. */
+html[data-mr-theme="light"] body.admin-v14-page .pa-head .head-actions a{
+  color:#21304e!important;
+  background:linear-gradient(180deg,#ffffff,#f0f4fa)!important;
+  border-color:rgba(168,117,24,.42)!important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .pa-head .head-actions a{
+  color:#edf3ff!important;
+  background:#11192d!important;
+  border-color:rgba(229,187,89,.32)!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .person-kpis span{background:#f1f5fb!important;border-color:#dde5f0!important;color:#4d5d79!important}
+html[data-mr-theme="dark"] body.admin-v14-page .person-kpis span{background:#11192b!important;border-color:#29344d!important;color:#aab6cf!important}
+html[data-mr-theme="light"] body.admin-v14-page .person-kpis b{color:#17233e!important}
+html[data-mr-theme="dark"] body.admin-v14-page .person-kpis b{color:#f2f5ff!important}
+
+/* Leave, permissions and settings: repair secondary text and neutral chips. */
+html[data-mr-theme="light"] body.admin-v14-page :is(.la-person em,.admin-note,.role-item,.perm-card,.role-home,.link-block,.danger-row,.mini-stats>div,.emp-summary>div){
+  color:var(--mr-text-2)!important;
+  background:#f2f5fa!important;
+  border-color:var(--mr-border)!important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page :is(.la-person em,.admin-note,.role-item,.perm-card,.role-home,.link-block,.danger-row,.mini-stats>div,.emp-summary>div){
+  color:var(--mr-text-2)!important;
+  background:#121a2c!important;
+  border-color:var(--mr-border)!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .matrix-count,
+html[data-mr-theme="light"] body.admin-v14-page .access-badge{
+  color:#5b3f92!important;background:#f0e8ff!important;border-color:#c9b5f2!important
+}
+html[data-mr-theme="dark"] body.admin-v14-page .matrix-count,
+html[data-mr-theme="dark"] body.admin-v14-page .access-badge{
+  color:#dfceff!important;background:#261d3d!important;border-color:#684e9d!important
+}
+
+/* Sidebar theme contrast + subtle gold premium accent. */
+html[data-mr-theme="light"] body.admin-v14-page .sidebar nav a b{color:#1e2b47!important}
+html[data-mr-theme="light"] body.admin-v14-page .sidebar nav a small{color:#6d7a94!important}
+html[data-mr-theme="light"] body.admin-v14-page .sidebar nav a>span{color:#7650ca!important}
+html[data-mr-theme="light"] body.admin-v14-page .sidebar nav a.active{
+  background:linear-gradient(90deg,#eee5ff,#e7f1ff)!important;
+  border-color:#b49bdc!important;
+  box-shadow:inset 0 0 22px rgba(105,70,190,.07),0 7px 20px rgba(59,73,107,.08)!important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .sidebar nav a.active>span{color:var(--mr-gold)!important}
+html[data-mr-theme="dark"] body.admin-v14-page .sidebar nav a b{color:#eef2ff!important}
+html[data-mr-theme="dark"] body.admin-v14-page .sidebar nav a small{color:#96a4c2!important}
+html[data-mr-theme="dark"] body.admin-v14-page .sidebar nav a.active>span{color:var(--mr-gold-bright)!important;text-shadow:0 0 14px rgba(229,187,89,.22)}
+
+/* Theme switch gets a restrained gold ring in both modes. */
+html[data-mr-theme] .mr-theme-toggle{border-color:#b89048!important}
+html[data-mr-theme="light"] .mr-theme-toggle{color:#384763!important;background:#fffdf8!important}
+html[data-mr-theme="dark"] .mr-theme-toggle{color:#e7ecfb!important;background:#0e1525e8!important}
+
+/* Status colors keep semantic meaning in both themes. */
+html[data-mr-theme="light"] body.admin-v14-page :is(.status.online,.tag.ok,.effective.yes){color:#087653!important}
+html[data-mr-theme="light"] body.admin-v14-page :is(.status.busy,.tag.late){color:#965f00!important}
+html[data-mr-theme="light"] body.admin-v14-page :is(.status.offline,.tag.bad,.effective.no){color:#a33250!important}
+html[data-mr-theme="dark"] body.admin-v14-page :is(.status.online,.tag.ok,.effective.yes){color:#6ae6b6!important}
+html[data-mr-theme="dark"] body.admin-v14-page :is(.status.busy,.tag.late){color:#ffd27a!important}
+html[data-mr-theme="dark"] body.admin-v14-page :is(.status.offline,.tag.bad,.effective.no){color:#ff91aa!important}
+
+/* Keep intentional semantic action text readable. */
+html[data-mr-theme="light"] body.admin-v14-page .approve{color:#12462f!important;background:#cceedd!important}
+html[data-mr-theme="light"] body.admin-v14-page .reject{color:#6d2335!important;background:#ffdbe3!important}
+html[data-mr-theme="dark"] body.admin-v14-page .approve{color:#e7fff5!important;background:#147451!important}
+html[data-mr-theme="dark"] body.admin-v14-page .reject{color:#fff0f4!important;background:#8d3349!important}
+
+/* =========================================================
+   MR BAR v1.22.3 — Global Thai Typography Audit
+   Family-only override: keep existing size, weight, color and layout.
+   Loaded last by the Global Theme Engine on every HTML route.
+   ========================================================= */
+:root{--mr-font-thai:"MRBAR Thai","Noto Sans Thai",Tahoma,"Leelawadee UI",Thonburi,"Segoe UI",Arial,sans-serif}
+html[data-mr-theme] body,
+html[data-mr-theme] body *{font-family:var(--mr-font-thai)!important}

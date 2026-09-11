@@ -1,0 +1,12 @@
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('[data-tab]'));
+  var panels=[].slice.call(document.querySelectorAll('[data-panel]'));
+  function show(name){tabs.forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tab')===name);});panels.forEach(function(p){p.classList.toggle('active',p.getAttribute('data-panel')===name);});if(history.replaceState)history.replaceState(null,'','#'+name);}
+  tabs.forEach(function(b){b.addEventListener('click',function(){show(b.getAttribute('data-tab'));});});
+  var hash=(location.hash||'').replace('#','');if(hash&&document.querySelector('[data-tab="'+hash+'"]'))show(hash);
+  document.addEventListener('click',function(e){var btn=e.target.closest('[data-toggle-card]');if(!btn)return;var card=btn.closest('.entity-card');var d=card&&card.querySelector('.card-detail');if(!d)return;d.hidden=!d.hidden;btn.textContent=d.hidden?'จัดการ ▾':'ปิดรายละเอียด ▴';});
+  function filterPR(){var q=(document.querySelector('[data-search="pr"]')||{}).value||'';var st=(document.querySelector('[data-filter="pr-status"]')||{}).value||'';var lk=(document.querySelector('[data-filter="pr-link"]')||{}).value||'';q=q.toLowerCase().trim();document.querySelectorAll('.pr-card').forEach(function(c){var ok=(!q||c.getAttribute('data-search-text').indexOf(q)>-1)&&(!st||c.getAttribute('data-status')===st)&&(!lk||c.getAttribute('data-link')===lk);c.style.display=ok?'':'none';});}
+  function filterUsers(){var q=(document.querySelector('[data-search="users"]')||{}).value||'';var role=(document.querySelector('[data-filter="user-role"]')||{}).value||'';var active=(document.querySelector('[data-filter="user-active"]')||{}).value||'';q=q.toLowerCase().trim();document.querySelectorAll('.user-card').forEach(function(c){var ok=(!q||c.getAttribute('data-search-text').indexOf(q)>-1)&&(!role||c.getAttribute('data-role')===role)&&(!active||c.getAttribute('data-active')===active);c.style.display=ok?'':'none';});}
+  ['input','change'].forEach(function(evt){document.addEventListener(evt,function(e){if(e.target.matches('[data-search="pr"],[data-filter="pr-status"],[data-filter="pr-link"]'))filterPR();if(e.target.matches('[data-search="users"],[data-filter="user-role"],[data-filter="user-active"]'))filterUsers();});});
+  var m=document.getElementById('menuBtn'),s=document.getElementById('sidebar');if(m&&s)m.addEventListener('click',function(){s.classList.toggle('open');});
+})();

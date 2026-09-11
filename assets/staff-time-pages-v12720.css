@@ -1,0 +1,91 @@
+/* MR BAR v1.27.20 — Staff Time Calendar / Income cross-platform UI hardening.
+   Visual/responsive only: no attendance, leave, correction, payroll or permission logic. */
+.staff-time-page{--staff-vh:100dvh;--staff-vw:100vw;--staff-dock-gap:10px;min-height:100svh;overflow-x:clip;-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior-x:none}
+.staff-time-page *{box-sizing:border-box}.staff-time-page a,.staff-time-page button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.staff-time-page .staff-theme-slot{display:flex;align-items:center;justify-content:center;flex:0 0 auto;min-width:0}
+.staff-time-page .staff-theme-slot .mr-theme-toggle{position:relative!important;inset:auto!important;margin:0!important;z-index:1!important;box-shadow:0 7px 22px #0004,0 0 15px #743cff16!important}
+.staff-time-page .staff-head-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;min-width:0}
+.staff-time-page .staff-time-appbar{padding-top:max(8px,env(safe-area-inset-top));min-height:68px}
+.staff-time-page .staff-time-appbar .appbar-brand{min-width:0}.staff-time-page .staff-time-appbar .appbar-brand strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.staff-time-page .mobile-dock{bottom:calc(var(--staff-dock-gap) + env(safe-area-inset-bottom));width:min(calc(100% - 20px),720px);border:1px solid #ffffff15;border-radius:22px;padding:6px 8px;overflow:hidden;box-shadow:0 18px 45px #0009,0 0 28px #713cff13;background:#0b0b15e8;backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);transition:opacity .18s ease,transform .2s ease}
+.staff-time-page .mobile-dock a,.staff-time-page .mobile-dock button{min-height:54px;border-radius:15px}.staff-time-page .mobile-dock .active{background:linear-gradient(180deg,#8d45ff18,#2d83ff0a)}
+.staff-time-page.staff-keyboard-open .mobile-dock{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(120%)}
+
+/* Calendar */
+.staff-calendar-page .cal-shell{padding-bottom:calc(106px + env(safe-area-inset-bottom))}
+.staff-calendar-page .cal-appbar{grid-template-columns:48px minmax(0,1fr) auto;gap:9px;min-height:68px;padding-bottom:8px}
+.staff-calendar-page .cal-appbar>.cal-title{text-align:center;min-width:0}.staff-calendar-page .cal-title small,.staff-calendar-page .cal-title strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.staff-calendar-page .cal-title strong{font-size:clamp(17px,4.8vw,20px)}
+.staff-calendar-page .cal-head-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;text-align:left!important;min-width:0}
+.staff-calendar-page .cal-today{min-width:48px;text-align:center;padding:10px 11px}.staff-calendar-page .cal-back{width:44px;height:44px;display:grid;place-items:center;padding:0;font-size:23px}
+.staff-calendar-page .calendar-card,.staff-calendar-page .day-detail,.staff-calendar-page .my-leaves{scroll-margin-top:78px}
+.staff-calendar-page .month-nav{grid-template-columns:46px minmax(0,1fr) 46px;gap:8px}.staff-calendar-page .month-nav>a{width:44px;height:44px;border-radius:14px}.staff-calendar-page .month-nav>div{min-width:0}.staff-calendar-page .month-nav h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.staff-calendar-page .day-cell{min-width:0;touch-action:manipulation}.staff-calendar-page .legend span{line-height:1.35}
+.staff-calendar-page .leave-dialog{max-height:min(88dvh,calc(var(--staff-vh) - 28px));overscroll-behavior:contain;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+.staff-calendar-page .photo-viewer{padding-top:max(18px,env(safe-area-inset-top));padding-bottom:max(18px,env(safe-area-inset-bottom))}
+.staff-calendar-page .correction-form input,.staff-calendar-page .correction-form button{width:100%}
+.staff-calendar-page footer{padding-bottom:18px}
+
+/* Income */
+.staff-income-page .income-shell{padding-bottom:calc(106px + env(safe-area-inset-bottom))}
+.staff-income-page .pr-appbar{grid-template-columns:48px minmax(0,1fr) auto;gap:9px}.staff-income-page .income-back{width:44px;height:44px;border-radius:14px}.staff-income-page .staff-head-actions .mini-avatar{flex:0 0 auto}
+.staff-income-page .income-person{margin-top:2px;padding:10px 5px 4px;align-items:center}.staff-income-page .income-person>div{min-width:0}.staff-income-page .income-person h1{font-size:clamp(29px,8vw,34px);line-height:1.12}.staff-income-page .income-person p{line-height:1.5}.staff-income-page .estimate-pill{flex:0 0 auto}
+.staff-income-page .income-month{grid-template-columns:44px minmax(0,1fr) 44px}.staff-income-page .income-month div{min-width:0}.staff-income-page .income-month b,.staff-income-page .income-month span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.staff-income-page .income-hero>strong{max-width:100%;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.staff-income-page .income-kpis b{font-variant-numeric:tabular-nums}
+.staff-income-page .income-breakdown article>div,.staff-income-page .income-row-main{min-width:0}.staff-income-page .income-breakdown small,.staff-income-page .income-row-main span{line-height:1.45}.staff-income-page .income-row-pay{min-width:72px}
+.staff-income-page .income-disclaimer{margin-bottom:16px}.staff-income-page .attendance-footer{padding-bottom:16px}
+
+html[data-mr-theme="light"] .staff-time-page .mobile-dock{background:#f9fbfff2;border-color:#304b7222;box-shadow:0 15px 40px #47617f25,0 0 18px #695cff0d}
+
+@media(max-width:760px){
+ .staff-time-page{--staff-dock-gap:8px}
+ .staff-time-page .staff-time-appbar{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+ .staff-time-page .mobile-dock{display:grid;backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px)}
+ .staff-time-page .mobile-dock span{font-size:20px}.staff-time-page .mobile-dock small{font-size:9px}
+ .staff-calendar-page .calendar-card{margin-top:10px}.staff-calendar-page .day-detail,.staff-calendar-page .my-leaves{margin-top:10px;margin-bottom:10px}
+ .staff-calendar-page .leave-dialog input,.staff-calendar-page .leave-dialog select,.staff-calendar-page .leave-dialog textarea,.staff-calendar-page .correction-form input{font-size:16px;line-height:1.35}
+ .staff-calendar-page .leave-dialog input,.staff-calendar-page .leave-dialog select{min-height:48px}
+ .staff-income-page .income-hero,.staff-income-page .income-card,.staff-income-page .income-disclaimer{margin:10px 0;box-shadow:0 16px 38px #0005}
+}
+
+@media(max-width:620px){
+ .staff-time-page .staff-theme-slot .mr-theme-toggle{height:34px!important;padding:4px!important}
+ .staff-calendar-page .cal-shell{padding-left:9px;padding-right:9px}.staff-calendar-page .cal-appbar{margin-left:-9px;margin-right:-9px;padding-left:10px;padding-right:10px}
+ .staff-calendar-page .cal-today{font-size:10px;min-width:44px;padding:9px 8px}.staff-calendar-page .cal-head-actions{gap:4px}
+ .staff-calendar-page .calendar-card{padding:12px;border-radius:22px}.staff-calendar-page .month-nav{margin-bottom:10px}.staff-calendar-page .month-nav h1{font-size:clamp(21px,6.5vw,25px)}
+ .staff-calendar-page .week-head,.staff-calendar-page .calendar-grid{gap:2px}.staff-calendar-page .day-cell{border-radius:12px}.staff-calendar-page .day-cell.is-today:after{inset:3px;border-radius:9px}.staff-calendar-page .dots{top:4px}
+ .staff-calendar-page .legend{gap:8px 10px;padding-top:14px;margin-top:10px}.staff-calendar-page .legend span{font-size:10px;gap:6px}.staff-calendar-page .legend i{width:7px;height:7px}
+ .staff-calendar-page .detail-head h2,.staff-calendar-page .section-title-row h2{font-size:21px}.staff-calendar-page .leave-plus{width:44px;height:44px;font-size:27px}.staff-calendar-page .small-plus{padding:9px 11px;font-size:10px}
+ .staff-calendar-page .attendance-row{padding:12px;gap:9px}.staff-calendar-page .attendance-row strong{font-size:22px}.staff-calendar-page .leave-history article{padding:12px}
+ .staff-calendar-page .leave-dialog{width:calc(100% - 12px);border-radius:22px;padding:20px 16px calc(20px + env(safe-area-inset-bottom))}.staff-calendar-page .leave-dialog h2{font-size:26px}
+ .staff-income-page .pr-mobile-shell{padding-left:10px;padding-right:10px}.staff-income-page .pr-appbar{margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}
+ .staff-income-page .income-person{padding-inline:3px}.staff-income-page .estimate-pill{padding:7px 9px;font-size:9px}.staff-income-page .income-month{margin:12px 0;padding:11px;gap:7px}.staff-income-page .income-month>a,.staff-income-page .month-disabled{width:40px;height:40px;border-radius:12px}
+ .staff-income-page .income-hero{padding:17px}.staff-income-page .income-hero>strong{font-size:clamp(32px,10vw,46px)}.staff-income-page .income-card{padding:15px}.staff-income-page .income-breakdown article{padding:12px}.staff-income-page .income-rows article{padding:11px}
+}
+
+@media(max-width:430px){
+ .staff-time-page .staff-theme-slot .mr-theme-track{width:44px;height:24px}.staff-time-page .staff-theme-slot .mr-theme-knob{width:18px;height:18px}.staff-time-page .staff-theme-slot .mr-theme-label{display:none!important}
+ .staff-time-page .mobile-dock{width:calc(100% - 14px);border-radius:20px;padding-inline:5px}.staff-time-page .mobile-dock a,.staff-time-page .mobile-dock button{min-height:52px}
+ .staff-calendar-page .cal-appbar{grid-template-columns:44px minmax(0,1fr) auto;gap:5px}.staff-calendar-page .cal-back{width:40px;height:40px}.staff-calendar-page .cal-title small{font-size:8px;letter-spacing:.12em}.staff-calendar-page .cal-title strong{font-size:17px}.staff-calendar-page .cal-today{min-width:40px;padding:8px 7px}
+ .staff-calendar-page .calendar-card{padding:10px}.staff-calendar-page .month-nav{grid-template-columns:42px minmax(0,1fr) 42px}.staff-calendar-page .month-nav>a{width:40px;height:40px;font-size:31px}.staff-calendar-page .month-nav small{letter-spacing:.13em}.staff-calendar-page .week-head span{font-size:10px}.staff-calendar-page .day-cell .num{font-size:15px}.staff-calendar-page .legend{grid-template-columns:1fr 1fr}.staff-calendar-page .legend span{font-size:9px}
+ .staff-income-page .pr-appbar{grid-template-columns:44px minmax(0,1fr) auto;gap:5px}.staff-income-page .income-back{width:40px;height:40px}.staff-income-page .staff-head-actions{gap:4px}.staff-income-page .staff-head-actions .mini-avatar{width:36px;height:36px;border-radius:12px}.staff-income-page .appbar-brand small{font-size:8px}.staff-income-page .appbar-brand strong{font-size:17px}
+ .staff-income-page .income-person{align-items:flex-start}.staff-income-page .income-person h1{font-size:28px}.staff-income-page .income-person p{font-size:11px}.staff-income-page .income-kpis{gap:6px}.staff-income-page .income-kpis span{padding:10px 6px}.staff-income-page .income-kpis b{font-size:18px}
+ .staff-income-page .income-breakdown article{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}.staff-income-page .income-breakdown b{white-space:normal;font-size:13px}.staff-income-page .income-rows article{grid-template-columns:40px minmax(0,1fr)}.staff-income-page .income-row-pay{grid-column:2;min-width:0;text-align:left;padding-top:2px}
+}
+
+@media(max-width:360px){
+ .staff-calendar-page .cal-today{font-size:0;width:38px;min-width:38px}.staff-calendar-page .cal-today:after{content:'•';font-size:20px;line-height:1;color:#ffe27a}.staff-calendar-page .cal-head-actions{gap:2px}
+ .staff-calendar-page .legend{grid-template-columns:1fr}.staff-income-page .estimate-pill{display:none}.staff-income-page .income-person h1{font-size:26px}
+}
+
+@media(max-height:700px) and (max-width:760px){
+ .staff-time-page{--staff-dock-gap:5px}.staff-time-page .mobile-dock a,.staff-time-page .mobile-dock button{min-height:48px}.staff-time-page .mobile-dock span{font-size:18px}
+ .staff-calendar-page .calendar-card,.staff-calendar-page .day-detail,.staff-calendar-page .my-leaves{margin-block:8px}.staff-calendar-page .cal-appbar{min-height:60px}.staff-calendar-page .month-nav>a{height:40px}.staff-calendar-page .legend{padding-top:11px}
+ .staff-income-page .income-hero,.staff-income-page .income-card,.staff-income-page .income-disclaimer{margin-block:8px}.staff-income-page .income-kpis{margin-top:12px}.staff-income-page .income-person{padding-top:5px}.staff-income-page .income-month{margin-block:9px}
+}
+
+@media(orientation:landscape) and (max-height:560px){
+ .staff-time-page .staff-time-appbar{position:relative;min-height:56px}.staff-time-page .mobile-dock{bottom:4px}
+ .staff-calendar-page .cal-shell,.staff-income-page .income-shell{padding-bottom:86px}.staff-calendar-page .calendar-card{max-width:760px;margin-inline:auto}.staff-income-page .income-kpis{grid-template-columns:repeat(4,1fr)}
+}
+
+@media(prefers-reduced-motion:reduce){.staff-time-page .mobile-dock{transition:none!important}}

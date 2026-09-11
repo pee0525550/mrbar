@@ -1,0 +1,10 @@
+/* MR BAR v1.22.4 — Self-hosted cross-device Thai typography */
+@font-face{
+  font-family:"MRBAR Thai";
+  src:url("fonts/mrbar-thai-variable.ttf?v=1224") format("truetype");
+  font-style:normal;
+  font-weight:100 900;
+  font-display:swap;
+}
+:root{--mr-font-thai:"MRBAR Thai","Noto Sans Thai",Tahoma,"Leelawadee UI",Thonburi,"Segoe UI",Arial,sans-serif}
+html,body,button,input,select,textarea,optgroup{font-family:var(--mr-font-thai)}

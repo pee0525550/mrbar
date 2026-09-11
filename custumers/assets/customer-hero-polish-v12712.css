@@ -1,0 +1,42 @@
+/* MR BAR v1.27.12 — Thai-safe Customer Hero + subtle nightlife motion */
+.cw-hero-copy{position:relative;isolation:isolate;overflow:visible;padding-block:14px}
+.cw-hero-copy:before{content:"";position:absolute;z-index:-1;left:-70px;top:14%;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(155,74,255,.18),rgba(74,163,255,.07) 42%,transparent 72%);filter:blur(18px);pointer-events:none;animation:cwHeroAura 8s ease-in-out infinite}
+.cw-hero h1{line-height:1.12!important;letter-spacing:-.035em!important;margin:18px 0 14px!important;padding:.06em 0 .04em;overflow:visible!important;text-wrap:balance}
+.cw-hero h1 em{position:relative;display:block;line-height:1.18!important;margin-top:.02em!important;padding:.12em .02em .15em;overflow:visible!important;text-wrap:balance;background-size:230% 100%!important;animation:cwHeroGradient 8s ease-in-out infinite}
+.cw-hero h1 em:after{content:"";display:block;width:min(280px,42%);height:3px;margin-top:8px;border-radius:999px;background:linear-gradient(90deg,#ff4bd4,#8c57ff,#47baff,transparent);box-shadow:0 0 16px rgba(138,82,255,.42);transform-origin:left center;animation:cwHeroAccentLine 5.2s ease-in-out infinite}
+.cw-hero-copy>p{margin-top:4px;position:relative;z-index:1}
+.cw-live-pill{position:relative;overflow:hidden;box-shadow:0 8px 28px rgba(91,83,225,.10),inset 0 0 16px rgba(255,255,255,.04)}
+.cw-live-pill:after{content:"";position:absolute;inset:0 auto 0 -55%;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-18deg);animation:cwHeroPillSweep 6.8s ease-in-out infinite;pointer-events:none}
+.cw-live-pill i{animation:cwHeroLivePulse 2.4s ease-in-out infinite}
+.cw-mini-facts span{transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.cw-mini-facts span:hover{transform:translateY(-2px);border-color:rgba(132,99,255,.28);box-shadow:0 8px 22px rgba(91,65,191,.11)}
+.cw-hero-visual{will-change:transform;animation:cwHeroVisualFloat 9s ease-in-out infinite}
+.cw-hero-visual:before{content:"";position:absolute;z-index:1;top:-35%;bottom:-35%;left:-45%;width:28%;background:linear-gradient(90deg,transparent,rgba(141,209,255,.10),rgba(216,128,255,.14),transparent);filter:blur(3px);transform:skewX(-13deg);pointer-events:none;animation:cwHeroVisualSweep 9.5s ease-in-out infinite}
+.cw-floating-card{animation:cwHeroFloatCard 5.4s ease-in-out infinite}
+
+/* PR Catalog hero uses the same Thai-safe headline rhythm and visual language. */
+.pr-catalog-hero{position:relative;isolation:isolate;overflow:visible;padding:24px 26px;border:1px solid var(--cw-line);border-radius:28px;background:linear-gradient(135deg,rgba(120,68,255,.08),rgba(62,155,255,.055),rgba(255,255,255,.025));box-shadow:0 18px 50px rgba(18,20,55,.12);backdrop-filter:blur(10px)}
+.pr-catalog-hero:before{content:"";position:absolute;z-index:-1;left:6%;top:-55px;width:260px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(183,70,255,.20),transparent 70%);filter:blur(22px);animation:cwCatalogAura 8s ease-in-out infinite}
+.pr-catalog-hero .micro{display:inline-flex!important;align-items:center;min-height:28px;padding:0 11px;border:1px solid rgba(127,103,255,.18);border-radius:999px;background:rgba(255,255,255,.045);margin-bottom:9px!important}
+.pr-catalog-hero h1{line-height:1.14!important;letter-spacing:-.04em!important;padding:.08em 0 .12em;overflow:visible!important;text-wrap:balance}
+.pr-catalog-hero p{margin-top:6px!important}
+.pr-catalog-back{transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.pr-catalog-back:hover{transform:translateY(-2px);border-color:rgba(132,96,255,.32);box-shadow:0 10px 28px rgba(91,62,188,.15)}
+
+html[data-mr-theme="light"] .pr-catalog-hero{background:linear-gradient(135deg,rgba(171,132,255,.13),rgba(102,191,255,.10),rgba(255,255,255,.72));box-shadow:0 18px 48px rgba(75,73,133,.10)}
+html[data-mr-theme="light"] .cw-hero-copy:before{opacity:.68}
+
+@keyframes cwHeroGradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes cwHeroAccentLine{0%,100%{transform:scaleX(.78);opacity:.58}50%{transform:scaleX(1);opacity:1}}
+@keyframes cwHeroAura{0%,100%{transform:translate3d(0,0,0) scale(.94);opacity:.68}50%{transform:translate3d(34px,-14px,0) scale(1.08);opacity:1}}
+@keyframes cwHeroPillSweep{0%,58%{left:-55%;opacity:0}68%{opacity:1}86%,100%{left:120%;opacity:0}}
+@keyframes cwHeroLivePulse{0%,100%{transform:scale(.88);filter:brightness(.95)}50%{transform:scale(1.22);filter:brightness(1.2)}}
+@keyframes cwHeroVisualFloat{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-7px,0)}}
+@keyframes cwHeroVisualSweep{0%,54%{left:-45%;opacity:0}65%{opacity:.85}86%,100%{left:125%;opacity:0}}
+@keyframes cwHeroFloatCard{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes cwCatalogAura{0%,100%{transform:translateX(0) scale(.95);opacity:.55}50%{transform:translateX(60px) scale(1.08);opacity:.9}}
+
+@media(max-width:1050px){.cw-hero-copy{padding-top:46px}.cw-hero h1{line-height:1.14!important}.pr-catalog-hero{padding:22px}}
+@media(max-width:700px){.cw-hero-copy{padding-top:26px;padding-bottom:6px}.cw-hero h1{line-height:1.17!important;letter-spacing:-.025em!important;margin-top:14px!important}.cw-hero h1 em{line-height:1.2!important;padding-top:.14em}.cw-hero h1 em:after{width:46%;margin-top:6px}.pr-catalog-hero{padding:19px 18px;border-radius:22px}.pr-catalog-hero h1{line-height:1.18!important}}
+@media(max-width:430px){.cw-hero h1{line-height:1.2!important}.cw-hero h1 em{line-height:1.22!important}.cw-hero-copy:before{width:250px;height:250px;left:-80px}.pr-catalog-hero h1{line-height:1.2!important}}
+@media(prefers-reduced-motion:reduce){.cw-hero-copy:before,.cw-hero h1 em,.cw-hero h1 em:after,.cw-live-pill:after,.cw-live-pill i,.cw-hero-visual,.cw-hero-visual:before,.cw-floating-card,.pr-catalog-hero:before{animation:none!important}}

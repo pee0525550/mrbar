@@ -1,0 +1,84 @@
+/* MR BAR v1.30.5 — Collision-safe admin sidebar footer */
+@media(min-width:901px){
+  .admin-v14-sidebar{
+    display:flex!important;
+    flex-direction:column;
+    overflow:hidden!important;
+    padding-bottom:16px!important;
+  }
+  .admin-v14-sidebar>.brand{
+    flex:0 0 auto;
+  }
+  .admin-v14-sidebar>.admin-nav-groups{
+    flex:1 1 auto;
+    min-height:0;
+    overflow-x:hidden;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(133,91,235,.48) transparent;
+    padding-right:2px;
+  }
+  .admin-v14-sidebar>.admin-nav-groups::-webkit-scrollbar{width:5px}
+  .admin-v14-sidebar>.admin-nav-groups::-webkit-scrollbar-track{background:transparent}
+  .admin-v14-sidebar>.admin-nav-groups::-webkit-scrollbar-thumb{border-radius:99px;background:linear-gradient(#b442e8,#397fea)}
+  .admin-v14-sidebar>.version-card{
+    flex:0 0 auto;
+    margin:11px 5px 112px!important;
+  }
+  html.admin-sidebar-collapsed .admin-v14-sidebar>.version-card{
+    margin:9px 2px 82px!important;
+  }
+  html.admin-sidebar-collapsed body:has(.admin-v14-sidebar) .mr-branch-switcher{
+    left:10px;
+    bottom:12px;
+    width:64px;
+    padding:7px;
+    border-radius:16px;
+  }
+  html.admin-sidebar-collapsed .mr-branch-switcher>.mr-branch-kicker,
+  html.admin-sidebar-collapsed .mr-branch-current>span,
+  html.admin-sidebar-collapsed .mr-branch-current>em{
+    display:none!important;
+  }
+  html.admin-sidebar-collapsed .mr-branch-current{
+    display:grid;
+    grid-template-columns:1fr;
+    place-items:center;
+    padding:0;
+    min-height:48px;
+  }
+  html.admin-sidebar-collapsed .mr-branch-current>i{
+    width:46px;
+    height:46px;
+    border-radius:12px;
+  }
+  html.admin-sidebar-collapsed .mr-branch-menu{
+    left:0;
+    width:280px;
+  }
+}
+@media(min-width:901px) and (max-height:780px){
+  .admin-v14-sidebar>.version-card{
+    padding:10px!important;
+    margin-top:8px!important;
+  }
+  .admin-v14-sidebar>.version-card small,
+  .admin-v14-sidebar>.version-card em{
+    font-size:8px!important;
+    margin-top:4px!important;
+  }
+  .admin-v14-sidebar>.version-card b{
+    font-size:17px!important;
+    margin:3px!important;
+  }
+}
+@media(max-width:900px){
+  .admin-v14-sidebar{
+    overflow-y:auto!important;
+  }
+  body.admin-mobile-nav-open .mr-branch-switcher{
+    opacity:0;
+    pointer-events:none;
+  }
+}

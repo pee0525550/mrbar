@@ -1,0 +1,63 @@
+/* MR BAR v1.29.9 — Facebook Page preview for Customer Contact */
+.cw-social-content{min-width:0;display:grid;grid-template-columns:minmax(220px,.9fr) minmax(0,2.1fr);gap:28px;align-items:center}
+.cw-social-panel.has-facebook-embed{grid-template-columns:minmax(300px,1fr) minmax(340px,500px);gap:28px;align-items:stretch;padding:28px}
+.cw-social-panel.has-facebook-embed .cw-social-content{display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:24px;padding:10px 8px}
+.cw-social-panel.has-facebook-embed .cw-social-intro h2{font-size:clamp(32px,3vw,48px)}
+.cw-social-panel.has-facebook-embed .cw-social-intro p{max-width:520px;font-size:13px}
+.cw-social-panel.has-facebook-embed .cw-social-grid{grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+.cw-social-panel.has-facebook-embed .cw-social-card.facebook{grid-column:1/-1}
+.cw-facebook-embed{position:relative;z-index:2;align-self:start;width:100%;max-width:500px;border:1px solid rgba(92,133,255,.28);border-radius:24px;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.34),0 0 42px rgba(59,112,255,.10);overflow:hidden}
+.cw-facebook-embed>header{min-height:76px;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:13px 15px;background:linear-gradient(120deg,#173c85,#2368d7);color:#fff}
+.cw-facebook-mark{display:grid;place-items:center;width:42px;height:42px;border:1px solid rgba(255,255,255,.22);border-radius:13px;background:rgba(255,255,255,.12);font:900 27px/1 Arial,sans-serif;color:#fff}
+.cw-facebook-embed>header div{min-width:0}
+.cw-facebook-embed>header small,.cw-facebook-embed>header strong,.cw-facebook-embed>header span{display:block}
+.cw-facebook-embed>header small{font-size:7px;font-weight:900;letter-spacing:.16em;color:#c9dbff}
+.cw-facebook-embed>header strong{margin-top:2px;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cw-facebook-embed>header span{margin-top:2px;font-size:9px;color:#d9e6ff}
+.cw-facebook-embed>header a{padding:8px 10px;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(5,25,66,.24);color:#fff;font-size:9px;font-weight:850;text-decoration:none;white-space:nowrap}
+.cw-facebook-embed>header a:hover{background:rgba(255,255,255,.16)}
+.cw-facebook-frame{position:relative;width:100%;min-height:620px;background:#fff}
+.cw-facebook-frame iframe{display:block;width:100%;max-width:500px;height:620px;border:0;background:#fff;opacity:0;transition:opacity .3s ease}
+.cw-facebook-frame iframe.cookie-allowed{opacity:1}
+.cw-facebook-consent{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:32px;text-align:center;background:linear-gradient(155deg,#f7f9ff,#edf3ff);color:#17233d}
+.cw-facebook-consent[hidden]{display:none}
+.cw-facebook-consent .cw-facebook-mark{background:#2368d7;border-color:#2368d7;box-shadow:0 10px 28px rgba(35,104,215,.22)}
+.cw-facebook-consent b{display:block;font-size:17px}
+.cw-facebook-consent p{max-width:330px;margin:6px 0 0;color:#5f6f88;font-size:11px;line-height:1.65}
+.cw-facebook-consent button,.cw-facebook-consent a{min-height:38px;display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:11px;font-size:10px;font-weight:850;text-decoration:none;cursor:pointer}
+.cw-facebook-consent button{border:0;background:linear-gradient(110deg,#7445ff,#287cff);color:#fff}
+.cw-facebook-consent a{border:1px solid #c3cfe0;background:#fff;color:#254470}
+.cw-facebook-consent small{color:#7b8799;font-size:10px}
+.cw-facebook-embed>footer{display:flex;align-items:center;gap:7px;min-height:42px;padding:9px 14px;border-top:1px solid #e0e5ee;background:#f7f9fc;color:#44536b}
+.cw-facebook-embed>footer i{width:7px;height:7px;border-radius:50%;background:#48dfa9;box-shadow:0 0 11px rgba(72,223,169,.65)}
+.cw-facebook-embed>footer span{font-size:8px;font-weight:900;letter-spacing:.14em}
+.cw-facebook-embed>footer small{margin-left:auto;font-size:9px;color:#758197}
+html[data-mr-theme="light"] .cw-facebook-embed{border-color:rgba(49,91,170,.24);box-shadow:0 24px 60px rgba(52,68,104,.17)}
+html[data-mr-theme="light"] .cw-social-panel.has-facebook-embed .cw-social-intro h2{color:#172033}
+html[data-mr-theme="light"] .cw-social-panel.has-facebook-embed .cw-social-intro p{color:#5f6d84}
+@media(max-width:1100px){
+ .cw-social-panel.has-facebook-embed{grid-template-columns:1fr}
+ .cw-social-panel.has-facebook-embed .cw-social-content{padding:2px}
+ .cw-facebook-embed{justify-self:center;margin-inline:auto}
+}
+@media(max-width:980px){
+ .cw-social-content{grid-template-columns:1fr;gap:18px}
+ .cw-social-panel:not(.has-facebook-embed) .cw-social-intro{display:block}
+ .cw-social-panel:not(.has-facebook-embed) .cw-social-signal{margin-top:11px}
+}
+@media(max-width:700px){
+ .cw-social-panel.has-facebook-embed{padding:18px 14px;gap:18px}
+ .cw-social-panel.has-facebook-embed .cw-social-content{gap:16px}
+ .cw-social-panel.has-facebook-embed .cw-social-intro h2{font-size:31px}
+ .cw-social-panel.has-facebook-embed .cw-social-intro p{font-size:12px}
+ .cw-social-panel.has-facebook-embed .cw-social-grid{grid-template-columns:1fr}
+ .cw-social-panel.has-facebook-embed .cw-social-card.facebook{grid-column:auto}
+ .cw-facebook-embed{border-radius:19px}
+ .cw-facebook-embed>header{grid-template-columns:40px minmax(0,1fr);padding:12px}
+ .cw-facebook-embed>header>a{grid-column:1/-1;text-align:center}
+ .cw-facebook-mark{width:40px;height:40px}
+ .cw-facebook-frame{min-height:540px}
+ .cw-facebook-frame iframe{height:540px}
+ .cw-facebook-embed>footer small{display:none}
+}
+@media(prefers-reduced-motion:reduce){.cw-facebook-frame iframe{transition:none}}

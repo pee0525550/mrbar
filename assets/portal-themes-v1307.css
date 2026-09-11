@@ -1,0 +1,290 @@
+/* MR BAR v1.30.7 — Adaptive Multi-Mood Portal Themes
+   Public portal only: bright readable light mode, luminous dark mode,
+   and per-shop colour personalities. */
+
+body.portal-body{
+  --portal-text:#f8fbff;
+  --portal-muted:#c1cde3;
+  --portal-panel:rgba(20,31,58,.94);
+  --portal-panel-2:rgba(12,24,47,.97);
+  --portal-line:rgba(145,190,255,.25);
+  --shop-a:#ff4ac8;
+  --shop-b:#765cff;
+  --shop-c:#25c9ff;
+  --shop-d:#45edb4;
+  color:var(--portal-text)!important;
+}
+
+/* Different branches can carry different moods without changing their media. */
+body.portal-body .portal-card:nth-child(4n+1){
+  --shop-a:#ff3dbd;--shop-b:#864dff;--shop-c:#30bfff;--shop-d:#57f0c3;
+}
+body.portal-body .portal-card:nth-child(4n+2){
+  --shop-a:#20d5ff;--shop-b:#3478ff;--shop-c:#42e7b6;--shop-d:#b2f56b;
+}
+body.portal-body .portal-card:nth-child(4n+3){
+  --shop-a:#ffb33d;--shop-b:#ff5c8b;--shop-c:#ae5cff;--shop-d:#4bbfff;
+}
+body.portal-body .portal-card:nth-child(4n+4){
+  --shop-a:#48a8ff;--shop-b:#5d5aff;--shop-c:#e05fff;--shop-d:#ff6fae;
+}
+body.portal-body .portal-card:before{
+  background:linear-gradient(115deg,var(--shop-a),var(--shop-b),var(--shop-c),var(--shop-d),var(--shop-a))!important;
+}
+body.portal-body .portal-card:after{
+  background:linear-gradient(115deg,var(--shop-a),var(--shop-b),var(--shop-c),var(--shop-d))!important;
+}
+body.portal-body .portal-copy:before{
+  background:linear-gradient(90deg,transparent,var(--shop-a),var(--shop-c),transparent)!important;
+}
+
+/* Text contrast is explicit so the shared theme cannot recolour it. */
+body.portal-body .portal-brand b,
+body.portal-body .portal-hero h1,
+body.portal-body .portal-copy h2,
+body.portal-body .portal-copy footer b,
+body.portal-body .portal-empty b{
+  color:var(--portal-text)!important;
+}
+body.portal-body .portal-brand small,
+body.portal-body .portal-hero p,
+body.portal-body .portal-hero>div small,
+body.portal-body .portal-copy>p,
+body.portal-body .portal-copy footer span,
+body.portal-body .portal-footer{
+  color:var(--portal-muted)!important;
+}
+body.portal-body .portal-hero>span,
+body.portal-body .portal-copy header small{
+  color:#80eaff!important;
+}
+body.portal-body .portal-hero>div b{
+  color:#6ff5c8!important;
+}
+body.portal-body .portal-head nav a{
+  color:#f5f8ff!important;
+}
+body.portal-body .portal-live span{
+  color:#eaf1ff!important;
+}
+body.portal-body .portal-card>a{
+  color:var(--portal-text)!important;
+}
+
+/* Brighter default/dark presentation. */
+html:not([data-mr-theme="light"]) body.portal-body,
+html[data-mr-theme="dark"] body.portal-body{
+  --portal-text:#f8fbff;
+  --portal-muted:#c3cee4;
+  --portal-panel:rgba(25,38,70,.95);
+  --portal-panel-2:rgba(15,31,58,.98);
+  background:#0e1930!important;
+}
+html:not([data-mr-theme="light"]) body.portal-body .portal-bg,
+html[data-mr-theme="dark"] body.portal-body .portal-bg{
+  background:
+    radial-gradient(circle at 10% 10%,rgba(220,54,255,.48),transparent 34%),
+    radial-gradient(circle at 91% 18%,rgba(0,196,255,.42),transparent 38%),
+    radial-gradient(circle at 50% 92%,rgba(89,76,255,.28),transparent 42%),
+    linear-gradient(135deg,#25113c 0%,#102345 50%,#0c3444 100%)!important;
+  filter:saturate(1.08) brightness(1.12);
+}
+html:not([data-mr-theme="light"]) body.portal-body .portal-head,
+html[data-mr-theme="dark"] body.portal-body .portal-head{
+  border-color:rgba(157,181,255,.5)!important;
+  background:linear-gradient(110deg,rgba(48,35,87,.88),rgba(15,43,72,.86))!important;
+  box-shadow:0 24px 90px rgba(3,8,23,.28),0 0 42px rgba(79,173,255,.18),inset 0 0 0 1px rgba(255,255,255,.08)!important;
+}
+html:not([data-mr-theme="light"]) body.portal-body .portal-hero,
+html[data-mr-theme="dark"] body.portal-body .portal-hero{
+  border-color:rgba(155,176,255,.42)!important;
+  background:
+    radial-gradient(circle at 82% 24%,rgba(38,205,255,.17),transparent 28%),
+    linear-gradient(120deg,rgba(58,36,101,.84),rgba(16,48,79,.8))!important;
+  box-shadow:0 34px 100px rgba(3,8,24,.25),inset 0 0 60px rgba(255,255,255,.045)!important;
+}
+html:not([data-mr-theme="light"]) body.portal-body .portal-card>a,
+html[data-mr-theme="dark"] body.portal-body .portal-card>a{
+  background:linear-gradient(145deg,var(--portal-panel),var(--portal-panel-2))!important;
+  box-shadow:0 30px 80px rgba(2,8,24,.36),inset 0 0 0 1px rgba(255,255,255,.1)!important;
+}
+html:not([data-mr-theme="light"]) body.portal-body .portal-copy,
+html[data-mr-theme="dark"] body.portal-body .portal-copy{
+  background:
+    radial-gradient(circle at 100% 0,color-mix(in srgb,var(--shop-c) 12%,transparent),transparent 42%),
+    linear-gradient(145deg,var(--portal-panel),var(--portal-panel-2))!important;
+}
+html:not([data-mr-theme="light"]) body.portal-body .portal-live span,
+html[data-mr-theme="dark"] body.portal-body .portal-live span{
+  border-color:rgba(159,197,255,.27)!important;
+  background:rgba(255,255,255,.09)!important;
+}
+html:not([data-mr-theme="light"]) body.portal-body .portal-copy footer,
+html[data-mr-theme="dark"] body.portal-body .portal-copy footer{
+  border-color:rgba(176,205,255,.2)!important;
+}
+html:not([data-mr-theme="light"]) body.portal-body .portal-copy footer b,
+html[data-mr-theme="dark"] body.portal-body .portal-copy footer b{
+  border-color:color-mix(in srgb,var(--shop-c) 45%,transparent)!important;
+  background:linear-gradient(110deg,color-mix(in srgb,var(--shop-a) 25%,transparent),color-mix(in srgb,var(--shop-c) 22%,transparent))!important;
+}
+
+/* Light presentation: pearl glass and readable ink, with vivid nightlife colour. */
+html[data-mr-theme="light"] body.portal-body{
+  --portal-text:#14213d;
+  --portal-muted:#52627e;
+  --portal-panel:rgba(255,255,255,.96);
+  --portal-panel-2:rgba(239,246,255,.97);
+  background:#e8f1fb!important;
+  color:#14213d!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-bg{
+  background:
+    radial-gradient(circle at 9% 12%,rgba(221,67,255,.48),transparent 35%),
+    radial-gradient(circle at 92% 16%,rgba(0,195,255,.46),transparent 39%),
+    radial-gradient(circle at 52% 94%,rgba(99,79,255,.25),transparent 40%),
+    linear-gradient(135deg,#f6eaff 0%,#e9f3ff 49%,#e1fbff 100%)!important;
+  filter:saturate(1.08) brightness(1.03);
+}
+html[data-mr-theme="light"] body.portal-body .portal-bg:after{
+  opacity:.2!important;
+  mix-blend-mode:multiply!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-noise{
+  opacity:.045!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-head{
+  border-color:rgba(101,97,184,.35)!important;
+  background:linear-gradient(110deg,rgba(255,250,255,.88),rgba(238,249,255,.86))!important;
+  box-shadow:0 22px 70px rgba(50,53,102,.15),0 0 36px rgba(48,182,255,.14),inset 0 0 0 1px rgba(255,255,255,.72)!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-brand b{
+  color:#16213c!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-brand small{
+  color:#60708b!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-brand>i{
+  border-color:rgba(127,74,209,.42)!important;
+  background:linear-gradient(145deg,rgba(255,71,211,.2),rgba(44,156,255,.18))!important;
+  color:#a532bb!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-head nav a{
+  border-color:rgba(83,105,159,.26)!important;
+  background:rgba(255,255,255,.58)!important;
+  color:#263755!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-head nav a:hover{
+  border-color:#398fc4!important;
+  background:#eaf7ff!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-hero{
+  border-color:rgba(102,108,185,.31)!important;
+  background:
+    radial-gradient(circle at 85% 22%,rgba(31,195,255,.15),transparent 30%),
+    linear-gradient(120deg,rgba(255,248,255,.87),rgba(231,247,255,.82))!important;
+  box-shadow:0 28px 80px rgba(48,54,106,.15),inset 0 0 55px rgba(255,255,255,.68)!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-hero h1{
+  background:linear-gradient(92deg,#16213e 0%,#672a9b 42%,#087ca3 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+  filter:drop-shadow(0 8px 22px rgba(74,54,145,.12))!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-hero>span{
+  color:#166e96!important;
+  text-shadow:none!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-hero p{
+  color:#52627c!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-hero>div{
+  border-color:rgba(29,157,177,.48)!important;
+  background:radial-gradient(circle,#f4fffc,#d9f3f4 67%)!important;
+  box-shadow:0 0 45px rgba(26,160,195,.18),inset 0 0 34px rgba(255,255,255,.78)!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-hero>div b{
+  color:#087f75!important;
+  text-shadow:0 0 20px rgba(36,195,168,.18)!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-hero>div small{
+  color:#4f627c!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-card>a{
+  background:linear-gradient(145deg,var(--portal-panel),var(--portal-panel-2))!important;
+  color:#14213d!important;
+  box-shadow:0 30px 82px rgba(38,48,94,.18),inset 0 0 0 1px rgba(255,255,255,.78)!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-copy{
+  background:
+    radial-gradient(circle at 100% 0,color-mix(in srgb,var(--shop-c) 11%,transparent),transparent 44%),
+    linear-gradient(145deg,var(--portal-panel),var(--portal-panel-2))!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-copy h2{
+  color:#14213d!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-copy header small{
+  color:#166f97!important;
+  text-shadow:none!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-copy>p{
+  color:#52627d!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-live span{
+  border-color:#c9d8e8!important;
+  background:rgba(255,255,255,.78)!important;
+  color:#263955!important;
+  box-shadow:0 5px 15px rgba(46,63,100,.06)!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-copy footer{
+  border-color:#d3deeb!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-copy footer span{
+  color:#64738b!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-copy footer b{
+  border-color:color-mix(in srgb,var(--shop-c) 42%,#b6c8df)!important;
+  background:linear-gradient(110deg,color-mix(in srgb,var(--shop-a) 14%,#fff),color-mix(in srgb,var(--shop-c) 15%,#fff))!important;
+  color:#243450!important;
+  box-shadow:0 7px 20px rgba(48,77,128,.1)!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-footer{
+  border-color:rgba(72,91,128,.18)!important;
+  color:#68768d!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-footer b{
+  color:#293b59!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-empty{
+  border-color:rgba(61,86,135,.28)!important;
+  background:rgba(255,255,255,.58)!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-empty b{
+  color:#16233d!important;
+}
+html[data-mr-theme="light"] body.portal-body .portal-empty p{
+  color:#5a6982!important;
+}
+
+/* Closed shops remain readable in both modes. */
+body.portal-body .portal-card.closed,
+body.portal-body .portal-card.closed.is-visible{
+  opacity:.78!important;
+  filter:saturate(.58) brightness(1.02)!important;
+}
+body.portal-body .portal-card.closed:hover{
+  opacity:.9!important;
+  filter:saturate(.78) brightness(1.06)!important;
+}
+
+@media(max-width:780px){
+  body.portal-body .portal-hero{padding:35px 25px!important}
+  body.portal-body .portal-copy,
+  body.portal-body .portal-card.featured .portal-copy{padding:25px 22px!important}
+}
+@supports not (color:color-mix(in srgb,#fff,#000)){
+  html:not([data-mr-theme="light"]) body.portal-body .portal-copy,
+  html[data-mr-theme="dark"] body.portal-body .portal-copy{background:linear-gradient(145deg,#192746,#0f203b)!important}
+  html[data-mr-theme="light"] body.portal-body .portal-copy{background:linear-gradient(145deg,#fff,#eef6ff)!important}
+}

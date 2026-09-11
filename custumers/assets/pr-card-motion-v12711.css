@@ -1,0 +1,19 @@
+/* MR BAR v1.27.11 — PR Live Showcase Rotation */
+[data-pr-motion]{--pr-motion-ease:cubic-bezier(.22,.82,.22,1);position:relative}
+[data-pr-motion] .cw-pr-portrait{will-change:transform;transition:transform .72s var(--pr-motion-ease),filter .32s ease,opacity .32s ease;transform-origin:center center}
+[data-pr-motion] .cw-pr-portrait-frame{transition:transform .34s var(--pr-motion-ease),filter .34s ease,box-shadow .34s ease;transform-origin:center center}
+[data-pr-motion] .cw-pr-portrait-media{isolation:isolate}
+[data-pr-motion] .cw-pr-portrait-media:after{content:"";position:absolute;z-index:3;inset:-20% -45%;pointer-events:none;background:linear-gradient(108deg,transparent 34%,rgba(255,255,255,.02) 43%,rgba(115,218,255,.16) 49%,rgba(244,103,255,.12) 53%,transparent 63%);transform:translateX(-135%) rotate(2deg);animation:prShowcaseSheen 9.5s ease-in-out infinite;animation-delay:calc(var(--pr-motion-index,0) * -1.15s)}
+[data-pr-motion] .cw-pr-portrait img{will-change:transform;animation:prShowcaseBreath 7.6s ease-in-out infinite alternate;animation-delay:calc(var(--pr-motion-index,0) * -.73s)}
+[data-pr-motion] .cw-pr-portrait:nth-child(2n) img{animation-duration:8.7s}
+[data-pr-motion] .cw-pr-portrait:nth-child(3n) img{animation-duration:9.4s}
+[data-pr-motion] .cw-pr-portrait.is-motion-lead .cw-pr-portrait-frame{transform:translateY(-5px) scale(1.012);filter:saturate(1.08) brightness(1.035)}
+[data-pr-motion] .cw-pr-portrait.is-motion-lead:not(.is-present) .cw-pr-portrait-frame{box-shadow:0 18px 54px rgba(63,111,255,.18),0 0 28px rgba(163,73,255,.12)}
+[data-pr-motion] .cw-pr-portrait:hover .cw-pr-portrait-frame,[data-pr-motion] .cw-pr-portrait:focus-within .cw-pr-portrait-frame{transform:translateY(-10px) scale(1.026);filter:saturate(1.12) brightness(1.055);z-index:5}
+[data-pr-motion] .cw-pr-portrait:hover img,[data-pr-motion] .cw-pr-portrait:focus-within img{animation-play-state:paused;transform:scale(1.035)}
+[data-pr-motion].is-motion-paused .cw-pr-portrait-media:after,[data-pr-motion].is-motion-paused .cw-pr-portrait img{animation-play-state:paused}
+[data-pr-motion] .cw-pr-portrait.is-motion-sliding{z-index:4}
+@keyframes prShowcaseBreath{0%{transform:scale(1.015) translate3d(0,0,0)}50%{transform:scale(1.035) translate3d(0,-.45%,0)}100%{transform:scale(1.022) translate3d(0,.35%,0)}}
+@keyframes prShowcaseSheen{0%,64%{transform:translateX(-135%) rotate(2deg);opacity:0}70%{opacity:.78}82%{transform:translateX(135%) rotate(2deg);opacity:.2}83%,100%{transform:translateX(135%) rotate(2deg);opacity:0}}
+@media(max-width:700px){[data-pr-motion] .cw-pr-portrait.is-motion-lead .cw-pr-portrait-frame{transform:translateY(-3px) scale(1.008)}[data-pr-motion] .cw-pr-portrait:hover .cw-pr-portrait-frame,[data-pr-motion] .cw-pr-portrait:focus-within .cw-pr-portrait-frame{transform:translateY(-5px) scale(1.015)}}
+@media(prefers-reduced-motion:reduce){[data-pr-motion] .cw-pr-portrait,[data-pr-motion] .cw-pr-portrait-frame{transition:none!important}[data-pr-motion] .cw-pr-portrait-media:after,[data-pr-motion] .cw-pr-portrait img{animation:none!important}[data-pr-motion] .cw-pr-portrait.is-motion-lead .cw-pr-portrait-frame,[data-pr-motion] .cw-pr-portrait:hover .cw-pr-portrait-frame,[data-pr-motion] .cw-pr-portrait:focus-within .cw-pr-portrait-frame{transform:none!important}}

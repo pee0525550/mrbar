@@ -1,0 +1,4 @@
+/* MR BAR Zone Studio — v1.29.12 full Layout deletion */
+(function(){'use strict';
+document.querySelectorAll('[data-layout-delete-form]').forEach(function(form){form.addEventListener('submit',function(e){var name=form.dataset.layoutName||'Layout นี้',published=form.dataset.layoutPublished==='1';var message=published?'“'+name+'” กำลัง Publish ให้หน้าลูกค้าใช้งานอยู่\n\nหากลบ หน้าลูกค้าจะไม่เห็นผังนี้ทันที และระบบจะลบวัตถุพร้อมประวัติ Publish ของ Layout นี้ทั้งหมด\n\nTable Directory, รายการจอง และรูปใน Media Library จะไม่ถูกลบ\n\nยืนยันลบ Layout นี้หรือไม่?':'ลบ Layout “'+name+'” หรือไม่?\n\nวัตถุและประวัติ Publish ภายใน Layout นี้จะถูกลบทั้งหมด แต่ Table Directory, รายการจอง และรูปใน Media Library จะไม่ถูกลบ';if(!window.confirm(message))e.preventDefault();});});
+})();

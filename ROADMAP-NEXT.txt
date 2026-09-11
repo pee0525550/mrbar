@@ -1,0 +1,4 @@
+Next planned major customer features (not implemented in v1.29.2):
+1) CRM / Member for nightlife customers, with LINE linkage/login as preferred low-friction channel; customer profile, reservation history, preferred Sales/PR, birthday/VIP/tier/notes.
+2) Customer account access via phone/email + OTP, with LINE Login first, phone OTP second, email/magic link optional.
+These should build on the Reservation + Floor Plan flow without changing confirmed table assignment semantics.

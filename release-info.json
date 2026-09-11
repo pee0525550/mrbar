@@ -1,0 +1,9 @@
+{
+  "version": "1.30.10",
+  "build_id": "MRBAR-v1.30.10-20260911",
+  "pack": "Update Pack v1.30.10 · Fixed Compact Logo Preview",
+  "schema": 26,
+  "migration": false,
+  "base": "1.30.9",
+  "updated_at": "2026-09-11"
+}

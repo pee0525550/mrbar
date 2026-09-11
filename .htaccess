@@ -1,0 +1,17 @@
+Options -Indexes
+RewriteEngine On
+
+# MR BAR Multi Branch customer routes (case-insensitive entry aliases)
+RewriteRule ^Portal/?$ portal.php [QSA,L,NC]
+RewriteRule ^shop/([^/]+)/?$ custumers/index.php?branch=$1 [QSA,L,NE,NC]
+RewriteRule ^shop/([^/]+)/floor-plan/?$ custumers/floor-plan.php?branch=$1 [QSA,L,NE,NC]
+RewriteRule ^shop/([^/]+)/floor-plan/assets/(.*)$ custumers/assets/$2 [L,NE,NC]
+RewriteRule ^shop/([^/]+)/floor-plan/([a-z0-9-]+\.php)$ custumers/$2?public_branch=$1 [QSA,L,NE,NC]
+RewriteRule ^shop/([^/]+)/assets/(.*)$ custumers/assets/$2 [L,NE,NC]
+RewriteRule ^shop/([^/]+)/([a-z0-9-]+\.php)$ custumers/$2?public_branch=$1 [QSA,L,NE,NC]
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+RewriteRule ^ index.php [L]
