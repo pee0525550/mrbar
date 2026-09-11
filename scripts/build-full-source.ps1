@@ -1,5 +1,5 @@
 param(
-    [string]$Version = "1.30.11",
+    [string]$Version = "1.30.12",
     [string]$OutputDirectory = "..\_source_pack"
 )
 
@@ -13,7 +13,8 @@ if (Test-Path $archivePath) {
     Remove-Item -Force $archivePath
 }
 
-git -C $repositoryRoot archive --format=zip --prefix=("MR_BAR-Full-Source-v{0}/" -f $Version) --output=$archivePath HEAD
+$archivePrefix = "MR_BAR-Full-Source-v{0}/" -f $Version
+& git -C $repositoryRoot archive --format=zip "--prefix=$archivePrefix" "--output=$archivePath" HEAD
 if ($LASTEXITCODE -ne 0) {
     throw "git archive failed"
 }

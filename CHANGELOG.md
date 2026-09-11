@@ -1,3 +1,9 @@
+# v1.30.12 — Reproducible Full Source Baseline
+
+- Corrected PowerShell argument handling in the Full Source ZIP builder so Git receives the archive prefix and output path atomically.
+- Revalidated the complete Source, generated the reproducible archive and retained v1.30.11 as immutable history.
+- Application functions and schema remain unchanged at v26; no migration is required.
+
 # v1.30.11 — Full Source Team Collaboration Baseline
 
 - Published a complete, safe Source baseline for team development; this is not a partial deployment pack.

@@ -1,9 +1,9 @@
 {
-  "version": "1.30.11",
-  "build_id": "MRBAR-v1.30.11-20260911",
-  "pack": "Full Source v1.30.11 · Team Collaboration Baseline",
+  "version": "1.30.12",
+  "build_id": "MRBAR-v1.30.12-20260911",
+  "pack": "Full Source v1.30.12 · Team Collaboration Baseline",
   "schema": 26,
   "migration": false,
-  "base": "1.30.10",
+  "base": "1.30.11",
   "updated_at": "2026-09-11"
 }
