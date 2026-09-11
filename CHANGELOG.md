@@ -1,3 +1,12 @@
+# v1.30.11 — Full Source Team Collaboration Baseline
+
+- Published a complete, safe Source baseline for team development; this is not a partial deployment pack.
+- Added GitHub Actions validation for PHP syntax, JavaScript syntax and forbidden runtime/private files.
+- Added team Branch assignments, project structure documentation and a repeatable release checklist.
+- Added a PowerShell builder that creates a reproducible Full Source ZIP directly from the committed Git tree.
+- Prepared CRM/Member, OTP authentication, POS reconciliation and Booking Operations work streams from `develop`.
+- Application functions and schema remain unchanged at v26; no migration is required.
+
 # v1.30.10 — Fixed Compact Logo Preview
 
 - Corrected the v1.30.9 Logo preview regression where inherited aspect and minimum-height rules could still expand the preview into the text column.
