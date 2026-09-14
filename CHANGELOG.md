@@ -1,3 +1,11 @@
+# v1.35.0 — POS Incentive Guided Flow
+
+- Reorganized POS Incentive into a four-step workflow: Import, Group & Sort, Calculate Commission, and Review & Finalize.
+- Added Excel-style grouping by Sales, PR and Team with optional employee filtering.
+- Added on-demand calculation summary for selected groups using the existing monthly commission rules.
+- Improved KPI, workflow, filter and calculation-card contrast for faster reading in operational use.
+- Existing imported POS batches, aliases, rules and monthly closings are preserved; Schema remains v28.
+
 # v1.34.0 — Portal Favicon Upload
 
 - Added direct Favicon upload, preview, replacement and removal to Config Web Portal.

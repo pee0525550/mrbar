@@ -2,6 +2,6 @@
 return [
  'name'=>'MR BAR',
  'timezone'=>'Asia/Bangkok',
- 'version'=>'1.34.0',
- 'pack'=>'Portal Favicon Upload v1.34.0',
+ 'version'=>'1.35.0',
+ 'pack'=>'POS Incentive Guided Flow v1.35.0',
 ];
