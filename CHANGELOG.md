@@ -1,3 +1,10 @@
+# v1.34.0 — Portal Favicon Upload
+
+- Added direct Favicon upload, preview, replacement and removal to Config Web Portal.
+- Portal Favicon files are validated as JPG, PNG or WEBP and stored securely in server-side Portal media storage.
+- The public Portal now emits the configured browser tab icon automatically.
+- Schema remains v28; no migration is required.
+
 # v1.33.2 — Portal Logo Inline Lock
 
 - Locked the Portal Logo directly on the image element to a 64 × 64 px square, independent of stylesheet loading or cache.
