@@ -1,9 +1,9 @@
 {
-  "version": "1.30.13",
-  "build_id": "MRBAR-v1.30.13-20260911",
-  "pack": "Customer Branch Logo v1.30.13",
-  "schema": 26,
-  "migration": false,
-  "base": "1.30.12",
-  "updated_at": "2026-09-11"
+  "version": "1.31.0",
+  "build_id": "MRBAR-v1.31.0-20260914",
+  "pack": "Customer CRM Foundation v1.31.0",
+  "schema": 27,
+  "migration": true,
+  "base": "1.30.13",
+  "updated_at": "2026-09-14"
 }

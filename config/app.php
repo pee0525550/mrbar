@@ -2,6 +2,6 @@
 return [
  'name'=>'MR BAR',
  'timezone'=>'Asia/Bangkok',
- 'version'=>'1.30.13',
- 'pack'=>'Customer Branch Logo v1.30.13',
+ 'version'=>'1.31.0',
+ 'pack'=>'Customer CRM Foundation v1.31.0',
 ];
