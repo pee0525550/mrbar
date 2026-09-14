@@ -1,3 +1,10 @@
+# v1.33.0 — Portal Brand Experience
+
+- Added direct Portal Logo upload to server storage from Config Web Portal with secure image validation and public media delivery.
+- Portal header now renders the uploaded transparent Logo at a larger size without a surrounding frame, with a graceful symbol fallback.
+- Strengthened the Portal hero with a vivid RGB border, layered lighting, enhanced count badge and responsive light/dark presentation.
+- Schema remains v28; no migration is required.
+
 # v1.32.1 — Sales Photo Branch URL Fix
 
 - Fixed broken Sales profile images in the customer reservation selector opened from canonical `/shop/{slug}/` pages.

@@ -1,0 +1,14 @@
+/* Portal brand upload + high-impact hero */
+.portal-brand-logo{display:block;width:clamp(78px,7vw,118px);height:66px;object-fit:contain;object-position:left center;background:transparent;border:0;border-radius:0;box-shadow:none;filter:drop-shadow(0 8px 18px rgba(45,28,100,.22))}
+.portal-brand.has-logo{gap:18px}.portal-brand.has-logo span{padding-left:2px}
+.portal-hero{isolation:isolate;border-color:transparent!important;background:linear-gradient(120deg,rgba(52,25,101,.94),rgba(14,52,91,.9)) padding-box,linear-gradient(110deg,#ff48d7,#7d5cff,#27dcff,#64ffc7,#ff48d7) border-box!important;border:2px solid transparent!important;box-shadow:0 34px 90px rgba(6,15,46,.35),0 0 50px rgba(144,62,255,.24),0 0 36px rgba(32,208,255,.18),inset 0 1px 0 rgba(255,255,255,.18)!important}
+.portal-hero:before{z-index:-1!important;width:720px!important;height:720px!important;right:-170px!important;top:-350px!important;opacity:.7!important;filter:blur(62px)!important}
+.portal-hero:after{z-index:-1!important;background:linear-gradient(104deg,transparent 35%,rgba(255,81,219,.13) 43%,rgba(62,222,255,.16) 50%,transparent 60%)!important}
+.portal-hero h1{filter:drop-shadow(0 12px 30px rgba(99,57,255,.32))!important}
+.portal-hero>div{border:2px solid rgba(109,245,255,.72)!important;background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.22),rgba(29,205,208,.18) 32%,rgba(14,21,62,.92) 72%)!important;box-shadow:0 0 0 8px rgba(108,70,255,.1),0 0 58px rgba(34,224,255,.38),0 0 80px rgba(255,63,210,.2),inset 0 0 32px rgba(255,255,255,.1)!important}
+html[data-mr-theme="light"] body.portal-body .portal-hero{background:linear-gradient(115deg,rgba(255,249,255,.96),rgba(237,240,255,.94) 48%,rgba(224,252,255,.93)) padding-box,linear-gradient(110deg,#e83dca,#7653ff,#13bfe6,#24dca7,#e83dca) border-box!important;box-shadow:0 32px 85px rgba(87,63,163,.22),0 0 50px rgba(224,64,213,.19),0 0 42px rgba(20,194,232,.22),inset 0 1px 0 #fff!important}
+html[data-mr-theme="light"] body.portal-body .portal-hero:after{background:linear-gradient(104deg,transparent 35%,rgba(229,44,198,.09) 43%,rgba(21,194,232,.14) 50%,transparent 60%)!important}
+html[data-mr-theme="light"] body.portal-body .portal-hero>div{border-color:rgba(22,174,194,.7)!important;background:radial-gradient(circle at 35% 30%,#fff,#d7fbf7 48%,#d9e9ff)!important;box-shadow:0 0 0 8px rgba(137,86,255,.09),0 0 55px rgba(23,190,218,.27),0 0 70px rgba(224,48,195,.15),inset 0 0 30px #fff!important}
+@media(max-width:780px){.portal-brand-logo{width:64px;height:48px}.portal-brand.has-logo{gap:9px}.portal-hero{border-width:1.5px!important}}
+@media(max-width:430px){.portal-brand-logo{width:54px;height:42px}.portal-brand.has-logo span{max-width:150px}.portal-brand.has-logo b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+@media(prefers-reduced-motion:reduce){.portal-hero:before,.portal-hero:after{animation:none!important}}
