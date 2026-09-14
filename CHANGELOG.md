@@ -1,3 +1,13 @@
+# v1.32.0 — Unified People & Access
+
+- Established Employee Master as the single person record per branch; a login account is now an optional one-to-one extension.
+- Separated operational Position from User Role: Position drives PR/Sales/customer/POS behavior, while Role and overrides control system access only.
+- Added Schema v28 repair for legacy Sales accounts and missing PR operational profiles without duplicating people across branches.
+- Added branch-aware account health counters for unlinked accounts, employees without login, incompatible roles and inactive logins.
+- Limited account and permission-user directories to the active branch while retaining global authentication and platform Role templates.
+- Blocked incompatible Role/Super Admin changes for linked PR/Sales employees and added per-branch account linkage metadata.
+- Migration is automatic on first request; back up the production `storage/` folder before deployment.
+
 # v1.31.0 — Customer CRM / Member Foundation
 
 - Added branch-scoped Customer CRM storage and Schema v27 migration.
