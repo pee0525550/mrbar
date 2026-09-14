@@ -35,6 +35,7 @@ document.querySelectorAll('[data-posi-product-sort]').forEach(root=>{
    root.querySelector('[data-sort-sales]').textContent=fmt(sales);
    root.querySelector('[data-sort-average]').textContent=fmt(shown?sales/shown:0);
    status.textContent='แสดง '+fmt(shown,0)+' รายการ · '+(axis==='group'?'กลุ่มสินค้า':'หมวดหมู่สินค้า')+': '+(valueSelect.value||'ทั้งหมด');
+   const salesLink=root.querySelector('[data-sales-commission-link]');if(salesLink)salesLink.hidden=!(axis==='group'&&norm(valueSelect.value)==='sales');
  };
  const rebuild=()=>{
    const index=mapped(axis),current=valueSelect.value;
@@ -51,5 +52,13 @@ document.querySelectorAll('[data-posi-product-sort]').forEach(root=>{
  root.querySelector('[data-sort-calculate]').addEventListener('click',apply);
  ['group','category','qty','sales'].forEach(name=>form?.querySelector('[name="map_'+name+'"]')?.addEventListener('change',()=>name===axis?rebuild():apply()));
  rebuild();
+});
+const copyButton=document.querySelector('[data-copy-sales-table]');
+copyButton?.addEventListener('click',async()=>{
+ const table=document.querySelector('[data-sales-payout-table]');if(!table)return;
+ const text=Array.from(table.rows).map(row=>Array.from(row.cells).map(cell=>cell.textContent.trim()).join('\t')).join('\n');
+ const feedback=document.querySelector('[data-copy-feedback]');
+ try{await navigator.clipboard.writeText(text);if(feedback)feedback.textContent='คัดลอกตารางแล้ว · สามารถวางใน Excel, Google Sheets หรือแชตได้ทันที';}
+ catch(error){const area=document.createElement('textarea');area.value=text;document.body.appendChild(area);area.select();document.execCommand('copy');area.remove();if(feedback)feedback.textContent='คัดลอกตารางแล้ว';}
 });
 })();
