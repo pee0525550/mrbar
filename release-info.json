@@ -1,9 +1,9 @@
 {
-  "version": "1.33.0",
-  "build_id": "MRBAR-v1.33.0-20260914",
-  "pack": "Portal Brand Experience v1.33.0",
+  "version": "1.33.1",
+  "build_id": "MRBAR-v1.33.1-20260914",
+  "pack": "Portal Logo Size Fix v1.33.1",
   "schema": 28,
   "migration": false,
-  "base": "1.32.1",
+  "base": "1.33.0",
   "updated_at": "2026-09-14"
 }
