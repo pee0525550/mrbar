@@ -1,3 +1,13 @@
+# v1.31.0 — Customer CRM / Member Foundation
+
+- Added branch-scoped Customer CRM storage and Schema v27 migration.
+- Existing and new Reservations are linked to customer records by normalized phone number without changing confirmed table assignment behavior.
+- Added the Customer CRM administration page with search, VIP, tier, birthday, tags, notes, marketing consent and preferred Sales/PR.
+- Added visit summaries for Booking count, seated visits, last visit, latest Sales and latest PR.
+- Added separate `customers.view` and `customers.manage` permissions plus audit events.
+- Added team documentation and the next-step contract for LINE Login, OTP and POS reconciliation.
+- Migration is automatic on first request; back up the production `storage/` folder before deployment.
+
 # v1.30.13 — Customer Branch Logo
 
 - Connected the customer shop Header and Footer to the Logo saved for the selected Branch.

@@ -17,6 +17,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'&&$err===''){
    $requestNote=trim(($requestedCode!==''?'โต๊ะที่ขอ: '.$requestedCode.' · ':'').($zone?'โซนที่ต้องการ: '.$zone.' · ':'').$note);
    $reservation=['id'=>next_id($x['reservations']),'guest_name'=>$name,'phone'=>$phone,'party_size'=>$party,'date'=>$date,'time'=>$time,'table_id'=>null,'requested_table_id'=>$requestedTableId?:null,'requested_table_code'=>$requestedCode,'requested_zone'=>$zone,'note'=>$requestNote,'status'=>'waitlist','source'=>'customer','created_at'=>date('c'),'updated_at'=>date('c'),'seated_checkin_id'=>null];
    foreach($sales as $k=>$v)$reservation[$k]=$v;
+   customer_crm_upsert_from_reservation($x,$reservation);
    $x['reservations'][]=$reservation;
    op_notify($x,null,'staff','reservation_new','มีคำขอจองโต๊ะใหม่ · '.$name.' · '.$date.' '.$time.($requestedCode!==''?' · ขอ '.$requestedCode:'').' · เซล: '.reservation_sales_label($reservation),[]);
    $x['audit'][]=['at'=>date('c'),'action'=>'customer_reservation_created','sales_selection'=>$reservation['sales_selection'],'sales_employee_id'=>$reservation['sales_employee_id'],'requested_table_id'=>$requestedTableId?:null,'requested_table_code'=>$requestedCode];

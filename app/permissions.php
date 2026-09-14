@@ -31,6 +31,9 @@ function permission_catalog(): array {
         'settings'=>['label'=>'Settings','items'=>[
             'settings.view'=>'ดู Settings','settings.manage'=>'แก้และบันทึก Settings',
         ]],
+        'customers'=>['label'=>'Customer CRM / Member','items'=>[
+            'customers.view'=>'ดูข้อมูลลูกค้าและประวัติการจอง','customers.manage'=>'เพิ่ม/แก้ข้อมูลสมาชิก VIP และผู้ดูแล',
+        ]],
         'customer_web'=>['label'=>'Customer Web','items'=>[
             'customer_web.view'=>'ดูการตั้งค่าเว็บไซต์ลูกค้า','customer_web.manage'=>'แก้และเผยแพร่เว็บไซต์ลูกค้า',
         ]],
@@ -56,7 +59,7 @@ function permission_default_roles(): array {
         'admin'=>['name'=>'Admin','description'=>'ผู้ดูแลระบบ','builtin'=>1,'home'=>'admin.php','permissions'=>array_fill_keys($all,1)],
         'staff'=>['name'=>'Staff','description'=>'พนักงานหน้าร้าน','builtin'=>1,'home'=>'dashboard.php','permissions'=>array_fill_keys([
             'dashboard.view','operations.view','operations.assign_pr','operations.complete','operations.cancel','operations.move_table','operations.quick_floor',
-            'reservations.view','reservations.manage','reservations.seat','pr.view','attendance.view','workforce.attendance.self','workforce.exceptions.view','tables.view','notifications.view','notifications.manage','customer_calls.manage','shifts.view','reports.view'
+            'reservations.view','reservations.manage','reservations.seat','customers.view','customers.manage','pr.view','attendance.view','workforce.attendance.self','workforce.exceptions.view','tables.view','notifications.view','notifications.manage','customer_calls.manage','shifts.view','reports.view'
         ],1)],
         'sales'=>['name'=>'Sales','description'=>'เซล / ผู้แนะนำลูกค้า','builtin'=>1,'home'=>'employee-time.php','permissions'=>array_fill_keys(['operations.quick_floor','tables.view','pr.view','workforce.attendance.self','shifts.view','notifications.view'],1)],
         'pr'=>['name'=>'PR','description'=>'PR / พนักงานบริการ','builtin'=>1,'home'=>'pr.php','permissions'=>array_fill_keys(['dashboard.view','operations.view','tables.view','notifications.view','shifts.view','workforce.attendance.self','substitute.request'],1)],

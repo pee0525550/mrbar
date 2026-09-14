@@ -24,6 +24,7 @@ function admin_sidebar($active, $user=array()) {
             array('leaves','admin-leaves.php','☂','Leave Requests','อนุมัติลา / ประวัติลา'),
         )),
         array('icon'=>'◈', 'label'=>'รายงาน & ช่องทางลูกค้า', 'hint'=>'REPORTS & CUSTOMER', 'items'=>array(
+            array('customers','customers.php','♧','Customer CRM','สมาชิก / VIP / ประวัติจอง / Sales & PR'),
             array('tools','admin-tools.php','▦','Tools & Reports','QR / Shift / Reports'),
             array('customerweb','customer-web.php','◈','Customer Web','หน้าเว็บ / Content / Booking CTA'),
             array('zonestudio','zone-studio.php','▧','Zone Studio','ผังร้าน 2D / 2.5D / โต๊ะ / Booking Map'),
