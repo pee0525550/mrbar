@@ -28,6 +28,9 @@ jobs:
           find . -type f -name '*.php' -not -path './storage/*' -print0 |
             xargs -0 -n1 php -l
 
+      - name: Unified People migration regression
+        run: php scripts/test-unified-people.php
+
       - name: JavaScript syntax
         shell: bash
         run: |

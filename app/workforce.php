@@ -80,6 +80,31 @@ function workforce_employee_label(array $e): string {return trim((string)($e['co
 function workforce_position_label(string $p): string {
     $map=['pr'=>'PR','sales'=>'Sales / เซล','staff'=>'พนักงานทั่วไป','manager'=>'ผู้จัดการ','cashier'=>'แคชเชียร์','service'=>'บริการ','reception'=>'ต้อนรับ','office'=>'สำนักงาน','admin'=>'Admin / Owner','other'=>'อื่นๆ'];return $map[$p]??ucfirst($p);
 }
+function workforce_recommended_account_role(array $employee): string {
+    $position=(string)($employee['position']??'staff');
+    if($position==='pr'||!empty($employee['pr_id']))return 'pr';
+    if($position==='sales')return 'sales';
+    return 'staff';
+}
+function workforce_account_role_compatible(array $employee,?array $account): bool {
+    if(!$account)return true;$position=(string)($employee['position']??'staff');$role=(string)($account['role']??'');
+    if($position==='pr'||!empty($employee['pr_id']))return $role==='pr';
+    if($position==='sales')return $role==='sales';
+    return !in_array($role,['pr','sales'],true);
+}
+function workforce_people_health(array $d): array {
+    $linked=0;$withoutAccount=0;$roleMismatch=0;$inactiveLogin=0;$orphanAccounts=0;$employeeByUser=[];
+    $branchId=(int)($d['_branch_context']['id']??$d['meta']['active_branch_id']??0);
+    $accounts=array_values(array_filter($d['users']??[],fn($account)=>$branchId<=0||!function_exists('db_user_can_branch')||db_user_can_branch($account,$branchId)));
+    foreach($d['employees']??[] as $employee){
+        $uid=(int)($employee['user_id']??0);$account=null;
+        if($uid>0){foreach($accounts as $row)if((int)($row['id']??0)===$uid){$account=$row;break;}}
+        if($account){$linked++;$employeeByUser[$uid]=1;if(!workforce_account_role_compatible($employee,$account))$roleMismatch++;if(empty($employee['active'])&&!empty($account['active']))$inactiveLogin++;}
+        elseif(!empty($employee['active']))$withoutAccount++;
+    }
+    foreach($accounts as $account)if(empty($employeeByUser[(int)($account['id']??0)]))$orphanAccounts++;
+    return ['employees'=>count($d['employees']??[]),'accounts'=>count($accounts),'linked'=>$linked,'without_account'=>$withoutAccount,'role_mismatch'=>$roleMismatch,'inactive_login'=>$inactiveLogin,'orphan_accounts'=>$orphanAccounts,'issues'=>$roleMismatch+$inactiveLogin+$orphanAccounts];
+}
 function workforce_sync_employee_to_pr(array &$d,array $employee): void {
     $prId=(int)($employee['pr_id']??0);if($prId<=0)return;
     foreach($d['prs'] as &$p){
