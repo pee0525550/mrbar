@@ -1,9 +1,9 @@
 {
-  "version": "1.33.2",
-  "build_id": "MRBAR-v1.33.2-20260914",
-  "pack": "Portal Logo Inline Lock v1.33.2",
+  "version": "1.34.0",
+  "build_id": "MRBAR-v1.34.0-20260914",
+  "pack": "Portal Favicon Upload v1.34.0",
   "schema": 28,
   "migration": false,
-  "base": "1.33.1",
+  "base": "1.33.2",
   "updated_at": "2026-09-14"
 }
