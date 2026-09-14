@@ -1,3 +1,9 @@
+# v1.33.1 — Portal Logo Size Hotfix
+
+- Locked the Portal header Logo to a compact 76 × 58 px desktop box so global image styles cannot stretch the Header.
+- Added proportional tablet/mobile limits while keeping the transparent, frameless presentation.
+- Schema remains v28; no migration is required.
+
 # v1.33.0 — Portal Brand Experience
 
 - Added direct Portal Logo upload to server storage from Config Web Portal with secure image validation and public media delivery.

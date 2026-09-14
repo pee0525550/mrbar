@@ -1,0 +1,7 @@
+/* Portal logo sizing hotfix: prevent any generic image rules from stretching the header */
+body.portal-body .portal-head{min-height:82px!important;height:auto!important}
+body.portal-body .portal-brand{display:flex!important;align-items:center!important;min-width:0!important;gap:14px!important}
+body.portal-body .portal-brand .portal-brand-logo{display:block!important;flex:0 0 76px!important;width:76px!important;height:58px!important;min-width:0!important;max-width:76px!important;min-height:0!important;max-height:58px!important;object-fit:contain!important;object-position:center!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;filter:drop-shadow(0 7px 14px rgba(45,28,100,.2))}
+body.portal-body .portal-brand span{min-width:0!important}
+@media(max-width:780px){body.portal-body .portal-head{min-height:68px!important}body.portal-body .portal-brand .portal-brand-logo{flex-basis:58px!important;width:58px!important;height:44px!important;max-width:58px!important;max-height:44px!important}}
+@media(max-width:430px){body.portal-body .portal-brand .portal-brand-logo{flex-basis:48px!important;width:48px!important;height:38px!important;max-width:48px!important;max-height:38px!important}}
