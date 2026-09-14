@@ -1,3 +1,9 @@
+# v1.33.2 — Portal Logo Inline Lock
+
+- Locked the Portal Logo directly on the image element to a 64 × 64 px square, independent of stylesheet loading or cache.
+- Prevented intrinsic image dimensions and global CSS from expanding the Portal Header.
+- Schema remains v28; no migration is required.
+
 # v1.33.1 — Portal Logo Size Hotfix
 
 - Locked the Portal header Logo to a compact 76 × 58 px desktop box so global image styles cannot stretch the Header.
