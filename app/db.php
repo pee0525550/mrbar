@@ -2,7 +2,7 @@
 declare(strict_types=1);
 if(!function_exists('permission_default_roles')) require_once __DIR__.'/permissions.php';
 
-const MRBAR_SCHEMA_VERSION = 27;
+const MRBAR_SCHEMA_VERSION = 28;
 function db_primary_path(): string { return __DIR__.'/../storage/data.php'; }
 function db_runtime_path(): string { return __DIR__.'/../storage/runtime-data.php'; }
 function db_path(): string { return is_file(db_runtime_path()) ? db_runtime_path() : db_primary_path(); }
@@ -50,6 +50,7 @@ function db_default(): array {
     ];
 }
 function db_migrate_legacy_array(array $d): array {
+    $incomingSchema=(int)($d['meta']['schema']??0);
     $d=array_replace_recursive(db_default(),$d);
     foreach($d['users'] as &$u){
         if(!isset($u['trusted_devices']) || !is_array($u['trusted_devices'])) $u['trusted_devices']=[];
@@ -178,7 +179,7 @@ function db_migrate_legacy_array(array $d): array {
 
     /* Employee & Workforce Core (schema v18) */
     $employeeDefaults=[
-        'id'=>0,'code'=>'','name'=>'','user_id'=>null,'pr_id'=>null,'position'=>'staff','department'=>'Operations','employment_type'=>'fulltime','employment_start_date'=>'','branch_id'=>null,'roster_team'=>'flex','active'=>1,'attendance_required'=>1,
+        'id'=>0,'code'=>'','name'=>'','user_id'=>null,'pr_id'=>null,'position'=>'staff','department'=>'Operations','employment_type'=>'fulltime','employment_start_date'=>'','branch_id'=>null,'roster_team'=>'flex','active'=>1,'attendance_required'=>1,'identity_source'=>'employee_master',
         'attendance_policy'=>['gps_required'=>null,'camera_required'=>null,'evidence_required'=>null,'geofence_mode'=>'inherit','radius_m'=>null,'max_accuracy_m'=>null],
         'profile'=>['title'=>'','first_name'=>'','last_name'=>'','nickname'=>'','display_name'=>'','phone'=>'','email'=>'','line_id'=>'','birthday'=>'','gender'=>'','address'=>'','emergency_name'=>'','emergency_relation'=>'','emergency_phone'=>'','profile_photo'=>''],
         'payroll'=>['type'=>'daily','daily_rate'=>'0','hourly_rate'=>'0','monthly_salary'=>'0','overtime_rate'=>'0','start_time'=>'18:00','standard_hours'=>'8'],
@@ -211,7 +212,24 @@ function db_migrate_legacy_array(array $d): array {
         $p['employee_id']=(int)$d['employees'][$idx]['id'];
     }unset($p);
     foreach($d['users'] as $u){
-        $uid=(int)($u['id']??0);if(!$uid)continue;$idx=$findEmployeeIndex($uid,0);if($idx!==null)continue;$role=(string)($u['role']??'staff');$e=$employeeDefaults;$e['id']=$nextEmployeeId++;$e['code']='EMP'.str_pad((string)$uid,3,'0',STR_PAD_LEFT);$e['name']=(string)($u['display_name']??$u['username']??('Employee '.$uid));$e['profile']['display_name']=$e['name'];$e['user_id']=$uid;$e['position']=$role==='admin'?'admin':($role==='pr'?'pr':'staff');$e['department']=$role==='admin'?'Management':'Operations';$e['attendance_required']=$role==='admin'?0:1;$e['active']=!empty($u['active'])?1:0;$d['employees'][]=$e;
+        $uid=(int)($u['id']??0);if(!$uid)continue;$idx=$findEmployeeIndex($uid,0);if($idx!==null)continue;$role=(string)($u['role']??'staff');$e=$employeeDefaults;$e['id']=$nextEmployeeId++;$e['code']='EMP'.str_pad((string)$uid,3,'0',STR_PAD_LEFT);$e['name']=(string)($u['display_name']??$u['username']??('Employee '.$uid));$e['profile']['display_name']=$e['name'];$e['user_id']=$uid;$e['position']=$role==='admin'?'admin':($role==='pr'?'pr':($role==='sales'?'sales':'staff'));$e['department']=$role==='admin'?'Management':($role==='pr'?'PR / Floor':($role==='sales'?'Sales':'Operations'));$e['attendance_required']=$role==='admin'?0:1;$e['active']=!empty($u['active'])?1:0;$e['identity_source']='account_recovery';$d['employees'][]=$e;
+    }
+    if($incomingSchema<28){
+        $usersById=[];foreach($d['users'] as $row)$usersById[(int)($row['id']??0)]=$row;
+        $nextPrId=1;foreach($d['prs'] as $row)$nextPrId=max($nextPrId,(int)($row['id']??0)+1);
+        foreach($d['employees'] as &$employee){
+            $uid=(int)($employee['user_id']??0);$account=$usersById[$uid]??null;if(!$account)continue;
+            $role=(string)($account['role']??'staff');$position=(string)($employee['position']??'staff');
+            $autoProfile=(string)($employee['identity_source']??'')==='account_recovery'||preg_match('/^EMP\\d+$/',(string)($employee['code']??''));
+            if($role==='sales'&&$autoProfile&&in_array($position,['staff','other'],true)){$employee['position']='sales';$employee['department']='Sales';$employee['identity_source']='account_recovery';}
+            if($role==='pr'&&empty($employee['pr_id'])&&$autoProfile){
+                $employee['position']='pr';$employee['department']='PR / Floor';$employee['identity_source']='account_recovery';
+                $prCode=trim((string)($employee['code']??''))?:('PR'.$nextPrId);$base=$prCode;$suffix=2;
+                $used=true;while($used){$used=false;foreach($d['prs'] as $existing)if(strcasecmp((string)($existing['code']??''),$prCode)===0){$used=true;$prCode=$base.'-'.$suffix++;break;}}
+                $prId=$nextPrId++;$employee['pr_id']=$prId;
+                $d['prs'][]=['id'=>$prId,'code'=>$prCode,'name'=>(string)($employee['name']??$account['display_name']??$prCode),'status'=>'offline','user_id'=>$uid,'active'=>!empty($employee['active'])?1:0,'current_checkin_id'=>null,'branch_id'=>$employee['branch_id']??null,'employee_id'=>(int)$employee['id'],'profile'=>is_array($employee['profile']??null)?$employee['profile']:[]];
+            }
+        }unset($employee);
     }
     $employeeIdFor=function($prId,$userId)use(&$d){foreach($d['employees'] as $e){if($prId&&((int)($e['pr_id']??0)===(int)$prId))return (int)$e['id'];if($userId&&((int)($e['user_id']??0)===(int)$userId))return (int)$e['id'];}return null;};
     foreach($d['attendance'] as &$a){if(!array_key_exists('employee_id',$a)||empty($a['employee_id']))$a['employee_id']=$employeeIdFor((int)($a['pr_id']??0),(int)($a['user_id']??0));if(!array_key_exists('policy_snapshot',$a))$a['policy_snapshot']=[];}unset($a);
@@ -458,6 +476,11 @@ function db_migrate_array(array $d): array {
         $d['branch_data'][$key]=$clean;
     }
     $d=db_repair_v26($d,$incomingSchema);
+    foreach($d['users'] as &$account){
+        $links=[];$uid=(int)($account['id']??0);
+        foreach($d['branch_data'] as $branchKey=>$branchData){foreach($branchData['employees']??[] as $employee)if((int)($employee['user_id']??0)===$uid){$links[(string)(int)$branchKey]=(int)($employee['id']??0);break;}}
+        $account['employee_ids_by_branch']=$links;
+    }unset($account);
     $valid=array_map(fn($b)=>(string)(int)$b['id'],$d['branches']);
     foreach(array_keys($d['branch_data']) as $key)if(!in_array((string)$key,$valid,true))unset($d['branch_data'][$key]);
     $d['audit']=is_array($d['audit']??null)?$d['audit']:[];

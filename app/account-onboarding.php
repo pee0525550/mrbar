@@ -2,8 +2,7 @@
 declare(strict_types=1);
 
 function account_employee_role(array $employee): string {
-    if((string)($employee['position']??'')==='sales')return 'sales';
-    return (($employee['position']??'')==='pr'||!empty($employee['pr_id']))?'pr':'staff';
+    return function_exists('workforce_recommended_account_role')?workforce_recommended_account_role($employee):(((string)($employee['position']??'')==='sales')?'sales':((($employee['position']??'')==='pr'||!empty($employee['pr_id']))?'pr':'staff'));
 }
 function account_username_valid(string $username): bool {
     return (bool)preg_match('/^[A-Za-z0-9._-]{3,40}$/',$username);
