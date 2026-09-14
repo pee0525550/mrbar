@@ -2,7 +2,7 @@
 
 ระบบบริหารร้านแบบ Multi-Branch สำหรับ Portal ลูกค้า การจองโต๊ะ ผังร้าน พนักงาน/PR การลงเวลา Night Operations และ POS Incentive
 
-Current baseline: **v1.35.0**
+Current baseline: **v1.35.1**
 Schema: **v28**
 Production domain planned: `mrbarsupport.com`
 
