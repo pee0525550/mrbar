@@ -1,9 +1,9 @@
 {
-  "version": "1.35.1",
-  "build_id": "MRBAR-v1.35.1-20260914",
-  "pack": "POS Incentive Deploy Fix v1.35.1",
+  "version": "1.36.0",
+  "build_id": "MRBAR-v1.36.0-20260914",
+  "pack": "POS Product Group Sort v1.36.0",
   "schema": 28,
   "migration": false,
-  "base": "1.35.0",
+  "base": "1.35.1",
   "updated_at": "2026-09-14"
 }

@@ -1,5 +1,5 @@
 /* Guided POS Incentive workflow */
-.posi-page .posi-setup-grid,.posi-page .posi-sort-stage,.posi-page .posi-results-stage,.posi-page .posi-grid.lower,.posi-page .posi-explain{display:none!important}
+.posi-page .posi-setup-grid,.posi-page .posi-product-explorer,.posi-page .posi-results-stage,.posi-page .posi-grid.lower,.posi-page .posi-explain{display:none!important}
 .posi-wizard-nav{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .posi-wizard-nav>a{position:relative;display:flex;align-items:center;gap:12px;min-height:76px;padding:15px 18px;border:1px solid rgba(104,115,174,.3);border-radius:18px;background:linear-gradient(145deg,#fff,#f1f5ff);color:#182441;text-decoration:none;box-shadow:0 10px 28px rgba(44,52,109,.08);transition:.2s ease}
 .posi-wizard-nav>a:hover{transform:translateY(-2px);border-color:#7b60ff;box-shadow:0 15px 35px rgba(93,67,220,.16)}
@@ -8,8 +8,8 @@
 .posi-wizard-nav i{flex:0 0 34px;width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:#e9edfa;font-style:normal;font-weight:950}
 .posi-wizard-nav span{display:grid;gap:3px}.posi-wizard-nav b{font-size:14px}.posi-wizard-nav small{font-size:10px;opacity:.72}
 .posi-wizard-step-1 .posi-setup-grid{display:grid!important}.posi-wizard-step-1 .posi-setup-grid>.posi-card:first-child{display:none}
-.posi-wizard-step-2 .posi-sort-stage,.posi-wizard-step-2 .posi-results-stage{display:block!important}
-.posi-wizard-step-3 .posi-setup-grid{display:grid!important}.posi-wizard-step-3 .posi-setup-grid>.posi-import-card{display:none}.posi-wizard-step-3 .posi-sort-stage,.posi-wizard-step-3 .posi-results-stage{display:block!important}
+.posi-wizard-step-2 .posi-product-explorer{display:block!important}.posi-wizard-step-2 .posi-results-stage{display:none!important}
+.posi-wizard-step-3 .posi-setup-grid{display:grid!important}.posi-wizard-step-3 .posi-setup-grid>.posi-import-card{display:none}.posi-wizard-step-3 .posi-results-stage{display:block!important}
 .posi-wizard-step-4 .posi-results-stage,.posi-wizard-step-4 .posi-explain{display:block!important}.posi-wizard-step-4 .posi-grid.lower{display:grid!important}
 .posi-sort-stage{margin:18px 0;padding:26px;border:1px solid transparent;border-radius:24px;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(110deg,#a837ed,#6351f4,#19aee4,#22d2a0) border-box;box-shadow:0 18px 48px rgba(58,55,137,.14)}
 .posi-step-title small{color:#6c47d9;font-size:10px;font-weight:950;letter-spacing:.16em}.posi-step-title h2{margin:6px 0 4px;font-size:26px;color:#16213f}.posi-step-title p{margin:0;color:#5c6b88}
