@@ -2,6 +2,6 @@
 return [
  'name'=>'MR BAR',
  'timezone'=>'Asia/Bangkok',
- 'version'=>'1.35.1',
- 'pack'=>'POS Incentive Deploy Fix v1.35.1',
+ 'version'=>'1.36.0',
+ 'pack'=>'POS Product Group Sort v1.36.0',
 ];

@@ -1,3 +1,12 @@
+# v1.36.0 — POS Product Group & Category Sort
+
+- Replaced the employee/role filter from v1.35.0 with product-level sorting based on the imported POS columns.
+- Added a two-stage selector: choose Group or Category, then choose an actual value such as Sales.
+- Added instant filtered totals for row count, quantity, net sales and average sales.
+- Added searchable full-file preview before commit and a persistent imported-product explorer after commit.
+- Preserved the monthly commission rules and employee result calculations as a separate next step.
+- Schema remains v28; no migration is required.
+
 # v1.35.1 — POS Incentive Deploy Structure Fix
 
 - Reissued the POS Incentive update with preserved `assets/` and `config/` directory paths.
