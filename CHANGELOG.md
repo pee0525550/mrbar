@@ -1,3 +1,9 @@
+# v1.35.1 — POS Incentive Deploy Structure Fix
+
+- Reissued the POS Incentive update with preserved `assets/` and `config/` directory paths.
+- Bumped the Wizard stylesheet URL to v1351 to bypass cached missing/old CSS responses.
+- No data or calculation changes; Schema remains v28.
+
 # v1.35.0 — POS Incentive Guided Flow
 
 - Reorganized POS Incentive into a four-step workflow: Import, Group & Sort, Calculate Commission, and Review & Finalize.
