@@ -1,3 +1,9 @@
+# v1.32.1 — Sales Photo Branch URL Fix
+
+- Fixed broken Sales profile images in the customer reservation selector opened from canonical `/shop/{slug}/` pages.
+- Sales photo URLs now use the installation-root endpoint and carry `public_branch`, so the media endpoint loads the Employee from the correct branch.
+- Added regression checks for installation subdirectory and Branch context; Schema remains v28 with no migration required.
+
 # v1.32.0 — Unified People & Access
 
 - Established Employee Master as the single person record per branch; a login account is now an optional one-to-one extension.

@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 require __DIR__.'/../app/db.php';
 require __DIR__.'/../app/workforce.php';
+require __DIR__.'/../app/branches.php';
+require __DIR__.'/../app/reservation-sales.php';
 
 function expect_true(bool $condition,string $message): void {
     if(!$condition){fwrite(STDERR,"FAIL: {$message}\n");exit(1);}
@@ -49,5 +51,10 @@ expect_true($health['orphan_accounts']===0,'has no orphan account after migratio
 expect_true(workforce_account_role_compatible($salesA,$migrated['users'][1]),'accepts Sales role for Sales position');
 $bad=$migrated['users'][1];$bad['role']='pr';
 expect_true(!workforce_account_role_compatible($salesA,$bad),'rejects PR role for Sales position');
+
+$_SERVER['SCRIPT_NAME']='/it/custumers/reserve.php';
+$options=reservation_sales_options($view);$salesOption=array_values(array_filter($options,fn($row)=>(int)$row['employee_id']===(int)$salesA['id']))[0]??null;
+expect_true(str_starts_with((string)($salesOption['photo_url']??''),'/it/sales-photo.php?'),'uses installation-root Sales photo endpoint');
+expect_true(str_contains((string)($salesOption['photo_url']??''),'public_branch=a'),'keeps public Branch context in Sales photo URL');
 
 fwrite(STDOUT,"Unified People & Access regression passed.\n");

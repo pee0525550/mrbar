@@ -1,9 +1,9 @@
 {
-  "version": "1.32.0",
-  "build_id": "MRBAR-v1.32.0-20260914",
-  "pack": "Unified People & Access v1.32.0",
+  "version": "1.32.1",
+  "build_id": "MRBAR-v1.32.1-20260914",
+  "pack": "Sales Photo Branch Fix v1.32.1",
   "schema": 28,
-  "migration": true,
-  "base": "1.31.0",
+  "migration": false,
+  "base": "1.32.0",
   "updated_at": "2026-09-14"
 }

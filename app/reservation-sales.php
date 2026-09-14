@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 if (!function_exists('reservation_sales_options')) {
 function reservation_sales_options(array $d): array {
-    $rows=[];
+    $rows=[];$branch=function_exists('branch_current')?branch_current($d):[];$branchSlug=trim((string)($branch['slug']??''));
+    $photoBase=(function_exists('branch_public_base')?branch_public_base():'').'/sales-photo.php';
     foreach($d['employees']??[] as $e){
         if(empty($e['active'])||(string)($e['position']??'')!=='sales')continue;
         $employeeId=(int)($e['id']??0);if($employeeId<=0)continue;
@@ -17,7 +18,7 @@ function reservation_sales_options(array $d): array {
             'name'=>$name,
             'label'=>$name.($code!==''?' · '.$code:''),
             'has_photo'=>$photo!=='' && strpos(str_replace('\\','/',$photo),'storage/employee-media/'.$employeeId.'/')===0,
-            'photo_url'=>'../sales-photo.php?employee_id='.$employeeId,
+            'photo_url'=>$photoBase.'?'.http_build_query(['employee_id'=>$employeeId,'public_branch'=>$branchSlug]),
         ];
     }
     usort($rows,function($a,$b){$n=strcasecmp((string)$a['name'],(string)$b['name']);return $n!==0?$n:strcasecmp((string)$a['code'],(string)$b['code']);});
