@@ -2,14 +2,14 @@
 declare(strict_types=1);
 if(!function_exists('permission_default_roles')) require_once __DIR__.'/permissions.php';
 
-const MRBAR_SCHEMA_VERSION = 26;
+const MRBAR_SCHEMA_VERSION = 27;
 function db_primary_path(): string { return __DIR__.'/../storage/data.php'; }
 function db_runtime_path(): string { return __DIR__.'/../storage/runtime-data.php'; }
 function db_path(): string { return is_file(db_runtime_path()) ? db_runtime_path() : db_primary_path(); }
 function db_default(): array {
     return [
         'users'=>[], 'tables'=>[], 'prs'=>[], 'checkins'=>[], 'attendance'=>[], 'notifications'=>[],
-        'shifts'=>[], 'service_calls'=>[], 'reservations'=>[], 'daily_closes'=>[], 'branches'=>[], 'leave_requests'=>[], 'customer_media'=>[], 'employees'=>[], 'time_correction_requests'=>[], 'substitute_requests'=>[], 'shift_templates'=>[], 'roster_batches'=>[], 'privacy_consents'=>[], 'account_invites'=>[],
+        'shifts'=>[], 'service_calls'=>[], 'reservations'=>[], 'customers'=>[], 'daily_closes'=>[], 'branches'=>[], 'leave_requests'=>[], 'customer_media'=>[], 'employees'=>[], 'time_correction_requests'=>[], 'substitute_requests'=>[], 'shift_templates'=>[], 'roster_batches'=>[], 'privacy_consents'=>[], 'account_invites'=>[],
         'roles'=>permission_default_roles(),
         'settings'=>[
             'shop_name'=>'MR BAR','shop_phone'=>'','maintenance'=>'0','attendance_face_required'=>'1',
@@ -95,7 +95,7 @@ function db_migrate_legacy_array(array $d): array {
         if(!array_key_exists('service_note',$c)) $c['service_note']='';
         if(!array_key_exists('table_history',$c) || !is_array($c['table_history'])) $c['table_history']=[];
     } unset($c);
-    foreach(['attendance','audit','notifications','shifts','service_calls','reservations','daily_closes','branches','leave_requests','customer_media','employees','time_correction_requests','substitute_requests','shift_templates','roster_batches','privacy_consents','account_invites'] as $bucket){if(!isset($d[$bucket])||!is_array($d[$bucket]))$d[$bucket]=[];}
+    foreach(['attendance','audit','notifications','shifts','service_calls','reservations','customers','daily_closes','branches','leave_requests','customer_media','employees','time_correction_requests','substitute_requests','shift_templates','roster_batches','privacy_consents','account_invites'] as $bucket){if(!isset($d[$bucket])||!is_array($d[$bucket]))$d[$bucket]=[];}
 
     if(!$d['branches']){
         $d['branches'][]=['id'=>1,'code'=>'MAIN','name'=>'MR BAR Main','address'=>(string)($d['settings']['shop_address']??''),'lat'=>null,'lng'=>null,'radius_m'=>(int)($d['settings']['attendance_default_radius_m']??200),'active'=>1,'created_at'=>date('c'),'updated_at'=>date('c')];
@@ -113,9 +113,50 @@ function db_migrate_legacy_array(array $d): array {
     } unset($a);
 
     foreach($d['reservations'] as &$r){
-        $defaults=['status'=>'booked','guest_name'=>'','phone'=>'','party_size'=>1,'date'=>date('Y-m-d'),'time'=>'18:00','table_id'=>null,'note'=>'','created_at'=>date('c'),'updated_at'=>date('c'),'seated_checkin_id'=>null,'source'=>'staff'];
+        $defaults=['status'=>'booked','guest_name'=>'','phone'=>'','party_size'=>1,'date'=>date('Y-m-d'),'time'=>'18:00','table_id'=>null,'note'=>'','created_at'=>date('c'),'updated_at'=>date('c'),'seated_checkin_id'=>null,'source'=>'staff','customer_id'=>null];
         foreach($defaults as $k=>$v)if(!array_key_exists($k,$r))$r[$k]=$v;
     } unset($r);
+
+    /* Branch-scoped Customer CRM foundation (schema v27). */
+    $customerDefaults=[
+        'id'=>0,'full_name'=>'','nickname'=>'','phone'=>'','phone_key'=>'','email'=>'','line_user_id'=>'',
+        'birthday'=>'','tier'=>'standard','vip'=>0,'tags'=>[],'notes'=>'','preferred_sales_employee_id'=>null,
+        'preferred_pr_id'=>null,'active'=>1,'marketing_consent'=>0,'created_at'=>date('c'),'updated_at'=>date('c')
+    ];
+    $normalizeCustomerPhone=function($value): string {
+        $digits=preg_replace('/\D+/','',(string)$value)??'';
+        if(strlen($digits)===11&&substr($digits,0,2)==='66')$digits='0'.substr($digits,2);
+        return substr($digits,0,20);
+    };
+    $customerByPhone=[];$maxCustomerId=0;
+    foreach($d['customers'] as &$customer){
+        foreach($customerDefaults as $k=>$v)if(!array_key_exists($k,$customer))$customer[$k]=$v;
+        $customer['id']=max(1,(int)$customer['id']);$maxCustomerId=max($maxCustomerId,$customer['id']);
+        $customer['phone_key']=$normalizeCustomerPhone($customer['phone_key']?:$customer['phone']);
+        if(!is_array($customer['tags']))$customer['tags']=[];
+        $customer['tags']=array_values(array_unique(array_filter(array_map('strval',$customer['tags']))));
+        if(!in_array((string)$customer['tier'],['standard','silver','gold','platinum'],true))$customer['tier']='standard';
+        $customer['vip']=!empty($customer['vip'])?1:0;$customer['active']=!empty($customer['active'])?1:0;
+        $customer['marketing_consent']=!empty($customer['marketing_consent'])?1:0;
+        if($customer['phone_key']!=='')$customerByPhone[$customer['phone_key']]=$customer['id'];
+    }unset($customer);
+    foreach($d['reservations'] as &$reservation){
+        $phoneKey=$normalizeCustomerPhone($reservation['phone']??'');$customerId=max(0,(int)($reservation['customer_id']??0));
+        if($customerId<=0&&$phoneKey!==''){
+            if(isset($customerByPhone[$phoneKey]))$customerId=(int)$customerByPhone[$phoneKey];
+            else{
+                $customerId=++$maxCustomerId;$name=trim((string)($reservation['guest_name']??''));
+                $customer=array_replace($customerDefaults,[
+                    'id'=>$customerId,'full_name'=>$name,'nickname'=>$name,'phone'=>(string)($reservation['phone']??''),
+                    'phone_key'=>$phoneKey,'preferred_sales_employee_id'=>$reservation['sales_employee_id']??null,
+                    'created_at'=>(string)($reservation['created_at']??date('c')),'updated_at'=>(string)($reservation['updated_at']??date('c'))
+                ]);
+                $d['customers'][]=$customer;$customerByPhone[$phoneKey]=$customerId;
+            }
+            $reservation['customer_id']=$customerId;
+        }
+    }unset($reservation);
+
     foreach($d['daily_closes'] as &$c){if(!array_key_exists('closed_at',$c))$c['closed_at']=date('c');if(!array_key_exists('note',$c))$c['note']='';}unset($c);
     foreach($d['leave_requests'] as &$l){
         $defaults=['pr_id'=>0,'user_id'=>0,'type'=>'personal','start_date'=>date('Y-m-d'),'end_date'=>date('Y-m-d'),'portion'=>'full','reason'=>'','status'=>'pending','requested_at'=>date('c'),'updated_at'=>date('c'),'reviewed_by'=>null,'reviewed_at'=>null,'admin_note'=>''];
@@ -215,7 +256,7 @@ function db_migrate_legacy_array(array $d): array {
 function db_read_file(string $p): array {if(!is_file($p))throw new RuntimeException('Database file missing: '.basename($p));if(!is_readable($p))throw new RuntimeException('Database file is not readable');clearstatcache(true,$p);if(function_exists('opcache_invalidate')){@opcache_invalidate($p,true);}$d=require $p;if(!is_array($d))throw new RuntimeException('Database file is invalid');return $d;}
 function db_branch_bucket_names(): array {
     return [
-        'settings','tables','prs','checkins','attendance','notifications','shifts','service_calls','reservations','daily_closes',
+        'settings','tables','prs','checkins','attendance','notifications','shifts','service_calls','reservations','customers','daily_closes',
         'leave_requests','customer_media','customer_hero_media','employees','time_correction_requests','substitute_requests',
         'shift_templates','roster_batches','privacy_consents','account_invites','floor_plans','floor_plan_items',
         'floor_plan_versions','floor_service_sessions','pos_import_batches','pos_incentive_closings','pos_incentive_rules','pos_sales_rows'

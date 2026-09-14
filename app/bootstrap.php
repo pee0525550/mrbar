@@ -7,6 +7,7 @@ require_once __DIR__.'/db.php';
 require_once __DIR__.'/permissions.php';
 require_once __DIR__.'/branches.php';
 require_once __DIR__.'/workforce.php';
+require_once __DIR__.'/customer-crm.php';
 try { db_auto_migrate(); } catch(Throwable $e) { http_response_code(500); exit('MR BAR storage error. Open preflight.php for diagnostics.'); }
 try { if(function_exists('workforce_mark_missing_checkouts')) workforce_mark_missing_checkouts(); } catch(Throwable $e) { /* housekeeping must never block the app */ }
 function app_config():array{global $config;return $config;}
