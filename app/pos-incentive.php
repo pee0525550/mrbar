@@ -189,5 +189,35 @@ function posi_commit_import(array &$d,array $stage,array $parsed,array $map,arra
     $batch=['id'=>$batchId,'source_name'=>$source,'filename'=>(string)$stage['name'],'sha256'=>(string)$stage['sha256'],'ext'=>(string)$stage['ext'],'import_mode'=>$mode,'month'=>$month,'period_start'=>$periodStart,'period_end'=>$periodEnd,'status'=>'active','rows_imported'=>$inserted,'rows_invalid'=>(int)$built['invalid'],'rows_duplicate'=>$duplicates,'total_sales'=>$total,'matched_rows'=>$matched,'unmatched_rows'=>$unmatched,'candidate_rows'=>$matched+$unmatched,'ignored_rows'=>$ignored,'report_type'=>(string)$built['report_type'],'imported_at'=>date('c'),'imported_by'=>$userId,'supersedes'=>$superseded];$d['pos_import_batches'][]=$batch;$d['audit'][]=['at'=>date('c'),'action'=>'pos_import_committed','batch_id'=>$batchId,'month'=>$month,'rows'=>$inserted,'total_sales'=>$total,'by'=>$userId];return $batch;
 }
 function posi_void_batch(array &$d,int $batchId,int $userId): array {if(!isset($d['pos_import_batches'])||!is_array($d['pos_import_batches']))throw new RuntimeException('ไม่พบ Import Batch');foreach($d['pos_import_batches'] as &$b){if((int)($b['id']??0)!==$batchId)continue;$month=(string)($b['month']??'');if($month!==''&&posi_closing($d,$month))throw new RuntimeException('เดือนนี้ Final แล้ว กรุณา Reopen ก่อนยกเลิก Batch');if(($b['status']??'active')==='void')throw new RuntimeException('Batch นี้ถูก Void แล้ว');$b['status']='void';$b['voided_at']=date('c');$b['voided_by']=$userId;if(isset($d['pos_sales_rows'])&&is_array($d['pos_sales_rows']))foreach($d['pos_sales_rows'] as &$r)if((int)($r['batch_id']??0)===$batchId)$r['active']=0;unset($r);$d['audit'][]=['at'=>date('c'),'action'=>'pos_import_batch_voided','batch_id'=>$batchId,'month'=>$month,'by'=>$userId];$out=$b;unset($b);return $out;}unset($b);throw new RuntimeException('ไม่พบ Import Batch');}
+function posi_sales_display_name(array $d,array $row): string {
+    $employeeId=(int)($row['employee_id']??0);
+    if($employeeId>0){$employee=posi_employee_by_id($d,$employeeId);if($employee)return workforce_employee_label($employee);}
+    $name=trim((string)($row['item_name']??''));
+    $name=preg_replace('/^\s*[DM]\s+/iu','',$name)??$name;
+    foreach($d['branches']??[] as $branch){
+        foreach(['name','display_name','slug','code'] as $key){$suffix=trim((string)($branch[$key]??''));if($suffix==='')continue;$name=preg_replace('/\s+'.preg_quote($suffix,'/').'\s*$/iu','',$name)??$name;}
+    }
+    return trim($name)!==''?trim($name):(string)($row['item_name']??'ไม่ทราบชื่อ');
+}
+function posi_sales_units(array $d,string $month): array {
+    $out=[];
+    foreach(posi_active_rows($d,$month) as $row){
+        if(posi_norm((string)($row['item_group']??''))!=='sales')continue;
+        $name=posi_sales_display_name($d,$row);$employeeId=(int)($row['employee_id']??0);
+        $key=$employeeId>0?'employee:'.$employeeId:'name:'.posi_norm($name);
+        if(!isset($out[$key]))$out[$key]=['employee_id'=>$employeeId,'sales_name'=>$name,'units'=>0.0,'source_rows'=>0];
+        $out[$key]['units']+=(float)($row['qty']??0);$out[$key]['source_rows']++;
+    }
+    $rows=array_values($out);usort($rows,fn($a,$b)=>[(string)$a['sales_name']]<=>[(string)$b['sales_name']]);return $rows;
+}
+function posi_sales_commission_rule(array $d,string $month): array {
+    $defaults=['month'=>$month,'minimum_units'=>0.0,'rate_per_unit'=>0.0,'target_units'=>0.0,'target_bonus'=>0.0,'note'=>'','updated_at'=>'','updated_by'=>null];
+    foreach($d['sales_commission_rules']??[] as $rule)if((string)($rule['month']??'')===$month)return array_replace($defaults,$rule);
+    return $defaults;
+}
+function posi_sales_commission_results(array $d,string $month,array $rule): array {
+    $rows=[];foreach(posi_sales_units($d,$month) as $sales){$units=(float)$sales['units'];$eligible=$units>=(float)$rule['minimum_units'];$base=$eligible?$units*(float)$rule['rate_per_unit']:0.0;$bonus=$eligible&&(float)$rule['target_units']>0&&$units>=(float)$rule['target_units']?(float)$rule['target_bonus']:0.0;$sales['eligible']=$eligible;$sales['base_commission']=$base;$sales['bonus']=$bonus;$sales['commission']=$base+$bonus;$rows[]=$sales;}usort($rows,fn($a,$b)=>[(float)$b['commission'],(float)$b['units']]<=>[(float)$a['commission'],(float)$a['units']]);return $rows;
+}
+
 function posi_close_month(array &$d,string $month,int $userId): array {if(posi_closing($d,$month))throw new RuntimeException('เดือนนี้ถูก Final แล้ว หากต้องแก้ให้ Reopen ก่อน');$results=posi_month_results($d,$month);$summary=posi_period_summary($d,$month);if(!$results)throw new RuntimeException('ไม่มีพนักงาน Sales/PR ที่เปิด Incentive ในเดือนนี้');$id=next_id($d['pos_incentive_closings']??[]);$snap=[];foreach($results as $r)$snap[]=['employee_id'=>(int)$r['employee_id'],'units'=>(float)$r['units'],'sales'=>(float)$r['sales'],'rate'=>(float)$r['rate'],'unlocked'=>!empty($r['unlocked']),'potential_pay'=>(float)$r['potential_pay'],'recognized_pay'=>(float)$r['recognized_pay'],'rule_name'=>(string)$r['rule_name']];$c=['id'=>$id,'month'=>$month,'status'=>'final','summary'=>$summary,'results'=>$snap,'closed_at'=>date('c'),'closed_by'=>$userId];$d['pos_incentive_closings'][]=$c;$d['audit'][]=['at'=>date('c'),'action'=>'pos_incentive_month_finalized','month'=>$month,'closing_id'=>$id,'by'=>$userId];return $c;}
 function posi_reopen_month(array &$d,string $month,int $userId): int {$n=0;if(!isset($d['pos_incentive_closings'])||!is_array($d['pos_incentive_closings']))return 0;foreach($d['pos_incentive_closings'] as &$c)if((string)($c['month']??'')===$month&&($c['status']??'')==='final'){$c['status']='reopened';$c['reopened_at']=date('c');$c['reopened_by']=$userId;$n++;}unset($c);if($n)$d['audit'][]=['at'=>date('c'),'action'=>'pos_incentive_month_reopened','month'=>$month,'count'=>$n,'by'=>$userId];return $n;}

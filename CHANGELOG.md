@@ -1,3 +1,13 @@
+# v1.37.0 — Sales Commission Payout
+
+- Added a Sales-only commission action from the imported product Group sorter.
+- Consolidates D/M product rows into one Sales name and uses total sold units as monthly bills/tables.
+- Added monthly conditions for minimum units, per-unit commission, bonus target and target bonus.
+- Added clear source, payout and overall summary tables for accounting.
+- Added one-click tab-delimited copy for Excel, Google Sheets and payment workflows.
+- Stores Sales commission conditions per month with an audit entry.
+- Schema remains v28; no migration is required.
+
 # v1.36.0 — POS Product Group & Category Sort
 
 - Replaced the employee/role filter from v1.35.0 with product-level sorting based on the imported POS columns.

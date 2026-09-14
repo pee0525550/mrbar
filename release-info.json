@@ -1,9 +1,9 @@
 {
-  "version": "1.36.0",
-  "build_id": "MRBAR-v1.36.0-20260914",
-  "pack": "POS Product Group Sort v1.36.0",
+  "version": "1.37.0",
+  "build_id": "MRBAR-v1.37.0-20260914",
+  "pack": "Sales Commission Payout v1.37.0",
   "schema": 28,
   "migration": false,
-  "base": "1.35.1",
+  "base": "1.36.0",
   "updated_at": "2026-09-14"
 }
