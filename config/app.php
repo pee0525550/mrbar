@@ -2,6 +2,6 @@
 return [
  'name'=>'MR BAR',
  'timezone'=>'Asia/Bangkok',
- 'version'=>'1.38.0',
- 'pack'=>'Flexible POS Period Flow v1.38.0',
+ 'version'=>'1.39.0',
+ 'pack'=>'POS Upload Inbox v1.39.0',
 ];
