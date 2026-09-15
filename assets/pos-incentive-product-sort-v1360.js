@@ -49,10 +49,12 @@ document.querySelectorAll('[data-posi-product-sort]').forEach(root=>{
  axisButtons.forEach(button=>button.addEventListener('click',()=>{axis=button.dataset.sortAxis;axisButtons.forEach(item=>item.classList.toggle('active',item===button));rebuild();}));
  valueSelect.addEventListener('change',apply);
  searchInput.addEventListener('input',apply);
- root.querySelector('[data-sort-calculate]').addEventListener('click',()=>{apply();const salesLink=root.querySelector('[data-sales-commission-link]');if(salesLink&&axis==='group'&&norm(valueSelect.value)==='sales')window.location.href=salesLink.href;});
  ['group','category','qty','sales'].forEach(name=>form?.querySelector('[name="map_'+name+'"]')?.addEventListener('change',()=>name===axis?rebuild():apply()));
  rebuild();
 });
+const calcSelects=Array.from(document.querySelectorAll('[data-calc-function]'));const calcNext=document.querySelector('[data-calc-next]');
+const updateCalcNext=(mode)=>{calcSelects.forEach(select=>{if(select.value!==mode)select.value=mode;});if(!calcNext)return;if(!mode){calcNext.href='#';calcNext.setAttribute('aria-disabled','true');calcNext.textContent='เลือกฟังก์ชันก่อน →';return;}const url=new URL(window.location.href);url.searchParams.set('step','3');url.searchParams.set('sort_confirmed','1');url.searchParams.set('calc_mode',mode);if(mode==='sales')url.searchParams.set('sales_commission','1');else url.searchParams.delete('sales_commission');calcNext.href=url.pathname+'?'+url.searchParams.toString();calcNext.removeAttribute('aria-disabled');calcNext.textContent=mode==='pr'?'ขั้นตอนต่อไป: คำนวณค่าดื่ม PR →':'ขั้นตอนต่อไป: คำนวณค่าคอม Sales →';};
+calcSelects.forEach(select=>select.addEventListener('change',()=>updateCalcNext(select.value)));updateCalcNext('');
 const copyButton=document.querySelector('[data-copy-sales-table]');
 copyButton?.addEventListener('click',async()=>{
  const table=document.querySelector('[data-sales-payout-table]');if(!table)return;

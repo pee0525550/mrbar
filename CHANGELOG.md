@@ -1,3 +1,12 @@
+# v1.43.9 — Commission Function Selector
+
+- Removed the “คำนวณยอดที่เลือก” button from Step 2.
+- Added a function list with “คำนวณค่าดื่ม PR” and “คำนวณค่าคอม Sales”.
+- Enables the bottom next-step action immediately after a calculation function is selected.
+- Carries the selected calculation mode into Step 3 and displays the matching heading.
+- No longer requires selecting the Sales product group before continuing.
+- Schema remains v28; no migration is required.
+
 # v1.43.8 — Clear Stuck POS Process
 
 - Added a “เคลียร์ Process ไฟล์ที่เลือก” action to Step 1.
