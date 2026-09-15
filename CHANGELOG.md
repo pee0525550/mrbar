@@ -1,3 +1,14 @@
+# v1.43.0 — PR & Sales Team Commission
+
+- Rebuilt Step 3 around the actual PR/Sales income structure.
+- PR commission is calculated from own D and M drink units using separate configurable rates.
+- Sales income combines own D/M drink commission with commission from PR drink units in the same team.
+- Only a Sales employee marked as team lead receives the PR team commission, preventing duplicate payouts.
+- Team mapping prefers an explicit code in the POS category (TEAM-A, ทีม A or @A), then falls back to the Employee Card Team Code.
+- Added a combined PR/Sales payout table, unmapped-menu warning and copy-for-payment output.
+- Existing legacy Sales tiers and R4 data remain stored for backward compatibility but are no longer used by the new Step 3 payout table.
+- Schema remains v28; no migration is required.
+
 # v1.42.2 — Inline Personal Sales Calculation
 
 - Moved personal Sales inputs into the payout result table where the zero values were previously displayed.
