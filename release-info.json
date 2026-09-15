@@ -1,9 +1,9 @@
 {
-  "version": "1.43.8",
-  "build_id": "MRBAR-v1.43.8-20260915",
-  "pack": "Clear Stuck POS Process v1.43.8",
+  "version": "1.43.9",
+  "build_id": "MRBAR-v1.43.9-20260915",
+  "pack": "Commission Function Selector v1.43.9",
   "schema": 28,
   "migration": false,
-  "base": "1.43.7",
+  "base": "1.43.8",
   "updated_at": "2026-09-15"
 }
