@@ -2,6 +2,7 @@
 require __DIR__.'/app/bootstrap.php';
 require_once __DIR__.'/app/compat.php';
 require_once __DIR__.'/app/pos-incentive.php';
+require_once __DIR__.'/app/pos-r4.php';
 $u=require_permission('employees.manage');$msg='';$err='';$action='';$preview=null;$previewStage=null;$previewGuess=[];$previewType='';$previewStats=[];
 $month=(string)($_GET['month']??$_POST['month']??date('Y-m'));if(!posi_month_valid($month))$month=date('Y-m');
 [$monthFrom,$monthTo]=posi_month_bounds($month);$periodMode=(string)($_GET['period_mode']??$_POST['period_mode']??'month');if(!in_array($periodMode,['month','week','cycle','custom'],true))$periodMode='month';
@@ -92,7 +93,7 @@ function posi_payout_label(string $p): string{return ['per_drink'=>'บาท / 
 <div class="posi-preview posi-product-table"><table data-product-table data-group-index="1" data-category-index="2" data-qty-index="3" data-sales-index="4"><thead><tr><th>ชื่อสินค้า</th><th>กลุ่มสินค้า</th><th>หมวดหมู่สินค้า</th><th>จำนวนการขาย</th><th>ยอดขายสุทธิ</th><th>วันที่</th><th>สถานะค่าคอม</th></tr></thead><tbody><?php foreach($productRows as $row):?><tr><td><?=h((string)($row['item_name']??''))?></td><td><?=h((string)($row['item_group']??''))?></td><td><?=h((string)($row['item_category']??''))?></td><td><?=number_format((float)($row['qty']??0),2)?></td><td><?=number_format((float)($row['net_sales']??0),2)?></td><td><?=h((string)($row['sale_date']??''))?></td><td><?=!empty($row['incentive_candidate'])?'นำไปคำนวณ':'ยอดร้าน'?></td></tr><?php endforeach;?></tbody></table></div>
 <?php endif;?></section>
 <section class="posi-sales-commission-stage">
-<div class="posi-sales-stage-head"><div><small>STEP 3 / SALES COMMISSION</small><h2>คำนวณค่าคอม Sales รายเดือน</h2><p>ระบบรวมรายการ D/M ของ Sales คนเดียวกัน และใช้จำนวนการขายเป็นจำนวนบิล/โต๊ะสำหรับคำนวณ</p></div><a href="?<?=h($periodQuery)?>&step=2">← กลับไป Sort สินค้า</a></div>
+<div class="posi-sales-stage-head"><div><small>STEP 3 / SALES COMMISSION</small><h2>คำนวณค่าคอม Sales รายเดือน</h2><p>ระบบรวมรายการ D/M ของ Sales คนเดียวกัน และใช้จำนวนการขายเป็นจำนวนบิล/โต๊ะสำหรับคำนวณ</p></div><div><a href="pos-r4.php?<?=h($periodQuery)?>">เปิดกติกา R4 / Hold →</a><a href="?<?=h($periodQuery)?>&step=2">← กลับไป Sort สินค้า</a></div></div>
 <div class="posi-sales-source">
 <div class="posi-sales-section-title"><div><small>ข้อมูลตั้งต้น</small><h3>Sales และจำนวนบิล/โต๊ะ</h3></div><span><?=number_format(count($salesCommissionRows))?> Sales</span></div>
 <div class="posi-sales-two-column"><table><thead><tr><th>ชื่อ Sales</th><th>จำนวนการขาย (บิล/โต๊ะ)</th></tr></thead><tbody><?php if(!$salesCommissionRows):?><tr><td colspan="2" class="empty">ไม่พบสินค้าในกลุ่ม Sales เดือนนี้</td></tr><?php endif;?><?php foreach($salesCommissionRows as $row):?><tr><td><b><?=h((string)$row['sales_name'])?></b></td><td><strong><?=number_format((float)$row['units'],2)?></strong></td></tr><?php endforeach;?></tbody><tfoot><tr><th>รวมทั้งหมด</th><th><?=number_format($salesTotalUnits,2)?></th></tr></tfoot></table></div>
