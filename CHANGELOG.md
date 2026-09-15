@@ -1,3 +1,11 @@
+# v1.42.2 — Inline Personal Sales Calculation
+
+- Moved personal Sales inputs into the payout result table where the zero values were previously displayed.
+- Added a prominent warning when one or more Sales personal totals are missing.
+- Added an inline Save personal totals and recalculate button directly below the payout table.
+- Removed the duplicate personal-sales entry fields from the source summary.
+- Schema remains v28; no migration is required.
+
 # v1.42.1 — Sales Personal Total Input Fix
 
 - Added personal sales inputs beside every Sales name in Step 3.

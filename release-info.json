@@ -1,9 +1,9 @@
 {
-  "version": "1.42.1",
-  "build_id": "MRBAR-v1.42.1-20260915",
-  "pack": "Sales Personal Total Input Fix v1.42.1",
+  "version": "1.42.2",
+  "build_id": "MRBAR-v1.42.2-20260915",
+  "pack": "Inline Personal Sales Calculation v1.42.2",
   "schema": 28,
   "migration": false,
-  "base": "1.42.0",
+  "base": "1.42.1",
   "updated_at": "2026-09-15"
 }
