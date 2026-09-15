@@ -1,3 +1,11 @@
+# v1.43.6 — Reliable POS Process Redirect
+
+- Redirects to Step 2 immediately after a selected POS file finishes processing.
+- Prevents browser refresh or double submission from processing the same file twice.
+- Reusing an already-completed inbox item opens its existing calculation period instead of showing an error.
+- Adds a clear success notice after the redirect.
+- Schema remains v28; no migration is required.
+
 # v1.43.5 — Select Then Process Flow
 
 - Removed the per-file “Process” action button from the POS import list.

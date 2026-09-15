@@ -1,9 +1,9 @@
 {
-  "version": "1.43.5",
-  "build_id": "MRBAR-v1.43.5-20260915",
-  "pack": "Select Then Process Flow v1.43.5",
+  "version": "1.43.6",
+  "build_id": "MRBAR-v1.43.6-20260915",
+  "pack": "Reliable POS Process Redirect v1.43.6",
   "schema": 28,
   "migration": false,
-  "base": "1.43.4",
+  "base": "1.43.5",
   "updated_at": "2026-09-15"
 }
