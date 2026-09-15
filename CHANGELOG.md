@@ -1,3 +1,11 @@
+# v1.42.1 — Sales Personal Total Input Fix
+
+- Added personal sales inputs beside every Sales name in Step 3.
+- Personal totals can now be saved by POS menu name even before the menu is mapped to an Employee Card.
+- A mapped employee still falls back to the matching R4 personal-sales input when no manual value was saved here.
+- Commission tiers recalculate immediately using store sales, entered personal sales and bill/table count.
+- Schema remains v28; no migration is required.
+
 # v1.42.0 — Multi-level Sales Commission Conditions
 
 - Replaced the single Sales commission condition with reusable multi-level tiers.
