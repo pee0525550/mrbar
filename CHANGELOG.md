@@ -1,3 +1,12 @@
+# v1.43.8 — Clear Stuck POS Process
+
+- Added a “เคลียร์ Process ไฟล์ที่เลือก” action to Step 1.
+- Clears stale processing/error state for the selected inbox file without deleting its original upload.
+- Voids an active duplicate Batch with the same file hash and report period, including its calculated rows.
+- Returns the selected report to the ready-to-process state with an audit record.
+- Requires reopening a finalized period before clearing its Batch.
+- Schema remains v28; no migration is required.
+
 # v1.43.7 — Separated POS Import Workspace
 
 - Added a dedicated `pos-incentive-import.php` page for uploading POS reports only.
