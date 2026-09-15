@@ -238,7 +238,7 @@ function posi_sales_commission_tiers(array $rule): array {
     usort($tiers,fn($a,$b)=>[(float)$b['store_minimum'],(float)$b['personal_minimum'],(float)$b['minimum_units'],(float)$b['rate_per_unit']]<=>[(float)$a['store_minimum'],(float)$a['personal_minimum'],(float)$a['minimum_units'],(float)$a['rate_per_unit']]);return $tiers;
 }
 function posi_sales_commission_rule(array $d,string $month,string $from='',string $to=''): array {
-    $defaults=['month'=>$month,'period_from'=>$from,'period_to'=>$to,'tiers'=>[],'note'=>'','updated_at'=>'','updated_by'=>null];
+    $defaults=['month'=>$month,'period_from'=>$from,'period_to'=>$to,'tiers'=>[],'personal_sales_by_key'=>[],'note'=>'','updated_at'=>'','updated_by'=>null];
     foreach($d['sales_commission_rules']??[] as $rule){if($from!==''&&$to!==''&&(string)($rule['period_from']??'')===$from&&(string)($rule['period_to']??'')===$to){$result=array_replace($defaults,$rule);$result['tiers']=posi_sales_commission_tiers($result);return $result;}if($from===''&&(string)($rule['month']??'')===$month){$result=array_replace($defaults,$rule);$result['tiers']=posi_sales_commission_tiers($result);return $result;}}return $defaults;
 }
 function posi_sales_personal_sales(array $d,int $employeeId,string $from,string $to): float {
@@ -246,7 +246,7 @@ function posi_sales_personal_sales(array $d,int $employeeId,string $from,string 
 }
 function posi_sales_commission_results(array $d,string $month,array $rule,string $from='',string $to=''): array {
     $tiers=posi_sales_commission_tiers($rule);$storeSales=(float)(($from!==''&&$to!==''?posi_period_summary_dates($d,$from,$to):posi_period_summary($d,$month))['actual_sales']??0);$rows=[];
-    foreach(posi_sales_units($d,$month,$from,$to) as $sales){$units=(float)$sales['units'];$personal=posi_sales_personal_sales($d,(int)$sales['employee_id'],$from,$to);$matched=null;foreach($tiers as $tier)if($storeSales>=(float)$tier['store_minimum']&&$personal>=(float)$tier['personal_minimum']&&$units>=(float)$tier['minimum_units']){$matched=$tier;break;}$rate=$matched?(float)$matched['rate_per_unit']:0.0;$sales['store_sales']=$storeSales;$sales['personal_sales']=$personal;$sales['eligible']=$matched!==null;$sales['matched_tier']=$matched;$sales['rate_per_unit']=$rate;$sales['base_commission']=$units*$rate;$sales['bonus']=0.0;$sales['commission']=$sales['base_commission'];$rows[]=$sales;}
+    foreach(posi_sales_units($d,$month,$from,$to) as $sales){$units=(float)$sales['units'];$salesKey=(int)$sales['employee_id']>0?'employee:'.(int)$sales['employee_id']:'name:'.posi_norm((string)$sales['sales_name']);$manualPersonal=is_array($rule['personal_sales_by_key']??null)?$rule['personal_sales_by_key']:[];$personal=array_key_exists($salesKey,$manualPersonal)?max(0,(float)$manualPersonal[$salesKey]):posi_sales_personal_sales($d,(int)$sales['employee_id'],$from,$to);$sales['sales_key']=$salesKey;$matched=null;foreach($tiers as $tier)if($storeSales>=(float)$tier['store_minimum']&&$personal>=(float)$tier['personal_minimum']&&$units>=(float)$tier['minimum_units']){$matched=$tier;break;}$rate=$matched?(float)$matched['rate_per_unit']:0.0;$sales['store_sales']=$storeSales;$sales['personal_sales']=$personal;$sales['eligible']=$matched!==null;$sales['matched_tier']=$matched;$sales['rate_per_unit']=$rate;$sales['base_commission']=$units*$rate;$sales['bonus']=0.0;$sales['commission']=$sales['base_commission'];$rows[]=$sales;}
     usort($rows,fn($a,$b)=>[(float)$b['commission'],(float)$b['units']]<=>[(float)$a['commission'],(float)$a['units']]);return $rows;
 }
 
