@@ -1,3 +1,12 @@
+# v1.43.1 — Dynamic Team Discovery
+
+- Removed the requirement to predefine Team Code or Sales team-lead status in Employee Card.
+- Team names are discovered from the imported POS category values for the selected period.
+- Supports arbitrary Thai, English and shop-specific team names without fixed keywords.
+- Step 3 displays every detected PR team with its D/M units and lets the operator assign the responsible Sales after import.
+- Team-to-Sales assignments are stored per calculation period and no team commission is paid until an assignment is confirmed.
+- Schema remains v28; no migration is required.
+
 # v1.43.0 — PR & Sales Team Commission
 
 - Rebuilt Step 3 around the actual PR/Sales income structure.
