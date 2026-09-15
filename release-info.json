@@ -1,9 +1,9 @@
 {
-  "version": "1.43.1",
-  "build_id": "MRBAR-v1.43.1-20260915",
-  "pack": "Dynamic Team Discovery v1.43.1",
+  "version": "1.43.2",
+  "build_id": "MRBAR-v1.43.2-20260915",
+  "pack": "Branch Scoped POS Team Codes v1.43.2",
   "schema": 28,
   "migration": false,
-  "base": "1.43.0",
+  "base": "1.43.1",
   "updated_at": "2026-09-15"
 }

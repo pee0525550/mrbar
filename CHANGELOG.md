@@ -1,3 +1,12 @@
+# v1.43.2 — Branch-scoped POS Team Codes
+
+- Removed the visible D/M rate-entry cards from Step 3 for now.
+- Labels detected values explicitly as category codes from the imported POS file.
+- Keeps D and M in the detected key, so D PRIEST and M PRIEST are separate assignments.
+- Filters detected keys against the current branch identity; Priest no longer displays MW or R4 keys.
+- Preserves previously stored rates internally while the rate-entry UI is hidden.
+- Schema remains v28; no migration is required.
+
 # v1.43.1 — Dynamic Team Discovery
 
 - Removed the requirement to predefine Team Code or Sales team-lead status in Employee Card.
