@@ -1,3 +1,11 @@
+# v1.43.5 — Select Then Process Flow
+
+- Removed the per-file “Process” action button from the POS import list.
+- Added a clear check-style selector and limited selection to one POS file per calculation round.
+- Moved processing to the main “ขั้นตอนต่อไป” action at the bottom of Step 1.
+- The next-step action now validates a selected file, processes it, and continues to Step 2.
+- Schema remains v28; no migration is required.
+
 # v1.43.4 — Clear POS Import Workflow
 
 - Renamed the POS inbox area to “Import File จาก POS”.
