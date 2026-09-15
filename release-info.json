@@ -1,9 +1,9 @@
 {
-  "version": "1.42.2",
-  "build_id": "MRBAR-v1.42.2-20260915",
-  "pack": "Inline Personal Sales Calculation v1.42.2",
+  "version": "1.43.0",
+  "build_id": "MRBAR-v1.43.0-20260915",
+  "pack": "PR & Sales Team Commission v1.43.0",
   "schema": 28,
   "migration": false,
-  "base": "1.42.1",
+  "base": "1.42.2",
   "updated_at": "2026-09-15"
 }
