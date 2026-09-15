@@ -2,6 +2,6 @@
 return [
  'name'=>'MR BAR',
  'timezone'=>'Asia/Bangkok',
- 'version'=>'1.43.6',
- 'pack'=>'Reliable POS Process Redirect v1.43.6',
+ 'version'=>'1.43.7',
+ 'pack'=>'Separated POS Import Workspace v1.43.7',
 ];
