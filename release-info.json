@@ -1,9 +1,9 @@
 {
-  "version": "1.37.0",
-  "build_id": "MRBAR-v1.37.0-20260914",
-  "pack": "Sales Commission Payout v1.37.0",
+  "version": "1.38.0",
+  "build_id": "MRBAR-v1.38.0-20260915",
+  "pack": "Flexible POS Period Flow v1.38.0",
   "schema": 28,
   "migration": false,
-  "base": "1.36.0",
-  "updated_at": "2026-09-14"
+  "base": "1.37.0",
+  "updated_at": "2026-09-15"
 }

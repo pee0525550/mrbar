@@ -2,6 +2,6 @@
 return [
  'name'=>'MR BAR',
  'timezone'=>'Asia/Bangkok',
- 'version'=>'1.37.0',
- 'pack'=>'Sales Commission Payout v1.37.0',
+ 'version'=>'1.38.0',
+ 'pack'=>'Flexible POS Period Flow v1.38.0',
 ];

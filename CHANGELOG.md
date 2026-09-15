@@ -1,3 +1,14 @@
+# v1.38.0 — Flexible POS Period Flow
+
+- Replaced the subtle month bar with a prominent calculation-period selector.
+- Added monthly, weekly, 22-to-22 and custom date-range modes, including calculate-through-today.
+- Added cross-month import support for accounting cycles such as 22 July through 22 August.
+- Removed the visible source/mapping confirmation block from the normal workflow; upload now auto-detects, stores and opens Sort.
+- Connected the existing “Calculate selected total” button directly to Sales commission when Group > Sales is selected.
+- Filters product and Sales commission data by the selected start/end dates.
+- Stores Sales commission conditions separately for each exact date range.
+- Schema remains v28; no migration is required.
+
 # v1.37.0 — Sales Commission Payout
 
 - Added a Sales-only commission action from the imported product Group sorter.
