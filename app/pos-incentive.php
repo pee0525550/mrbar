@@ -251,12 +251,13 @@ function posi_sales_commission_results(array $d,string $month,array $rule,string
 }
 
 function posi_role_commission_rule(array $d,string $from,string $to): array {
-    $defaults=['period_from'=>$from,'period_to'=>$to,'pr_rate_d'=>0.0,'pr_rate_m'=>0.0,'sales_own_rate_d'=>0.0,'sales_own_rate_m'=>0.0,'sales_team_rate_d'=>0.0,'sales_team_rate_m'=>0.0,'updated_at'=>'','updated_by'=>null];
+    $defaults=['period_from'=>$from,'period_to'=>$to,'pr_rate_d'=>0.0,'pr_rate_m'=>0.0,'sales_own_rate_d'=>0.0,'sales_own_rate_m'=>0.0,'sales_team_rate_d'=>0.0,'sales_team_rate_m'=>0.0,'team_sales_map'=>[],'updated_at'=>'','updated_by'=>null];
     foreach(array_reverse($d['role_commission_rules']??[]) as $rule)if((string)($rule['period_from']??'')===$from&&(string)($rule['period_to']??'')===$to)return array_replace($defaults,$rule);return $defaults;
 }
 function posi_category_team_code(string $category): string {
-    if(preg_match('/(?:TEAM|ทีม)\s*[-_:]?\s*([A-Z0-9ก-๙._-]+)/iu',$category,$m))return strtoupper(trim((string)$m[1]));
-    if(preg_match('/@([A-Z0-9ก-๙._-]+)/u',$category,$m))return strtoupper(trim((string)$m[1]));return '';
+    $raw=trim(preg_replace('/\s+/u',' ',$category)??'');if($raw==='')return '';
+    $team=trim((string)(preg_replace('/^(?:PR|SALES)\s*[-_\/]?\s*(?:D|M)?\s*[-_\/]?\s*/iu','',$raw)??''));
+    return strtoupper($team!==''?$team:$raw);
 }
 function posi_row_role(array $row,?array $employee=null): string {
     $group=posi_norm((string)($row['item_group']??''));$category=posi_norm((string)($row['item_category']??''));
@@ -264,42 +265,19 @@ function posi_row_role(array $row,?array $employee=null): string {
     $position=(string)($employee['position']??'');return in_array($position,['pr','sales'],true)?$position:'';
 }
 function posi_role_commission_results(array $d,array $rule,string $from,string $to): array {
-    $people=[];$unmapped=[];$teamPr=[];
-    $makePerson=static function(array $employee,string $role,string $team,array $cfg): array {
-        $eid=(int)$employee['id'];
-        return ['employee_id'=>$eid,'name'=>(string)($employee['name']??$employee['code']??('#'.$eid)),'role'=>$role,'team_code'=>$team,'team_lead'=>(bool)($cfg['team_lead']??false),'own_d'=>0.0,'own_m'=>0.0,'team_pr_d'=>0.0,'team_pr_m'=>0.0,'own_commission'=>0.0,'team_commission'=>0.0,'total_commission'=>0.0];
-    };
+    $people=[];$unmapped=[];$teamPr=[];$teamMap=is_array($rule['team_sales_map']??null)?$rule['team_sales_map']:[];
+    $makePerson=static function(array $employee,string $role): array {$eid=(int)$employee['id'];return ['employee_id'=>$eid,'name'=>(string)($employee['name']??$employee['code']??('#'.$eid)),'role'=>$role,'team_code'=>'','team_lead'=>false,'own_d'=>0.0,'own_m'=>0.0,'team_pr_d'=>0.0,'team_pr_m'=>0.0,'own_commission'=>0.0,'team_commission'=>0.0,'total_commission'=>0.0];};
     foreach(posi_active_rows_period($d,$from,$to) as $row){
-        if(!posi_row_is_candidate($row))continue;
-        $employee=posi_employee_by_id($d,(int)($row['employee_id']??0));$role=posi_row_role($row,$employee);
-        if(!in_array($role,['pr','sales'],true))continue;
-        $units=max(0,(float)($row['qty']??0));$drink=in_array((string)($row['drink_code']??''),['D','M'],true)?(string)$row['drink_code']:'D';
-        if(!$employee){$key=(string)($row['item_name']??'ไม่ทราบชื่อ');if(!isset($unmapped[$key]))$unmapped[$key]=['name'=>$key,'role'=>$role,'units'=>0.0];$unmapped[$key]['units']+=$units;continue;}
-        $eid=(int)$employee['id'];$cfg=posi_employee_cfg($employee);$team=posi_category_team_code((string)($row['item_category']??''))?:strtoupper(trim((string)$cfg['team_code']));
-        if(!isset($people[$eid]))$people[$eid]=$makePerson($employee,$role,$team,$cfg);
-        $people[$eid]['own_'.strtolower($drink)]+=$units;
+        if(!posi_row_is_candidate($row))continue;$employee=posi_employee_by_id($d,(int)($row['employee_id']??0));$role=posi_row_role($row,$employee);if(!in_array($role,['pr','sales'],true))continue;
+        $units=max(0,(float)($row['qty']??0));$drink=in_array((string)($row['drink_code']??''),['D','M'],true)?(string)$row['drink_code']:'D';$team=posi_category_team_code((string)($row['item_category']??''));
+        if(!$employee){$key=(string)($row['item_name']??'ไม่ทราบชื่อ');if(!isset($unmapped[$key]))$unmapped[$key]=['name'=>$key,'role'=>$role,'units'=>0.0];$unmapped[$key]['units']+=$units;if($role==='pr'&&$team!=='')$teamPr[$team][$drink]=($teamPr[$team][$drink]??0)+$units;continue;}
+        $eid=(int)$employee['id'];if(!isset($people[$eid]))$people[$eid]=$makePerson($employee,$role);$people[$eid]['own_'.strtolower($drink)]+=$units;
         if($role==='pr'&&$team!=='')$teamPr[$team][$drink]=($teamPr[$team][$drink]??0)+$units;
     }
-    foreach(($d['employees']??[]) as $employee){
-        $cfg=posi_employee_cfg($employee);$role=(string)($employee['position']??'');
-        if(empty($employee['active'])||empty($cfg['enabled'])||$role!=='sales'||empty($cfg['team_lead']))continue;
-        $eid=(int)($employee['id']??0);$team=strtoupper(trim((string)$cfg['team_code']));
-        if($eid>0&&$team!==''&&!isset($people[$eid]))$people[$eid]=$makePerson($employee,$role,$team,$cfg);
-    }
-    foreach($people as &$person){
-        $role=$person['role'];
-        if($role==='pr')$person['own_commission']=$person['own_d']*(float)$rule['pr_rate_d']+$person['own_m']*(float)$rule['pr_rate_m'];
-        else{
-            $person['own_commission']=$person['own_d']*(float)$rule['sales_own_rate_d']+$person['own_m']*(float)$rule['sales_own_rate_m'];
-            if($person['team_lead']&&$person['team_code']!==''){
-                $team=$person['team_code'];$person['team_pr_d']=(float)($teamPr[$team]['D']??0);$person['team_pr_m']=(float)($teamPr[$team]['M']??0);
-                $person['team_commission']=$person['team_pr_d']*(float)$rule['sales_team_rate_d']+$person['team_pr_m']*(float)$rule['sales_team_rate_m'];
-            }
-        }
-        $person['total_commission']=$person['own_commission']+$person['team_commission'];
-    }unset($person);
-    $rows=array_values($people);usort($rows,fn($a,$b)=>(float)$b['total_commission']<=>(float)$a['total_commission']);
-    return ['rows'=>$rows,'unmapped'=>array_values($unmapped),'team_pr_units'=>$teamPr];
+    foreach($teamMap as $team=>$salesId){$salesId=(int)$salesId;if($salesId<=0||!isset($teamPr[$team]))continue;$employee=posi_employee_by_id($d,$salesId);if(!$employee||(string)($employee['position']??'')!=='sales')continue;if(!isset($people[$salesId]))$people[$salesId]=$makePerson($employee,'sales');$people[$salesId]['team_lead']=true;$people[$salesId]['team_code']=trim($people[$salesId]['team_code'].' / '.$team,' /');$people[$salesId]['team_pr_d']+=(float)($teamPr[$team]['D']??0);$people[$salesId]['team_pr_m']+=(float)($teamPr[$team]['M']??0);}
+    foreach($people as &$person){if($person['role']==='pr')$person['own_commission']=$person['own_d']*(float)$rule['pr_rate_d']+$person['own_m']*(float)$rule['pr_rate_m'];else{$person['own_commission']=$person['own_d']*(float)$rule['sales_own_rate_d']+$person['own_m']*(float)$rule['sales_own_rate_m'];$person['team_commission']=$person['team_pr_d']*(float)$rule['sales_team_rate_d']+$person['team_pr_m']*(float)$rule['sales_team_rate_m'];}$person['total_commission']=$person['own_commission']+$person['team_commission'];}unset($person);
+    $rows=array_values($people);usort($rows,fn($a,$b)=>(float)$b['total_commission']<=>(float)$a['total_commission']);ksort($teamPr);
+    return ['rows'=>$rows,'unmapped'=>array_values($unmapped),'team_pr_units'=>$teamPr,'team_sales_map'=>$teamMap];
 }
 
 function posi_close_month(array &$d,string $month,int $userId): array {if(posi_closing($d,$month))throw new RuntimeException('เดือนนี้ถูก Final แล้ว หากต้องแก้ให้ Reopen ก่อน');$results=posi_month_results($d,$month);$summary=posi_period_summary($d,$month);if(!$results)throw new RuntimeException('ไม่มีพนักงาน Sales/PR ที่เปิด Incentive ในเดือนนี้');$id=next_id($d['pos_incentive_closings']??[]);$snap=[];foreach($results as $r)$snap[]=['employee_id'=>(int)$r['employee_id'],'units'=>(float)$r['units'],'sales'=>(float)$r['sales'],'rate'=>(float)$r['rate'],'unlocked'=>!empty($r['unlocked']),'potential_pay'=>(float)$r['potential_pay'],'recognized_pay'=>(float)$r['recognized_pay'],'rule_name'=>(string)$r['rule_name']];$c=['id'=>$id,'month'=>$month,'status'=>'final','summary'=>$summary,'results'=>$snap,'closed_at'=>date('c'),'closed_by'=>$userId];$d['pos_incentive_closings'][]=$c;$d['audit'][]=['at'=>date('c'),'action'=>'pos_incentive_month_finalized','month'=>$month,'closing_id'=>$id,'by'=>$userId];return $c;}
