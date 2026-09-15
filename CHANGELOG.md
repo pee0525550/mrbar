@@ -1,3 +1,11 @@
+# v1.43.3 — Simplified Commission Step
+
+- Removed the entire team-code-to-Sales assignment panel from Step 3.
+- Removed its save button and explanatory fields to reduce visual complexity.
+- Step 3 no longer blocks progression on that removed configuration.
+- Preserved imported data and calculation history for the next commission-flow redesign.
+- Schema remains v28; no migration is required.
+
 # v1.43.2 — Branch-scoped POS Team Codes
 
 - Removed the visible D/M rate-entry cards from Step 3 for now.

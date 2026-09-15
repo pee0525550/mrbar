@@ -1,9 +1,9 @@
 {
-  "version": "1.43.2",
-  "build_id": "MRBAR-v1.43.2-20260915",
-  "pack": "Branch Scoped POS Team Codes v1.43.2",
+  "version": "1.43.3",
+  "build_id": "MRBAR-v1.43.3-20260915",
+  "pack": "Simplified Commission Step v1.43.3",
   "schema": 28,
   "migration": false,
-  "base": "1.43.1",
+  "base": "1.43.2",
   "updated_at": "2026-09-15"
 }
