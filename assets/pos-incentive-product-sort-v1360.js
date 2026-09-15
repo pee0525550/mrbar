@@ -35,7 +35,7 @@ document.querySelectorAll('[data-posi-product-sort]').forEach(root=>{
    root.querySelector('[data-sort-sales]').textContent=fmt(sales);
    root.querySelector('[data-sort-average]').textContent=fmt(shown?sales/shown:0);
    status.textContent='แสดง '+fmt(shown,0)+' รายการ · '+(axis==='group'?'กลุ่มสินค้า':'หมวดหมู่สินค้า')+': '+(valueSelect.value||'ทั้งหมด');
-   const salesLink=root.querySelector('[data-sales-commission-link]');if(salesLink)salesLink.hidden=!(axis==='group'&&norm(valueSelect.value)==='sales');
+   const salesLink=root.querySelector('[data-sales-commission-link]');if(salesLink)salesLink.hidden=true;
  };
  const rebuild=()=>{
    const index=mapped(axis),current=valueSelect.value;
@@ -49,7 +49,7 @@ document.querySelectorAll('[data-posi-product-sort]').forEach(root=>{
  axisButtons.forEach(button=>button.addEventListener('click',()=>{axis=button.dataset.sortAxis;axisButtons.forEach(item=>item.classList.toggle('active',item===button));rebuild();}));
  valueSelect.addEventListener('change',apply);
  searchInput.addEventListener('input',apply);
- root.querySelector('[data-sort-calculate]').addEventListener('click',apply);
+ root.querySelector('[data-sort-calculate]').addEventListener('click',()=>{apply();const salesLink=root.querySelector('[data-sales-commission-link]');if(salesLink&&axis==='group'&&norm(valueSelect.value)==='sales')window.location.href=salesLink.href;});
  ['group','category','qty','sales'].forEach(name=>form?.querySelector('[name="map_'+name+'"]')?.addEventListener('change',()=>name===axis?rebuild():apply()));
  rebuild();
 });
