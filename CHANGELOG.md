@@ -1,3 +1,11 @@
+# v1.43.4 — Clear POS Import Workflow
+
+- Renamed the POS inbox area to “Import File จาก POS”.
+- Separated server upload from choosing a stored file for processing with explicit numbered sections and actions.
+- Rendered the PR / Sales payout table only on wizard Step 4, the final review page.
+- Hid the Step 3 commission section entirely while users are on Steps 1–2.
+- Schema remains v28; no migration is required.
+
 # v1.43.3 — Simplified Commission Step
 
 - Removed the entire team-code-to-Sales assignment panel from Step 3.
