@@ -1,9 +1,9 @@
 {
-  "version": "1.43.7",
-  "build_id": "MRBAR-v1.43.7-20260915",
-  "pack": "Separated POS Import Workspace v1.43.7",
+  "version": "1.43.8",
+  "build_id": "MRBAR-v1.43.8-20260915",
+  "pack": "Clear Stuck POS Process v1.43.8",
   "schema": 28,
   "migration": false,
-  "base": "1.43.6",
+  "base": "1.43.7",
   "updated_at": "2026-09-15"
 }
