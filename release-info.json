@@ -1,9 +1,9 @@
 {
-  "version": "1.43.3",
-  "build_id": "MRBAR-v1.43.3-20260915",
-  "pack": "Simplified Commission Step v1.43.3",
+  "version": "1.43.4",
+  "build_id": "MRBAR-v1.43.4-20260915",
+  "pack": "Clear POS Import Workflow v1.43.4",
   "schema": 28,
   "migration": false,
-  "base": "1.43.2",
+  "base": "1.43.3",
   "updated_at": "2026-09-15"
 }
