@@ -172,6 +172,18 @@ function posi_preview_summary(array $parsed,array $map): array {
     return $out;
 }
 
+function posi_inbox_dir(): string {$dir=__DIR__.'/../storage/pos-upload-inbox';if(!is_dir($dir)&&!@mkdir($dir,0775,true)&&!is_dir($dir))throw new RuntimeException('สร้างพื้นที่เก็บไฟล์ POS ไม่ได้');return $dir;}
+function posi_inbox_store_upload(array $file): array {
+    if(($file['error']??UPLOAD_ERR_NO_FILE)!==UPLOAD_ERR_OK)throw new RuntimeException('อัปโหลดไฟล์ POS ไม่สำเร็จ');$size=(int)($file['size']??0);if($size<=0||$size>20*1024*1024)throw new RuntimeException('ไฟล์ POS ต้องไม่เกิน 20MB');
+    $original=trim((string)($file['name']??'pos.xlsx'));$ext=strtolower(pathinfo($original,PATHINFO_EXTENSION));if(!in_array($ext,['xlsx','csv'],true))throw new RuntimeException('รองรับ Excel .xlsx และ CSV เท่านั้น');
+    $stored=bin2hex(random_bytes(16)).'.'.$ext;$path=posi_inbox_dir().'/'.$stored;if(!move_uploaded_file((string)$file['tmp_name'],$path))throw new RuntimeException('บันทึกไฟล์เข้า POS Inbox ไม่ได้');@chmod($path,0660);
+    return ['original_name'=>$original,'stored_name'=>$stored,'ext'=>$ext,'size'=>$size,'sha256'=>hash_file('sha256',$path)];
+}
+function posi_inbox_path(array $entry): string {
+    $stored=basename((string)($entry['stored_name']??''));if($stored===''||$stored!==(string)($entry['stored_name']??''))throw new RuntimeException('ชื่อไฟล์ใน POS Inbox ไม่ถูกต้อง');$path=posi_inbox_dir().'/'.$stored;if(!is_file($path))throw new RuntimeException('ไม่พบไฟล์ต้นฉบับใน POS Inbox');return $path;
+}
+function posi_inbox_status_label(string $status): string {return ['uploaded'=>'รอดำเนินการ','processing'=>'กำลังประมวลผล','completed'=>'สำเร็จ','failed'=>'ผิดพลาด','archived'=>'เก็บถาวร'][$status]??$status;}
+
 function posi_stage_dir(): string {$dir=__DIR__.'/../storage/pos-import-staging';if(!is_dir($dir)&&!@mkdir($dir,0775,true)&&!is_dir($dir))throw new RuntimeException('สร้างโฟลเดอร์ staging POS ไม่ได้');return $dir;}
 function posi_stage_upload(array $file): array {
     if(($file['error']??UPLOAD_ERR_NO_FILE)!==UPLOAD_ERR_OK)throw new RuntimeException('อัปโหลดไฟล์ POS ไม่สำเร็จ');$size=(int)($file['size']??0);if($size<=0||$size>20*1024*1024)throw new RuntimeException('ไฟล์ POS ต้องไม่เกิน 20MB');$name=(string)($file['name']??'pos.xlsx');$ext=strtolower(pathinfo($name,PATHINFO_EXTENSION));if(!in_array($ext,['xlsx','csv'],true))throw new RuntimeException('รองรับ Excel .xlsx และ CSV เท่านั้น');$token=bin2hex(random_bytes(16));$path=posi_stage_dir().'/'.$token.'.'.$ext;if(!move_uploaded_file((string)$file['tmp_name'],$path))throw new RuntimeException('บันทึกไฟล์ staging ไม่ได้');@chmod($path,0660);$stage=['token'=>$token,'path'=>$path,'ext'=>$ext,'name'=>$name,'sha256'=>hash_file('sha256',$path),'created_at'=>time()];$_SESSION['posi_stage'][$token]=$stage;return $stage;
@@ -189,7 +201,7 @@ function posi_build_normalized_rows(array $d,array $parsed,array $map,array $met
 }
 function posi_commit_import(array &$d,array $stage,array $parsed,array $map,array $meta,int $userId): array {
     $source=trim((string)($meta['source_name']??'POS'));if($source==='')$source='POS';$mode=(string)($meta['import_mode']??'period');if(!in_array($mode,['period','mtd_snapshot'],true))$mode='period';$periodStart=posi_parse_date($meta['period_start']??'');$periodEnd=posi_parse_date($meta['period_end']??'');if($periodStart===''||$periodEnd===''||$periodEnd<$periodStart)throw new RuntimeException('ช่วงวันที่ Import ไม่ถูกต้อง');$month=substr($periodEnd,0,7);if(posi_closing($d,$month))throw new RuntimeException('เดือนนี้ Final แล้ว กรุณา Reopen ก่อน Import ข้อมูลใหม่');
-    foreach($d['pos_import_batches']??[] as $b)if(($b['sha256']??'')===$stage['sha256']&&($b['status']??'active')!=='deleted')throw new RuntimeException('ไฟล์นี้เคย Import แล้ว ระบบป้องกันยอดซ้ำด้วย SHA-256');
+    foreach($d['pos_import_batches']??[] as $b)if(($b['sha256']??'')===$stage['sha256']&&($b['status']??'active')==='active'&&(string)($b['period_start']??'')===$periodStart&&(string)($b['period_end']??'')===$periodEnd)throw new RuntimeException('ไฟล์นี้ Process สำเร็จแล้วในรอบวันที่เดียวกัน');
     $built=posi_build_normalized_rows($d,$parsed,$map,$meta);$normalized=[];foreach($built['rows'] as $r)if($r['sale_date']>=$periodStart&&$r['sale_date']<=$periodEnd)$normalized[]=$r;if(!$normalized)throw new RuntimeException('ไม่พบแถวข้อมูลที่อยู่ในช่วงวันที่เลือก');
     if(!isset($d['pos_import_batches'])||!is_array($d['pos_import_batches']))$d['pos_import_batches']=[];if(!isset($d['pos_sales_rows'])||!is_array($d['pos_sales_rows']))$d['pos_sales_rows']=[];
     $batchId=next_id($d['pos_import_batches']);$superseded=[];if($mode==='mtd_snapshot'){foreach($d['pos_import_batches'] as &$b){if(($b['status']??'active')!=='active'||($b['import_mode']??'')!=='mtd_snapshot'||($b['source_name']??'')!==$source||($b['month']??'')!==$month)continue;$b['status']='superseded';$b['superseded_at']=date('c');$b['superseded_by']=$batchId;$superseded[]=(int)$b['id'];}unset($b);if($superseded)foreach($d['pos_sales_rows'] as &$r)if(in_array((int)($r['batch_id']??0),$superseded,true)){$r['active']=0;$r['superseded_by']=$batchId;}unset($r);}
