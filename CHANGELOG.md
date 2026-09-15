@@ -1,3 +1,14 @@
+# v1.41.0 — Strict POS Wizard Flow
+
+- The calculation period is selected only in Step 1; later steps show a compact read-only period summary.
+- Replaced clickable step shortcuts with a high-contrast progress indicator showing Current, Complete and Locked states.
+- Added enforced Previous/Next navigation and server-side step clamping to prevent skipping incomplete work.
+- Step 2 proceeds only after Group > Sales is selected and calculated.
+- Step 3 proceeds only after a commission or R4 rule is saved.
+- Removed duplicate Final controls; saving and Final are available only on Step 4.
+- Added server-side Final guard so a request outside the final review step is rejected.
+- Schema remains v28; no migration is required.
+
 # v1.40.0 — R4 Commission & Employee Mapping
 
 - Added configurable R4 rules for store targets, Sales personal-sales tiers and normal/reduced PR drink rates.
