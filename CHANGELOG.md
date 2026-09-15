@@ -1,3 +1,14 @@
+# v1.42.0 — Multi-level Sales Commission Conditions
+
+- Replaced the single Sales commission condition with reusable multi-level tiers.
+- Every tier supports minimum store sales, minimum personal sales, minimum bills/tables and commission per bill.
+- Store sales are read automatically from the selected POS period.
+- Personal sales are read from the employee R4 input for the same period.
+- The calculation checks tiers from highest to lowest and uses the first tier where all conditions pass.
+- Removed the additional bonus fields; a Sales employee who matches no tier receives zero.
+- Added Add/Remove tier controls, responsive styling, clearer payout results and regression tests.
+- Schema remains v28; no migration is required.
+
 # v1.41.0 — Strict POS Wizard Flow
 
 - The calculation period is selected only in Step 1; later steps show a compact read-only period summary.
