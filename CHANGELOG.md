@@ -1,3 +1,12 @@
+# v1.43.7 — Separated POS Import Workspace
+
+- Added a dedicated `pos-incentive-import.php` page for uploading POS reports only.
+- The upload page now requires report name, start date, end date, and source file, with an optional detail field.
+- Removed file selection and processing from the upload workspace.
+- Changed Step 1 of the calculation wizard into a dedicated stored-report selection page.
+- Removed the unrelated period picker and KPI cards from the file-selection step.
+- Schema remains v28; no migration is required.
+
 # v1.43.6 — Reliable POS Process Redirect
 
 - Redirects to Step 2 immediately after a selected POS file finishes processing.
