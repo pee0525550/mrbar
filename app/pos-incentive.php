@@ -256,7 +256,7 @@ function posi_role_commission_rule(array $d,string $from,string $to): array {
 }
 function posi_category_team_code(string $category): string {
     $raw=trim(preg_replace('/\s+/u',' ',$category)??'');if($raw==='')return '';
-    $team=trim((string)(preg_replace('/^(?:PR|SALES)\s*[-_\/]?\s*(?:D|M)?\s*[-_\/]?\s*/iu','',$raw)??''));
+    $team=trim((string)(preg_replace('/^(?:PR|SALES)\s*[-_\/]?\s*/iu','',$raw)??''));
     return strtoupper($team!==''?$team:$raw);
 }
 function posi_row_role(array $row,?array $employee=null): string {
@@ -266,9 +266,10 @@ function posi_row_role(array $row,?array $employee=null): string {
 }
 function posi_role_commission_results(array $d,array $rule,string $from,string $to): array {
     $people=[];$unmapped=[];$teamPr=[];$teamMap=is_array($rule['team_sales_map']??null)?$rule['team_sales_map']:[];
+    $activeRows=posi_active_rows_period($d,$from,$to);$branchId=(int)($d['_branch_context']['id']??$d['meta']['active_branch_id']??1);$branch=null;foreach($d['branches']??[] as $branchRow)if((int)($branchRow['id']??0)===$branchId){$branch=$branchRow;break;}$branch=$branch??['name'=>'','slug'=>'','code'=>''];$branchText=mb_strtolower(implode(' ',[(string)($branch['name']??''),(string)($branch['slug']??''),(string)($branch['code']??'')]),'UTF-8');$branchTokens=array_values(array_filter(array_map('posi_norm',preg_split('/[^a-z0-9ก-๙]+/u',$branchText)?:[]),fn($token)=>mb_strlen($token)>=3&&!in_array($token,['club','ktv','branch','exclusive'],true)));$detected=[];foreach($activeRows as $candidate){$candidateTeam=posi_category_team_code((string)($candidate['item_category']??''));if($candidateTeam!=='')$detected[$candidateTeam]=true;}$branchTeams=[];foreach(array_keys($detected) as $candidateTeam){$normalized=posi_norm($candidateTeam);foreach($branchTokens as $token)if(strpos($normalized,$token)!==false){$branchTeams[$candidateTeam]=true;break;}}
     $makePerson=static function(array $employee,string $role): array {$eid=(int)$employee['id'];return ['employee_id'=>$eid,'name'=>(string)($employee['name']??$employee['code']??('#'.$eid)),'role'=>$role,'team_code'=>'','team_lead'=>false,'own_d'=>0.0,'own_m'=>0.0,'team_pr_d'=>0.0,'team_pr_m'=>0.0,'own_commission'=>0.0,'team_commission'=>0.0,'total_commission'=>0.0];};
-    foreach(posi_active_rows_period($d,$from,$to) as $row){
-        if(!posi_row_is_candidate($row))continue;$employee=posi_employee_by_id($d,(int)($row['employee_id']??0));$role=posi_row_role($row,$employee);if(!in_array($role,['pr','sales'],true))continue;
+    foreach($activeRows as $row){
+        if(!posi_row_is_candidate($row))continue;$rowTeam=posi_category_team_code((string)($row['item_category']??''));if($branchTeams&&!isset($branchTeams[$rowTeam]))continue;$employee=posi_employee_by_id($d,(int)($row['employee_id']??0));$role=posi_row_role($row,$employee);if(!in_array($role,['pr','sales'],true))continue;
         $units=max(0,(float)($row['qty']??0));$drink=in_array((string)($row['drink_code']??''),['D','M'],true)?(string)$row['drink_code']:'D';$team=posi_category_team_code((string)($row['item_category']??''));
         if(!$employee){$key=(string)($row['item_name']??'ไม่ทราบชื่อ');if(!isset($unmapped[$key]))$unmapped[$key]=['name'=>$key,'role'=>$role,'units'=>0.0];$unmapped[$key]['units']+=$units;if($role==='pr'&&$team!=='')$teamPr[$team][$drink]=($teamPr[$team][$drink]??0)+$units;continue;}
         $eid=(int)$employee['id'];if(!isset($people[$eid]))$people[$eid]=$makePerson($employee,$role);$people[$eid]['own_'.strtolower($drink)]+=$units;
