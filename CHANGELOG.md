@@ -1,3 +1,12 @@
+# v1.39.0 — POS Upload Inbox
+
+- Added a server-backed POS data inbox so the IT team can upload XLSX/CSV files with a title, notes and calculation period without processing them immediately.
+- Added clear Uploaded, Processing, Completed and Failed states so the payment team can select and process work later.
+- Preserves uploaded source files under `storage/pos-upload-inbox` and records uploader/processor audit events.
+- Duplicate protection now blocks only the same completed file in the same exact date range instead of all historical imports.
+- Added recent-processing protection plus safe retry for abandoned processing jobs after 15 minutes.
+- Persists the inbox as branch-scoped data. Schema remains v28; no migration is required.
+
 # v1.38.0 — Flexible POS Period Flow
 
 - Replaced the subtle month bar with a prominent calculation-period selector.
