@@ -1,3 +1,13 @@
+# v1.40.0 — R4 Commission & Employee Mapping
+
+- Added configurable R4 rules for store targets, Sales personal-sales tiers and normal/reduced PR drink rates.
+- Supports either THB per unit or percentage-of-normal interpretation for the 100/90/80/70/60/50 ladder.
+- Added Hold calculation, branch-scoped Hold ledger, cross-month release targets and authorized release confirmation.
+- Added online exception evidence with daily posting, online table count and manager approval requirements.
+- Added POS menu Alias mapping directly to Employee Cards with immediate period Re-map and audit history.
+- Added per-employee personal-sales input because the D/M commission report does not contain the 600k personal-sales metric.
+- Added R4 regression tests. Schema remains v28; no migration is required.
+
 # v1.39.0 — POS Upload Inbox
 
 - Added a server-backed POS data inbox so the IT team can upload XLSX/CSV files with a title, notes and calculation period without processing them immediately.

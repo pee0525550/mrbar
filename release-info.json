@@ -1,9 +1,9 @@
 {
-  "version": "1.39.0",
-  "build_id": "MRBAR-v1.39.0-20260915",
-  "pack": "POS Upload Inbox v1.39.0",
+  "version": "1.40.0",
+  "build_id": "MRBAR-v1.40.0-20260915",
+  "pack": "R4 Commission & Employee Mapping v1.40.0",
   "schema": 28,
   "migration": false,
-  "base": "1.38.0",
+  "base": "1.39.0",
   "updated_at": "2026-09-15"
 }
