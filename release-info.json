@@ -1,9 +1,9 @@
 {
-  "version": "1.44.1",
-  "build_id": "MRBAR-v1.44.1-20260916",
-  "pack": "Multi-Team Sales Assignment v1.44.1",
+  "version": "1.44.2",
+  "build_id": "MRBAR-v1.44.2-20260916",
+  "pack": "Team and Sales Revenue Context v1.44.2",
   "schema": 28,
   "migration": false,
-  "base": "1.44.0",
+  "base": "1.44.1",
   "updated_at": "2026-09-16"
 }
