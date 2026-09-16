@@ -1,3 +1,9 @@
+# v1.46.0 — ค่าดื่ม / ค่าคอม
+
+- แยกเมนู ขั้นตอนคำนวณ และรอบบันทึกค่าดื่มส่วนตัวออกจากค่าคอมทีม
+- ตรวจลำดับขั้นและข้อมูลเปลี่ยนก่อนบันทึก ป้องกัน Report ซ้ำภายในแต่ละส่วน
+- รักษาข้อมูลเดิม และแสดงสถานะยอดเชียร์ที่ยังรอจับคู่ใบเสร็จ POS
+
 # v1.45.1 — Sales QR Customer Table Status
 
 - Sales QR opening marks shared table occupancy for customer floor maps and Night Ops.

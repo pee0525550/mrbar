@@ -277,7 +277,7 @@ function db_branch_bucket_names(): array {
         'settings','tables','prs','checkins','attendance','notifications','shifts','service_calls','reservations','customers','daily_closes',
         'leave_requests','customer_media','customer_hero_media','employees','time_correction_requests','substitute_requests',
         'shift_templates','roster_batches','privacy_consents','account_invites','floor_plans','floor_plan_items',
-        'sales_table_sessions','floor_plan_versions','floor_service_sessions','pos_import_batches','pos_incentive_closings','pos_incentive_rules','pos_sales_rows','pos_upload_inbox','sales_commission_rules','pos_r4_rules','pos_r4_employee_inputs','pos_commission_holds'
+        'drink_payout_rounds','commission_payout_rounds','sales_table_sessions','floor_plan_versions','floor_service_sessions','pos_import_batches','pos_incentive_closings','pos_incentive_rules','pos_sales_rows','pos_upload_inbox','sales_commission_rules','pos_r4_rules','pos_r4_employee_inputs','pos_commission_holds'
     ];
 }
 function db_portal_defaults(): array {
