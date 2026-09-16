@@ -1,3 +1,13 @@
+# v1.44.1 — Multi-Team Sales Assignment
+
+- Allows the same Sales employee to be selected as the owner of multiple POS teams in Step 3.
+- Normalizes `PR D <team>` and `PR M <team>` into one base team while preserving separate D/M unit totals.
+- Combines all assigned teams into one Sales payout row instead of duplicating the employee.
+- Displays every assigned team on the Sales row and sums direct drink income plus all team commission.
+- Normalizes legacy D/M-prefixed team mappings automatically when calculating and reopening a saved rule.
+- Expanded regression coverage for one Sales employee managing multiple teams.
+- Schema remains v28; no migration is required.
+
 # v1.44.0 — Sales Dual Income Calculator
 
 - Added the missing Step 3 Sales calculation workspace.
