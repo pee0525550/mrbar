@@ -1,3 +1,13 @@
+# v1.44.0 — Sales Dual Income Calculator
+
+- Added the missing Step 3 Sales calculation workspace.
+- Calculates Sales income from two sources: direct D/M drinks and commission from PR drinks in assigned teams.
+- Added separate D/M rates for direct Sales drinks and team PR drinks.
+- Detects team codes from the current POS file and lets the operator assign each detected team to a Sales employee.
+- Added a live Sales table showing both income sources and the combined payout per person.
+- Step 4 remains locked until the Step 3 rate/team configuration is saved.
+- Schema remains v28; no migration is required.
+
 # v1.43.9 — Commission Function Selector
 
 - Removed the “คำนวณยอดที่เลือก” button from Step 2.
