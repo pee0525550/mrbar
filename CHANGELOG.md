@@ -1,3 +1,8 @@
+# v1.46.2 — Control Center Navigation
+
+- ย้ายเมนู Tools & Reports (QR / Shift / Reports) ไปอยู่ใต้ศูนย์ควบคุม
+- คง URL สิทธิ์ และข้อมูล QR เดิมทั้งหมด
+
 # v1.46.1 — POS Report Center
 
 - เพิ่ม Report กลางสำหรับค่าดื่มและค่าคอม พร้อมตัวกรองช่วงวันที่ ประเภท สถานะ และคำค้น

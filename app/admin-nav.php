@@ -10,6 +10,7 @@ function admin_sidebar($active, $user=array()) {
         array('icon'=>'⌂', 'label'=>'ศูนย์ควบคุม', 'hint'=>'CONTROL CENTER', 'items'=>array(
             array('dashboard','admin.php','⌂','Dashboard','ภาพรวมร้านวันนี้'),
             array('operations','night-ops.php','✦','Operations','จอง / Waitlist / โต๊ะ / Service'),
+            array('tools','admin-tools.php','▦','Tools & Reports','QR / Shift / Reports'),
         )),
         array('icon'=>'♙', 'label'=>'ทีมงาน & บุคลากร', 'hint'=>'PEOPLE', 'items'=>array(
             array('employees','employees.php','♙','Employee Center','ประวัติ / ตำแหน่ง / บัญชี / รูปพนักงาน'),
@@ -27,7 +28,6 @@ function admin_sidebar($active, $user=array()) {
         )),
         array('icon'=>'◈', 'label'=>'รายงาน & ช่องทางลูกค้า', 'hint'=>'REPORTS & CUSTOMER', 'items'=>array(
             array('customers','customers.php','♧','Customer CRM','สมาชิก / VIP / ประวัติจอง / Sales & PR'),
-            array('tools','admin-tools.php','▦','Tools & Reports','QR / Shift / Reports'),
             array('customerweb','customer-web.php','◈','Customer Web','หน้าเว็บ / Content / Booking CTA'),
             array('zonestudio','zone-studio.php','▧','Zone Studio','ผังร้าน 2D / 2.5D / โต๊ะ / Booking Map'),
         )),
