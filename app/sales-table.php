@@ -70,6 +70,19 @@ function st_apply(array $d,array $input,int $actorId): array {
         }else throw new RuntimeException('คำสั่งไม่ถูกต้อง');
         $s['revision']++;$d['sales_table_sessions'][$index]=$s;
     }
+    if(in_array($action,['open','close'],true)){
+        $otherUse=false;
+        foreach($d['checkins']??[] as $c)if((int)($c['table_id']??0)===$tableId&&!in_array((string)($c['status']??''),['completed','cancelled'],true))$otherUse=true;
+        foreach($d['floor_service_sessions']??[] as $c)if((int)($c['table_id']??0)===$tableId&&empty($c['ended_at']))$otherUse=true;
+        foreach($d['tables'] as &$t){
+            if((int)$t['id']!==$tableId)continue;
+            if(!empty($t['active'])&&($t['status']??'')!=='blocked'){
+                if($action==='open')$t['status']='occupied';
+                elseif(($t['status']??'')==='occupied'&&!$otherUse&&!st_open_session($d,$tableId))$t['status']='available';
+                $t['updated_at']=$now;
+            }
+        }unset($t);
+    }
     $d['audit'][]=['at'=>$now,'action'=>'sales_table_'.$action,'by'=>$actorId,'session_id'=>$s['id'],'table_id'=>$tableId,'reason'=>trim((string)($input['reason']??'')),'before'=>$before,'after'=>$s];
     return $d;
 }

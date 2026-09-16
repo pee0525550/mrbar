@@ -15,7 +15,7 @@
 
 ## Data boundaries
 - Records are branch-scoped sales_table_sessions; existing guest check-ins and POS drink commissions are not changed.
-- This is an attribution round, not a Night Ops occupancy operation. Staff continue to manage seating/PR status through Night Ops.
+- Since v1.45.1, opening a Sales round marks the shared table occupied. Closing returns it to available only when no active check-in or floor service remains. Blocked/inactive tables are preserved. Customer pages read the updated state on load/refresh; existing open Sales rounds are also reflected. PR assignments remain managed through Night Ops.
 - Sales drink-menu amounts are not personal customer sales.
 - Receipt numbers are stored as text, including leading zeroes, and must be unique within a branch (case-insensitive).
 - Up to 30 receipts per round. Multi-bill closure is supported.

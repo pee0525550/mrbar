@@ -44,7 +44,7 @@ function st_cards($sales,$d){?><div class="sales-cards"><?php foreach($sales as 
 <!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sales เปิด–ปิดโต๊ะ</title><link rel="stylesheet" href="assets/typography.css"><link rel="stylesheet" href="assets/sales-table.css"></head><body><main>
 <header><small>SALES TABLE · <?=h((string)$branch['name'])?></small><h1><?=$table?'โต๊ะ '.h((string)$table['code']):'ประวัติเปิด–ปิดโต๊ะ Sales'?></h1><p>ผู้ทำรายการ: <?=h((string)($u['display_name']??$u['username']))?> · บันทึกแทน Sales ได้</p><a href="admin-tools.php">กลับเครื่องมือร้าน</a></header>
 <?php if($err):?><p class="error" role="alert"><?=h($err)?></p><?php endif;?><?php if(isset($_GET['saved'])):?><p class="success">บันทึกสำเร็จ</p><?php endif;?>
-<p class="note">บันทึกเจ้าของยอดเชียร์เท่านั้น ไม่ใช่ยอดดื่มส่วนตัว และยังไม่คำนวณค่าคอม · สถานะนี้แยกจากการจัดโต๊ะ/PR ใน Night Ops</p>
+<p class="note">บันทึกเจ้าของยอดเชียร์เท่านั้น ไม่ใช่ยอดดื่มส่วนตัว และยังไม่คำนวณค่าคอม · เปิดรอบแล้วหน้าลูกค้าจะแสดงมีลูกค้า · ปิดพร้อมใบเสร็จจะคืนโต๊ะว่างเมื่อไม่มีงานอื่นค้าง</p>
 <?php if($table):?><?php if(!$open):?>
 <section><h2>เปิดรอบใหม่ · เลือก Sales เจ้าของยอด</h2><p>ตรวจรูป ชื่อ และรหัสก่อนยืนยัน ผู้ทำรายการจะถูกบันทึกแยกไว้</p>
 <?php if(!$sales):?><p class="error">ยังไม่มี Sales ที่ใช้งานในร้านนี้ กรุณาเพิ่มใน Employee Center</p><?php else:?><form method="post" action="<?=h($url)?>"><?php st_fields($slug,$tableId);?><input type="hidden" name="action" value="open"><?php st_cards($sales,$d);?><button>ยืนยันเปิดโต๊ะให้ Sales ที่เลือก</button></form><?php endif;?></section>

@@ -1,3 +1,11 @@
+# v1.45.1 — Sales QR Customer Table Status
+
+- Sales QR opening marks shared table occupancy for customer floor maps and Night Ops.
+- Closing with receipts releases a table only when no other active check-in or floor service remains.
+- Keeps blocked/inactive tables unchanged; prevents other table writes from freeing an open Sales round.
+- Existing open Sales rounds are reflected on branch reads. Customer pages show changes on load/refresh.
+- Regression tests exercise the actual public floor-map booking state and branch persistence.
+
 # v1.45.0 — Sales Table QR
 
 - Replaces printable customer QR destinations with branch-scoped authenticated Sales table recording.

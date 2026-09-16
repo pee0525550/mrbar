@@ -489,6 +489,14 @@ function db_migrate_array(array $d): array {
     $d['meta']['migrated_at']=$d['meta']['migrated_at']??date('c');
     return $d;
 }
+// An open Sales round keeps the shared customer/Night Ops table occupied.
+// Preserve explicit blocked/inactive tables. Never expose attribution details publicly.
+function db_sync_sales_table_status(array $view): array {
+    $open=[];
+    foreach($view['sales_table_sessions']??[] as $s)if(($s['status']??'')==='open')$open[(int)($s['table_id']??0)]=true;
+    foreach($view['tables']??[] as $i=>$t)if(isset($open[(int)($t['id']??0)])&&!empty($t['active'])&&($t['status']??'')!=='blocked')$view['tables'][$i]['status']='occupied';
+    return $view;
+}
 function db_branch_view(array $raw,?int $branchId=null): array {
     $raw=db_migrate_array($raw);$branchId=$branchId?:db_active_branch_id($raw);
     if(!isset($raw['branch_data'][(string)$branchId]))$branchId=(int)($raw['branches'][0]['id']??1);
@@ -497,9 +505,10 @@ function db_branch_view(array $raw,?int $branchId=null): array {
     $view['audit']=array_values(array_filter($raw['audit'],fn($a)=>(int)($a['branch_id']??$branchId)===$branchId));
     $view['meta']=$raw['meta'];$view['meta']['active_branch_id']=$branchId;
     $view['_branch_context']=['id'=>$branchId];
-    return $view;
+    return db_sync_sales_table_status($view);
 }
 function db_merge_branch_view(array $raw,array $view,int $branchId): array {
+    $view=db_sync_sales_table_status($view);
     $raw=db_migrate_array($raw);$key=(string)$branchId;
     foreach(db_branch_bucket_names() as $bucket)$raw['branch_data'][$key][$bucket]=$view[$bucket]??($bucket==='settings'?[]:[]);
     if(isset($view['users'])&&is_array($view['users'])){
