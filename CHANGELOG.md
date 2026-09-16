@@ -1,3 +1,12 @@
+# v1.44.2 — Team and Sales Revenue Context
+
+- Shows the total net sales for each PR team detected from the selected POS report in Step 3.
+- Shows each Sales employee's direct net sales alongside direct D/M drink units and income.
+- Shows the combined net sales of every PR team assigned to each Sales employee.
+- Keeps net sales as decision context only; commission continues to use the configured D/M rates.
+- Expanded regression coverage for team totals, direct Sales totals, and multi-team Sales totals.
+- Schema remains v28; no migration is required.
+
 # v1.44.1 — Multi-Team Sales Assignment
 
 - Allows the same Sales employee to be selected as the owner of multiple POS teams in Step 3.
