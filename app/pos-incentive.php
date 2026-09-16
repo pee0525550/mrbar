@@ -256,7 +256,8 @@ function posi_role_commission_rule(array $d,string $from,string $to): array {
 }
 function posi_category_team_code(string $category): string {
     $raw=trim(preg_replace('/\s+/u',' ',$category)??'');if($raw==='')return '';
-    $team=trim((string)(preg_replace('/^(?:PR|SALES)\s*[-_\/]?\s*/iu','',$raw)??''));
+    $team=trim((string)(preg_replace('/^(?:PR|SALES)(?:\s*[-_\/]\s*|\s+)/iu','',$raw)??''));
+    $team=trim((string)(preg_replace('/^(?:D|M)(?:\s*[-_\/]\s*|\s+)/iu','',$team)??''));
     return strtoupper($team!==''?$team:$raw);
 }
 function posi_row_role(array $row,?array $employee=null): string {
@@ -265,7 +266,7 @@ function posi_row_role(array $row,?array $employee=null): string {
     $position=(string)($employee['position']??'');return in_array($position,['pr','sales'],true)?$position:'';
 }
 function posi_role_commission_results(array $d,array $rule,string $from,string $to): array {
-    $people=[];$unmapped=[];$teamPr=[];$teamMap=is_array($rule['team_sales_map']??null)?$rule['team_sales_map']:[];
+    $people=[];$unmapped=[];$teamPr=[];$rawTeamMap=is_array($rule['team_sales_map']??null)?$rule['team_sales_map']:[];$teamMap=[];foreach($rawTeamMap as $teamCode=>$salesId){$normalizedTeam=posi_category_team_code((string)$teamCode);if($normalizedTeam!==''&&(int)$salesId>0)$teamMap[$normalizedTeam]=(int)$salesId;}
     $activeRows=posi_active_rows_period($d,$from,$to);$branchId=(int)($d['_branch_context']['id']??$d['meta']['active_branch_id']??1);$branch=null;foreach($d['branches']??[] as $branchRow)if((int)($branchRow['id']??0)===$branchId){$branch=$branchRow;break;}$branch=$branch??['name'=>'','slug'=>'','code'=>''];$branchText=mb_strtolower(implode(' ',[(string)($branch['name']??''),(string)($branch['slug']??''),(string)($branch['code']??'')]),'UTF-8');$branchTokens=array_values(array_filter(array_map('posi_norm',preg_split('/[^a-z0-9ก-๙]+/u',$branchText)?:[]),fn($token)=>mb_strlen($token)>=3&&!in_array($token,['club','ktv','branch','exclusive'],true)));$detected=[];foreach($activeRows as $candidate){$candidateTeam=posi_category_team_code((string)($candidate['item_category']??''));if($candidateTeam!=='')$detected[$candidateTeam]=true;}$branchTeams=[];foreach(array_keys($detected) as $candidateTeam){$normalized=posi_norm($candidateTeam);foreach($branchTokens as $token)if(strpos($normalized,$token)!==false){$branchTeams[$candidateTeam]=true;break;}}
     $makePerson=static function(array $employee,string $role): array {$eid=(int)$employee['id'];return ['employee_id'=>$eid,'name'=>(string)($employee['name']??$employee['code']??('#'.$eid)),'role'=>$role,'team_code'=>'','team_lead'=>false,'own_d'=>0.0,'own_m'=>0.0,'team_pr_d'=>0.0,'team_pr_m'=>0.0,'own_commission'=>0.0,'team_commission'=>0.0,'total_commission'=>0.0];};
     foreach($activeRows as $row){
