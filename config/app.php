@@ -2,6 +2,6 @@
 return [
  'name'=>'MR BAR',
  'timezone'=>'Asia/Bangkok',
- 'version'=>'1.44.2',
- 'pack'=>'Team and Sales Revenue Context v1.44.2',
+ 'version'=>'1.45.0',
+ 'pack'=>'Sales Table QR v1.45.0',
 ];

@@ -7,6 +7,7 @@ function permission_catalog(): array {
             'dashboard.view'=>'ดู Dashboard','dashboard.financial'=>'ดูข้อมูลการเงินบน Dashboard',
         ]],
         'operations'=>['label'=>'Operations / Check-in','items'=>[
+            'sales_sessions.record'=>'เปิด/ปิดโต๊ะและบันทึก Sales แทน', 'sales_sessions.manage'=>'แก้เจ้าของยอดและใบเสร็จย้อนหลัง',
             'operations.view'=>'ดูคิวงาน','operations.assign_pr'=>'มอบหมาย PR','operations.complete'=>'ปิด/จบงาน','operations.cancel'=>'ยกเลิกงาน','operations.move_table'=>'ย้ายโต๊ะ','operations.quick_floor'=>'สวิตช์สถานะโต๊ะ / PR / เซลแบบด่วน',
         ]],
         'reservations'=>['label'=>'Reservation & Waitlist','items'=>[
@@ -58,11 +59,11 @@ function permission_default_roles(): array {
     return [
         'admin'=>['name'=>'Admin','description'=>'ผู้ดูแลระบบ','builtin'=>1,'home'=>'admin.php','permissions'=>array_fill_keys($all,1)],
         'staff'=>['name'=>'Staff','description'=>'พนักงานหน้าร้าน','builtin'=>1,'home'=>'dashboard.php','permissions'=>array_fill_keys([
-            'dashboard.view','operations.view','operations.assign_pr','operations.complete','operations.cancel','operations.move_table','operations.quick_floor',
+            'sales_sessions.record','dashboard.view','operations.view','operations.assign_pr','operations.complete','operations.cancel','operations.move_table','operations.quick_floor',
             'reservations.view','reservations.manage','reservations.seat','customers.view','customers.manage','pr.view','attendance.view','workforce.attendance.self','workforce.exceptions.view','tables.view','notifications.view','notifications.manage','customer_calls.manage','shifts.view','reports.view'
         ],1)],
-        'sales'=>['name'=>'Sales','description'=>'เซล / ผู้แนะนำลูกค้า','builtin'=>1,'home'=>'employee-time.php','permissions'=>array_fill_keys(['operations.quick_floor','tables.view','pr.view','workforce.attendance.self','shifts.view','notifications.view'],1)],
-        'pr'=>['name'=>'PR','description'=>'PR / พนักงานบริการ','builtin'=>1,'home'=>'pr.php','permissions'=>array_fill_keys(['dashboard.view','operations.view','tables.view','notifications.view','shifts.view','workforce.attendance.self','substitute.request'],1)],
+        'sales'=>['name'=>'Sales','description'=>'เซล / ผู้แนะนำลูกค้า','builtin'=>1,'home'=>'employee-time.php','permissions'=>array_fill_keys(['sales_sessions.record','operations.quick_floor','tables.view','pr.view','workforce.attendance.self','shifts.view','notifications.view'],1)],
+        'pr'=>['name'=>'PR','description'=>'PR / พนักงานบริการ','builtin'=>1,'home'=>'pr.php','permissions'=>array_fill_keys(['sales_sessions.record','dashboard.view','operations.view','tables.view','notifications.view','shifts.view','workforce.attendance.self','substitute.request'],1)],
     ];
 }
 function permission_slug(string $value): string {

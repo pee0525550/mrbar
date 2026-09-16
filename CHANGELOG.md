@@ -1,3 +1,14 @@
+# v1.45.0 — Sales Table QR
+
+- Replaces printable customer QR destinations with branch-scoped authenticated Sales table recording.
+- Records Sales owner separately from opening/closing staff; PR, Sales and staff may record on behalf of Sales.
+- Requires receipt numbers to close; supports split bills and rejects duplicate receipts within a branch.
+- Rejects duplicate open rounds, unauthorized branch access and stale updates; all writes use the database lock.
+- Manager-only owner/receipt corrections require reasons and preserve before/after audit history.
+- Keeps attribution rounds separate from Night Ops seating and from POS drink commission calculations.
+- Receipt matching is pending: no sales amount is inferred from Sales drink-menu revenue.
+- Existing printed customer QR codes must be replaced. No existing sales or check-in data is deleted.
+
 # v1.44.2 — Team and Sales Revenue Context
 
 - Shows the total net sales for each PR team detected from the selected POS report in Step 3.

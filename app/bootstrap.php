@@ -42,9 +42,10 @@ function role_home(string $role):string{try{$d=db_load();$home=(string)($d['role
 /* PWA/login return helpers. Only named, whitelisted destinations are accepted. */
 function login_return_key():string{
     $key=trim((string)($_POST['return_to']??$_GET['return_to']??''));
-    return in_array($key,['time','income'],true)?$key:'';
+    return in_array($key,['time','income','sales_table'],true)?$key:'';
 }
 function login_success_target(array $u,string $returnKey=''):string{
+    if($returnKey==='sales_table'){ $q=$_SESSION['sales_table_return']??[]; return 'sales-table.php?'.http_build_query(['public_branch'=>(string)($q['public_branch']??''),'table_id'=>(int)($q['table_id']??0)]); }
     if($returnKey==='time')return 'time.php';
     if($returnKey==='income')return 'employee-income.php';
     return role_home((string)($u['role']??''));
