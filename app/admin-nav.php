@@ -14,9 +14,7 @@ function admin_sidebar($active, $user=array()) {
         )),
         array('icon'=>'♙', 'label'=>'ทีมงาน & บุคลากร', 'hint'=>'PEOPLE', 'items'=>array(
             array('employees','employees.php','♙','Employee Center','ประวัติ / ตำแหน่ง / บัญชี / รูปพนักงาน'),
-            array('drinks','pos-drinks.php','฿','ค่าดื่ม','ดื่มส่วนตัว PR / Sales'),
-            array('commission','pos-commission.php','฿','ค่าคอม','ค่าคอมทีม / ยอดเชียร์ลูกค้า'),
-            array('reports','pos-reports.php','▤','Report','รายงาน / Sort / เคลียร์ข้อมูล'),
+            array('incentive','pos-incentive.php','฿','POS Incentive & Commission','Import / ค่าดื่ม / ค่าคอม / Report'),
             array('prview','staff-preview.php','◉','MR BAR TIME Preview','ทดสอบหน้าจอพนักงาน / Read-only'),
         )),
         array('icon'=>'◴', 'label'=>'ตารางงาน & เวลา', 'hint'=>'WORKFORCE', 'items'=>array(

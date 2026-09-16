@@ -1,7 +1,7 @@
 {
-  "version": "1.46.2",
-  "build_id": "MRBAR-v1.46.2-20260916",
-  "pack": "Control Center Tools Navigation v1.46.2",
+  "version": "1.46.3",
+  "build_id": "MRBAR-v1.46.3-20260916",
+  "pack": "Unified POS Incentive Suite v1.46.3",
   "schema": 28,
   "migration": false,
   "base": "1.44.2",

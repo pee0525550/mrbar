@@ -1,3 +1,10 @@
+# v1.46.3 — Unified POS Incentive Suite
+
+- รวมเมนูค่าดื่ม ค่าคอม และ Report กลับไว้ใต้ POS Incentive & Commission รายการเดียว
+- เชื่อมระบบเดิม Import / Process / Mapping / Sort กับสองแกนคำนวณใหม่ผ่านแถบขั้นตอนเดียว
+- ปรับหน้าค่าดื่มและค่าคอมให้ใช้ Sidebar, Header, Card และสีชุดเดียวกับหน้าระบบเดิม
+- ไม่เปลี่ยนข้อมูลหรือรอบบันทึกที่แยกอย่างปลอดภัยไว้แล้ว
+
 # v1.46.2 — Control Center Navigation
 
 - ย้ายเมนู Tools & Reports (QR / Shift / Reports) ไปอยู่ใต้ศูนย์ควบคุม
