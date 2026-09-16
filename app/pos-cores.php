@@ -35,8 +35,8 @@ function pc_save(array $d,string $core,int $batchId,array $input,int $uid): arra
     $bucket=pc_bucket($core);$result=pc_calculate($d,$core,$batchId,$input);
     if(!$result['rows'])throw new RuntimeException('ยังไม่มีรายการสำหรับบันทึก');
     if($result['unmapped'])throw new RuntimeException('ผูกเมนูกับ Employee Card ให้ครบก่อนบันทึก');
-    foreach($d[$bucket]??[] as $old)if((int)$old['batch_id']===$batchId)throw new RuntimeException('Report นี้บันทึกในหัวข้อนี้แล้ว');
-    $result['id']=next_id($d[$bucket]??[]);$result['saved_at']=date('c');$result['saved_by']=$uid;
+    foreach($d[$bucket]??[] as $old)if((int)$old['batch_id']===$batchId&&($old['status']??'saved')!=='void')throw new RuntimeException('Report นี้บันทึกในหัวข้อนี้แล้ว');
+    $result['id']=next_id($d[$bucket]??[]);$result['status']='saved';$result['saved_at']=date('c');$result['saved_by']=$uid;
     $d[$bucket][]=$result;$d['audit'][]=['at'=>date('c'),'action'=>$core.'_payout_saved','by'=>$uid,'batch_id'=>$batchId,'round_id'=>$result['id']];
     return $d;
 }

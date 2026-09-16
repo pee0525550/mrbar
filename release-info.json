@@ -1,7 +1,7 @@
 {
-  "version": "1.46.0",
-  "build_id": "MRBAR-v1.46.0-20260916",
-  "pack": "Separate Drinks and Commission v1.46.0",
+  "version": "1.46.1",
+  "build_id": "MRBAR-v1.46.1-20260916",
+  "pack": "POS Report Center v1.46.1",
   "schema": 28,
   "migration": false,
   "base": "1.44.2",
