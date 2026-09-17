@@ -63,6 +63,13 @@ function posr_void_round(array $d,string $core,int $roundId,int $uid,string $rea
     $d['audit'][]=['at'=>date('c'),'action'=>$core.'_payout_voided','round_id'=>$roundId,'reason'=>$reason,'by'=>$uid];return $d;
 }
 
+
+function posr_clear_bill_batch(array $d,int $batchId,int $uid,string $reason): array {
+    $reason=trim($reason);if($reason==='')throw new RuntimeException('กรุณาระบุเหตุผล');
+    posi_void_bill_batch($d,$batchId,$uid);
+    $d['audit'][]=['at'=>date('c'),'action'=>'pos_bill_report_cleared','batch_id'=>$batchId,'reason'=>$reason,'by'=>$uid];return $d;
+}
+
 function posr_clear_batch(array $d,int $batchId,int $uid,string $reason): array {
     $reason=trim($reason);if($reason==='')throw new RuntimeException('กรุณาระบุเหตุผล');
     foreach(posr_rounds($d,false) as $r)if((int)($r['batch_id']??0)===$batchId)throw new RuntimeException('Report นี้มีรอบค่าดื่มหรือค่าคอมที่บันทึกอยู่ กรุณายกเลิกรอบก่อน');

@@ -119,7 +119,7 @@ function posi_headers(array $row): array {
 }
 function posi_extract_table(array $rows,int $limit=0): array {
     if(!$rows)throw new RuntimeException('ไม่พบข้อมูลในไฟล์');
-    $need=['รหัสสินค้า','ชื่อสินค้า','สินค้า','product','กลุ่ม','หมวดสินค้า','จำนวนการขาย','จำนวนขาย','quantity','ราคาสุทธิ','ยอดขายสุทธิ','net sales'];
+    $need=['รหัสสินค้า','ชื่อสินค้า','สินค้า','product','กลุ่ม','หมวดสินค้า','จำนวนการขาย','จำนวนขาย','quantity','ราคาสุทธิ','ยอดขายสุทธิ','net sales','เลขบิล','เลขที่บิล','receipt no','โต๊ะ','วันที่','เวลา'];
     $best=0;$bestScore=-1;$scan=min(12,count($rows));
     for($ri=0;$ri<$scan;$ri++){$score=0;foreach($rows[$ri] as $cell){$n=posi_norm((string)$cell);if($n==='')continue;foreach($need as $word){$w=posi_norm($word);if($n===$w||strpos($n,$w)!==false){$score++;break;}}}if($score>$bestScore){$bestScore=$score;$best=$ri;}}
     if($bestScore<2)$best=0;
@@ -152,7 +152,8 @@ function posi_guess_columns(array $headers): array {
         'sales'=>['ราคาสุทธิ','ยอดขายสุทธิ','net sales','net amount','sales amount','amount'],
         'cost'=>['ต้นทุน ต้นทุนเฉลี่ย x จำนวนการขาย','ต้นทุนรวม','total cost'],
         'profit'=>['กำไร ยอดรวม - ต้นทุน - ส่วนลด','กำไรรวม','profit'],
-        'ref'=>['bill','receipt','transaction','reference','บิล','เลขที่บิล','receipt no']
+        'ref'=>['bill','receipt','transaction','reference','บิล','เลขที่บิล','receipt no','เลขบิล'],
+        'table'=>['table','table no','table number','โต๊ะ','หมายเลขโต๊ะ']
     ];$out=array_fill_keys(array_keys($sets),-1);
     // Prefer exact header matches first so "รหัสสินค้า" cannot steal the "ชื่อสินค้า" mapping.
     foreach($headers as $i=>$h){$n=posi_norm((string)$h);foreach($sets as $key=>$words){if($out[$key]>=0)continue;foreach($words as $w){if($n===posi_norm($w)){$out[$key]=(int)$i;break;}}}}
@@ -170,6 +171,41 @@ function posi_preview_summary(array $parsed,array $map): array {
     $out=['rows'=>0,'net_sales'=>0.0,'candidate_rows'=>0,'candidate_units'=>0.0,'candidate_sales'=>0.0,'d_units'=>0.0,'m_units'=>0.0];
     foreach($parsed['rows'] as $raw){$get=function(string $k)use($raw,$map){$i=(int)($map[$k]??-1);return $i>=0?($raw[$i]??''):'';};$item=trim((string)$get('item'));if($item===''||strcasecmp(trim((string)($raw[0]??'')),'Total')===0)continue;$out['rows']++;$qty=max(0,posi_parse_number($get('qty')));$sales=posi_parse_number($get('sales'));$out['net_sales']+=$sales;$info=posi_candidate_info($item,(string)$get('group'),(string)$get('category'));if(!$info['eligible'])continue;$out['candidate_rows']++;$out['candidate_units']+=$qty;$out['candidate_sales']+=$sales;$out[strtolower($info['drink_code']).'_units']+=$qty;}
     return $out;
+}
+
+
+function posi_void_bill_batch(array &$d,int $batchId,int $userId): array {
+    foreach($d['pos_bill_batches']??[] as &$b){if((int)($b['id']??0)!==$batchId)continue;if(($b['status']??'active')==='void')throw new RuntimeException('Batch รายละเอียดบิลนี้ถูกยกเลิกแล้ว');$b['status']='void';$b['voided_at']=date('c');$b['voided_by']=$userId;if(!isset($d['pos_bill_rows'])||!is_array($d['pos_bill_rows']))$d['pos_bill_rows']=[];foreach($d['pos_bill_rows'] as &$r)if((int)($r['batch_id']??0)===$batchId)$r['active']=0;unset($r);if(!isset($d['sales_table_sessions'])||!is_array($d['sales_table_sessions']))$d['sales_table_sessions']=[];foreach($d['sales_table_sessions'] as &$s)if((int)($s['matched_bill_batch_id']??0)===$batchId){$s['match_status']='pending';$s['matched_net_sales']=null;unset($s['matched_bill_batch_id'],$s['matched_at']);}unset($s);$d['audit'][]=['at'=>date('c'),'action'=>'pos_bill_batch_voided','batch_id'=>$batchId,'by'=>$userId];$out=$b;unset($b);return $out;}unset($b);throw new RuntimeException('ไม่พบ Batch รายละเอียดบิล');
+}
+
+function posi_bill_report_label(string $kind): string {return $kind==='bill_detail'?'รายงานรายละเอียดบิล':'รายงานยอดขายตามเมนู';}
+function posi_commit_bill_import(array $d,array $entry,array $parsed,array $map,int $userId): array {
+    if(($map['ref']??-1)<0||($map['sales']??-1)<0||($map['date']??-1)<0)throw new RuntimeException('ไฟล์รายละเอียดบิลต้องมีคอลัมน์เลขบิล วันที่/เวลา และยอดขาย');
+    if(!isset($d['pos_bill_batches'])||!is_array($d['pos_bill_batches']))$d['pos_bill_batches']=[];
+    if(!isset($d['pos_bill_rows'])||!is_array($d['pos_bill_rows']))$d['pos_bill_rows']=[];
+    foreach($d['pos_bill_batches'] as $old)if(($old['sha256']??'')===($entry['sha256']??'')&&($old['status']??'active')==='active')throw new RuntimeException('ไฟล์รายละเอียดบิลนี้ Process แล้ว');
+    $batchId=next_id($d['pos_bill_batches']);$agg=[];
+    foreach($parsed['rows'] as $raw){
+        $get=fn(string $k)=>(int)($map[$k]??-1)>=0?($raw[(int)$map[$k]]??''):'';
+        $receipt=mb_strtoupper(trim((string)$get('ref')),'UTF-8');if($receipt===''||mb_strtolower($receipt,'UTF-8')==='total')continue;
+        $amount=posi_parse_number($get('sales'));$dateRaw=trim((string)$get('date'));$saleDate=posi_parse_date($dateRaw);
+        $table=trim((string)$get('table'));if(!isset($agg[$receipt]))$agg[$receipt]=['receipt_no'=>$receipt,'sale_date'=>$saleDate,'sale_datetime_raw'=>$dateRaw,'table_code'=>$table,'net_sales'=>0.0,'source_rows'=>0];
+        $agg[$receipt]['net_sales']+=$amount;$agg[$receipt]['source_rows']++;
+        if($agg[$receipt]['sale_date']===''&&$saleDate!=='')$agg[$receipt]['sale_date']=$saleDate;
+        if($agg[$receipt]['table_code']===''&&$table!=='')$agg[$receipt]['table_code']=$table;
+    }
+    if(!$agg)throw new RuntimeException('ไม่พบรายการเลขบิลในไฟล์');
+    foreach($agg as $row)$d['pos_bill_rows'][]=array_merge(['id'=>next_id($d['pos_bill_rows']),'batch_id'=>$batchId,'active'=>1],$row);
+    $matchedSessions=0;$matchedReceipts=0;if(!isset($d['sales_table_sessions'])||!is_array($d['sales_table_sessions']))$d['sales_table_sessions']=[];
+    foreach($d['sales_table_sessions'] as &$session){
+        $receipts=array_values(array_filter(array_map(fn($v)=>mb_strtoupper(trim((string)$v),'UTF-8'),$session['receipts']??[])));
+        if(!$receipts)continue;$sum=0.0;$found=0;
+        foreach($receipts as $receipt)if(isset($agg[$receipt])){$sum+=(float)$agg[$receipt]['net_sales'];$found++;}
+        if($found>0){$session['matched_net_sales']=$sum;$session['match_status']=$found===count($receipts)?'matched':'partial';$session['matched_bill_batch_id']=$batchId;$session['matched_at']=date('c');$matchedSessions++;$matchedReceipts+=$found;}
+    }unset($session);
+    $batch=['id'=>$batchId,'sha256'=>(string)$entry['sha256'],'filename'=>(string)$entry['original_name'],'period_start'=>(string)$entry['period_from'],'period_end'=>(string)$entry['period_to'],'status'=>'active','bill_count'=>count($agg),'total_sales'=>array_sum(array_column($agg,'net_sales')),'matched_sessions'=>$matchedSessions,'matched_receipts'=>$matchedReceipts,'imported_at'=>date('c'),'imported_by'=>$userId];
+    $d['pos_bill_batches'][]=$batch;$d['audit'][]=['at'=>date('c'),'action'=>'pos_bill_report_processed','batch_id'=>$batchId,'bills'=>count($agg),'matched_sessions'=>$matchedSessions,'by'=>$userId];
+    return [$d,$batch];
 }
 
 function posi_inbox_dir(): string {$dir=__DIR__.'/../storage/pos-upload-inbox';if(!is_dir($dir)&&!@mkdir($dir,0775,true)&&!is_dir($dir))throw new RuntimeException('สร้างพื้นที่เก็บไฟล์ POS ไม่ได้');return $dir;}
