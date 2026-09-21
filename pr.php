@@ -2,8 +2,8 @@
 // v1.11.3: mobile secure-context / permissions hardening
 $https = (!empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off') || strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
 if (!$https) {
-    $host = (string)($_SERVER['HTTP_HOST'] ?? 'nigiwaigroup.com');
-    $uri = (string)($_SERVER['REQUEST_URI'] ?? '/it/pr.php');
+    $host = (string)($_SERVER['HTTP_HOST'] ?? 'mrbarsupport.com');
+    $uri = (string)($_SERVER['REQUEST_URI'] ?? '/pr.php');
     header('Location: https://'.$host.$uri, true, 302);
     exit;
 }

@@ -5,12 +5,14 @@ function next_id(array $rows):int{return count($rows)+1;}
 $data['pos_import_batches']=[['id'=>1,'status'=>'active','period_start'=>'2026-08-01','period_end'=>'2026-08-31']];
 foreach($data['pos_sales_rows'] as &$r)$r['batch_id']=1;unset($r);
 $drinks=pc_calculate($data,'drinks',1,$rule);
-$comm=pc_calculate($data,'commission',1,$rule);
+$data['pos_bill_batches']=[['id'=>1,'status'=>'active','period_start'=>'2026-08-01','period_end'=>'2026-08-31']];
+$data['sales_table_sessions']=[['id'=>1,'sales_id'=>2,'sales_label'=>'Sale A','receipts'=>['INV-001'],'match_status'=>'matched','matched_bill_batch_id'=>1,'matched_net_sales'=>252000]];
+$comm=pc_calculate($data,'commission',1,['tier_limit'=>[200000,300000,400000,500000,600000],'tier_multiplier'=>[50,60,70,80,90]]);
 role_check($drinks['total']===94.0,'drink core excludes team commission');
-role_check($comm['total']===32.0,'commission core excludes personal drinks');
-role_check(count($comm['rows'])===1,'commission only includes team Sales recipients');
+role_check($comm['total']===60.0,'commission core stores Sales drink multiplier from bill sales');
+role_check(count($comm['rows'])===1,'commission includes matched Sales recipients only');
 role_check($drinks['rule']['sales_team_rate_d']===0.0,'cross-core posted team rate ignored');
-role_check($comm['rule']['sales_own_rate_d']===0.0,'cross-core posted own rate ignored');
+role_check(!isset($comm['rule']['sales_own_rate_d']),'legacy drink rate is excluded from bill commission');
 // Fully map fixture for final save.
 foreach($data['pos_sales_rows'] as &$r)if(strpos($r['item_category'],'VIP')!==false)$r['employee_id']=1;unset($r);
 $saved=pc_save($data,'drinks',1,$rule,7);

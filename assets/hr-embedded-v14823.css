@@ -1,0 +1,9 @@
+/* Embedded HR module surfaces v1.48.23 */
+body.hr-embedded{background:#f7f9fd!important;overflow-x:hidden}
+body.hr-embedded .sidebar,body.hr-embedded .admin-sidebar,body.hr-embedded .admin-v14-sidebar{display:none!important}
+body.hr-embedded .leave-admin,body.hr-embedded .wx-shell,body.hr-embedded .pa-wrap{margin-left:0!important;max-width:none!important;width:100%!important;padding:18px 18px 28px!important}
+body.hr-embedded .la-head,body.hr-embedded .wx-head,body.hr-embedded .pa-head{border-radius:14px;background:linear-gradient(135deg,#f6f3ff,#eef5ff);border:1px solid #e1dcf4;padding:16px!important;margin-bottom:14px!important}
+body.hr-embedded .la-head h1,body.hr-embedded .wx-head h1,body.hr-embedded .pa-head h1{font-size:22px!important}
+body.hr-embedded .la-head>div:last-child,body.hr-embedded .wx-head>a,body.hr-embedded .pa-head .head-actions{display:none!important}
+body.hr-embedded footer{display:none!important}
+body.hr-embedded .panel,body.hr-embedded .wx-panel,body.hr-embedded .la-card,body.hr-embedded .person-card{box-shadow:0 8px 24px rgba(42,54,87,.06)!important}

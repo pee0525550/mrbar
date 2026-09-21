@@ -9,7 +9,7 @@ function db_path(): string { return is_file(db_runtime_path()) ? db_runtime_path
 function db_default(): array {
     return [
         'users'=>[], 'tables'=>[], 'prs'=>[], 'checkins'=>[], 'attendance'=>[], 'notifications'=>[],
-        'shifts'=>[], 'service_calls'=>[], 'reservations'=>[], 'customers'=>[], 'daily_closes'=>[], 'branches'=>[], 'leave_requests'=>[], 'customer_media'=>[], 'employees'=>[], 'time_correction_requests'=>[], 'substitute_requests'=>[], 'shift_templates'=>[], 'roster_batches'=>[], 'privacy_consents'=>[], 'account_invites'=>[],
+        'shifts'=>[], 'service_calls'=>[], 'reservations'=>[], 'customers'=>[], 'daily_closes'=>[], 'branches'=>[], 'leave_requests'=>[], 'customer_media'=>[], 'employees'=>[], 'time_correction_requests'=>[], 'substitute_requests'=>[], 'attendance_penalties'=>[], 'shift_templates'=>[], 'roster_batches'=>[], 'privacy_consents'=>[], 'account_invites'=>[],
         'roles'=>permission_default_roles(),
         'settings'=>[
             'shop_name'=>'MR BAR','shop_phone'=>'','maintenance'=>'0','attendance_face_required'=>'1',
@@ -26,6 +26,7 @@ function db_default(): array {
             'leave_request_enabled'=>'1','leave_max_days_per_request'=>'31',
             'attendance_missing_checkout_grace_minutes'=>'120','attendance_auto_offline_missing'=>'1','attendance_provisional_close_enabled'=>'1','attendance_correction_request_enabled'=>'1',
             'substitute_request_enabled'=>'1','substitute_external_allowed'=>'1',
+            'pr_no_show_penalty_enabled'=>'1','pr_no_show_penalty_mode'=>'fixed','pr_no_show_penalty_amount'=>'500','pr_no_show_penalty_grace_minutes'=>'60',
             'customer_web_enabled'=>'1','customer_web_show_staff_login'=>'0','customer_web_floating_booking'=>'1',
             'customer_web_hero_badge'=>'LIVE EXPERIENCE · MR BAR','customer_web_hero_title'=>'คืนนี้ให้เป็นเรื่องของเรา',
             'customer_web_hero_accent'=>'สนุกให้สุด ในแบบของคุณ','customer_web_hero_subtitle'=>'บรรยากาศ แสงสี PR และบริการที่เชื่อมต่อกับระบบร้านแบบเรียลไทม์',
@@ -96,7 +97,7 @@ function db_migrate_legacy_array(array $d): array {
         if(!array_key_exists('service_note',$c)) $c['service_note']='';
         if(!array_key_exists('table_history',$c) || !is_array($c['table_history'])) $c['table_history']=[];
     } unset($c);
-    foreach(['attendance','audit','notifications','shifts','service_calls','reservations','customers','daily_closes','branches','leave_requests','customer_media','employees','time_correction_requests','substitute_requests','shift_templates','roster_batches','privacy_consents','account_invites'] as $bucket){if(!isset($d[$bucket])||!is_array($d[$bucket]))$d[$bucket]=[];}
+    foreach(['attendance','audit','notifications','shifts','service_calls','reservations','customers','daily_closes','branches','leave_requests','customer_media','employees','time_correction_requests','substitute_requests','attendance_penalties','shift_templates','roster_batches','privacy_consents','account_invites'] as $bucket){if(!isset($d[$bucket])||!is_array($d[$bucket]))$d[$bucket]=[];}
 
     if(!$d['branches']){
         $d['branches'][]=['id'=>1,'code'=>'MAIN','name'=>'MR BAR Main','address'=>(string)($d['settings']['shop_address']??''),'lat'=>null,'lng'=>null,'radius_m'=>(int)($d['settings']['attendance_default_radius_m']??200),'active'=>1,'created_at'=>date('c'),'updated_at'=>date('c')];
@@ -275,7 +276,7 @@ function db_read_file(string $p): array {if(!is_file($p))throw new RuntimeExcept
 function db_branch_bucket_names(): array {
     return [
         'settings','tables','prs','checkins','attendance','notifications','shifts','service_calls','reservations','customers','daily_closes',
-        'leave_requests','customer_media','customer_hero_media','employees','time_correction_requests','substitute_requests',
+        'leave_requests','customer_media','customer_hero_media','employees','time_correction_requests','substitute_requests','attendance_penalties',
         'shift_templates','roster_batches','privacy_consents','account_invites','floor_plans','floor_plan_items',
         'drink_payout_rounds','commission_payout_rounds','pos_bill_batches','pos_bill_rows','sales_table_sessions','floor_plan_versions','floor_service_sessions','pos_import_batches','pos_incentive_closings','pos_incentive_rules','pos_sales_rows','pos_upload_inbox','sales_commission_rules','pos_r4_rules','pos_r4_employee_inputs','pos_commission_holds'
     ];
@@ -497,10 +498,18 @@ function db_sync_sales_table_status(array $view): array {
     foreach($view['tables']??[] as $i=>$t)if(isset($open[(int)($t['id']??0)])&&!empty($t['active'])&&($t['status']??'')!=='blocked')$view['tables'][$i]['status']='occupied';
     return $view;
 }
+function db_scope_branch_rows(array $rows,int $branchId): array {
+    return array_values(array_filter($rows,function($row)use($branchId){
+        if(!is_array($row)||!array_key_exists('branch_id',$row))return true;
+        $rowBranch=(int)($row['branch_id']??0);
+        return $rowBranch<=0||$rowBranch===$branchId;
+    }));
+}
 function db_branch_view(array $raw,?int $branchId=null): array {
     $raw=db_migrate_array($raw);$branchId=$branchId?:db_active_branch_id($raw);
     if(!isset($raw['branch_data'][(string)$branchId]))$branchId=(int)($raw['branches'][0]['id']??1);
     $view=$raw['branch_data'][(string)$branchId]??db_empty_branch_data();
+    foreach(db_branch_bucket_names() as $bucket)if($bucket!=='settings'&&is_array($view[$bucket]??null))$view[$bucket]=db_scope_branch_rows($view[$bucket],$branchId);
     $view['users']=$raw['users'];$view['roles']=$raw['roles'];$view['branches']=$raw['branches'];$view['portal_settings']=$raw['portal_settings'];
     $view['audit']=array_values(array_filter($raw['audit'],fn($a)=>(int)($a['branch_id']??$branchId)===$branchId));
     $view['meta']=$raw['meta'];$view['meta']['active_branch_id']=$branchId;

@@ -1,9 +1,9 @@
 {
-  "version": "1.46.3",
-  "build_id": "MRBAR-v1.46.3-20260916",
-  "pack": "Unified POS Incentive Suite v1.46.3",
+  "version": "1.48.46",
+  "build_id": "MRBAR-v1.48.46-20260921",
+  "pack": "Public Storefront Read-Only Fallback v1.48.46",
   "schema": 28,
   "migration": false,
-  "base": "1.44.2",
-  "updated_at": "2026-09-16"
+  "base": "1.48.45",
+  "updated_at": "2026-09-21"
 }

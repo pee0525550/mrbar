@@ -1,3 +1,119 @@
+# v1.48.14 — POS Sales Direct Drink Save
+
+- เพิ่มปุ่ม “เสร็จสิ้น / บันทึกยอด” หลังคำนวณค่าดื่ม Sales ดื่มตรง
+- บันทึกผลเป็นรายงานจริงในรอบค่าดื่ม โดยแยกหัวข้อเป็น `sales_direct_drink`
+- ป้องกันการบันทึกซ้ำสำหรับ Report เดียวกันในหัวข้อ Sales ดื่มตรง
+- เพิ่มประวัติรายงานที่บันทึกแล้วให้แสดงเมนู Sales, Sales ที่จับคู่, D/M, ตัวคูณ และยอดจ่าย
+- ไม่มี DB migration
+
+# v1.48.13 — POS Sales Direct Drink Mapping
+
+- เพิ่มหน้าคำนวณ preview สำหรับ “ค่าดื่ม Sales ดื่มตรง” โดยดึงเฉพาะกลุ่ม Sales จาก Report ยอดขายตามเมนู
+- แสดงตัวคูณจากค่าคอม Sales ที่บันทึกไว้ก่อนหน้าในรอบวันที่เดียวกัน
+- เพิ่มตารางจับคู่ชื่อเมนูเซลกับชื่อ Sales จากระบบ แล้วคำนวณผลในหน้าเดิมโดยไม่เด้งไปหน้าอื่น
+- ยังไม่บันทึกรอบจริง เพื่อให้รีวิวสูตรและหน้าตาก่อน
+- ไม่มี DB migration
+
+# v1.48.12 — POS Sales Drinks Split Landing
+
+- เพิ่มหน้าคั่นเฉพาะ “ค่าดื่ม Sales” เพื่อแยก 2 ปุ่ม “ดื่มตรงของ Sales” และ “ดื่มจากน้อง PR ในทีม”
+- กด “คำนวณค่าดื่มของ Sales” จากหน้าเลือกค่าดื่ม จะยังไม่เข้าฟอร์มทันที แต่ให้เลือกประเภทย่อยก่อน
+- ตั้งชื่อหน้าคำนวณปลายทางตามประเภทย่อย เพื่อรอต่อสูตรแยกกันในรอบถัดไป
+- ไม่มี DB migration
+
+# v1.48.11 — POS Drinks PR Sales Landing
+
+- เพิ่มหน้า Landing ก่อนเข้าคำนวณค่าดื่ม เพื่อแยกทางเข้า “คำนวณค่าดื่มของ PR” และ “คำนวณค่าดื่มของ Sales”
+- ปรับเมนูขั้นตอนค่าดื่มเป็น “ค่าดื่ม PR / Sales” ให้ชัดว่าเป็นจุดเลือกประเภทก่อนต่อสูตร
+- ยังไม่เปลี่ยนสูตรคำนวณจริงของค่าดื่ม เพื่อรอต่อสูตร PR/Sales แยกกันในรอบถัดไป
+- ไม่มี DB migration
+
+# v1.48.10 — POS Commission Sales Sentence Summary
+
+- เปลี่ยนสรุปยอดขาย Sales รายบุคคลจากการ์ดตัวเลขโดด เป็นประโยค “ยอดขายรวม ของเซล ชื่อ ... ประจำรอบวันที่ ... ถึง ... เป็นจำนวนเงิน ... บาท”
+- ยังคงเรียง Sales จากยอดขายรวมมากไปน้อย
+- เอาเลขยอดขายแบบโดดใน summary card ออก เพื่อลดความสับสนกับตารางรายละเอียด
+- ไม่มี DB migration
+
+# v1.48.9 — POS Commission Batch-Scoped Summary
+
+- แก้ยอดสรุป Sales รายบุคคลให้รวมเฉพาะรอบโต๊ะที่จับคู่กับ Report รายละเอียดบิล Batch ที่เลือกอยู่
+- ป้องกัน session จาก Batch/รอบอื่นปนเข้ามาในยอดรวมรายคน
+- ยอดบนการ์ดรายคน, ยอดรวมด้านบน และตารางรายละเอียดจะใช้ชุดข้อมูลเดียวกัน
+- ไม่มี DB migration
+
+# v1.48.8 — POS Commission Tier Multipliers
+
+- ทำสรุปยอดเชียร์ Sales ให้เด่นขึ้น โดยรวมจำนวนบิล, จำนวนรอบโต๊ะ และยอดขายรวมแยกตาม Sales รายคน
+- เปลี่ยนค่าคอม Sales เป็นเงื่อนไข Tier “ยอดขายไม่ถึง X ได้ตัวคูณ Y” ให้แอดมินกรอกเองได้
+- ผลคำนวณแสดง Sales, จำนวนบิล, ยอดขายรวม, Tier ที่เข้า และตัวคูณที่จะใช้ต่อ
+- บันทึกตัวคูณ Sales ลง storage เพื่อใช้ต่อในหน้าคิดค่าดื่ม Sales
+- เพิ่มปุ่มหลังบันทึกค่าคอมเพื่อไปคิดค่าดื่ม PR/Sales ต่อ
+- ไม่มี DB migration
+
+# v1.48.7 — POS Commission Bill-Only Flow
+
+- แยก Flow หน้าค่าคอม Sales ให้อ้างอิงเฉพาะ Report รายละเอียดบิล/ยอดเชียร์ ไม่ใช้ Report ยอดขายตามเมนู
+- หน้า “ค่าดื่ม PR” ยังคงใช้ Report ยอดขายตามเมนูสำหรับคำนวณ D/M เท่านั้น
+- เพิ่มการคำนวณค่าคอม Sales จากยอดเชียร์ที่จับคู่เลขบิลกับรอบโต๊ะ โดยระบุอัตราเป็นเปอร์เซ็นต์
+- ปรับข้อความใน Step bar และ dropdown ให้แยก “ค่าดื่ม PR” กับ “ค่าคอม Sales” ชัดเจน
+- ไม่มี DB migration
+
+# v1.48.6 — POS Bill Report Visibility
+
+- หน้า “ค่าคอม” แสดง Report รายละเอียดบิลที่ Process แล้วโดยตรง พร้อม Batch, ยอดรวม, จำนวนเลขบิล และยอดเชียร์ที่จับคู่กับรอบโต๊ะ
+- เพิ่มตารางรอบโต๊ะ/เลขบิล/Sales ที่จับคู่สำเร็จ เพื่อให้ตรวจข้อมูลหลัง Import ได้ทันที
+- ปรับข้อความช่องเลือก Report ให้ชัดว่า dropdown นั้นเป็นของ Report ยอดขายตามเมนู ไม่ใช่รายละเอียดบิล
+- ไม่มี DB migration
+
+# v1.48.5 — POS Per-File Process Actions
+
+- เปลี่ยนหน้า Process ให้มีปุ่ม “ใช้ไฟล์นี้ Process ...” อยู่ในแต่ละรายการไฟล์
+- เอาปุ่ม “ขั้นตอนต่อไป: Process ไฟล์ที่เลือก” ออกจากแถบล่างในขั้นตอนเลือกไฟล์
+- Process รายละเอียดบิลแล้วส่งไปหน้า “ค่าคอม” เพื่อดูข้อมูลยอดเชียร์/จับคู่บิล
+- Process ยอดขายตามเมนูแล้วยังไปหน้า Sort/ตรวจข้อมูลตามเดิม
+- เพิ่มปุ่มทางลัดหลังไฟล์ Process สำเร็จ
+- ไม่มี DB migration
+
+# v1.48.4 — POS Bill Process Idempotent Guidance
+
+- ถ้า Report รายละเอียดบิลเคย Process แล้ว ระบบจะผูกสถานะ Inbox เป็น completed แทนการฟ้องซ้ำว่า Process แล้ว
+- ปรับข้อความหลัง Process รายละเอียดบิลให้บอกชัดว่าต้อง Process “ยอดขายตามเมนู” เพิ่มสำหรับคำนวณค่าดื่ม/ค่าคอม
+- หน้าเลือก Report ในค่าดื่ม/ค่าคอมจะแสดงคำแนะนำเมื่อมีเฉพาะรายละเอียดบิล แต่ยังไม่มียอดขายตามเมนู
+- Disable ปุ่มไปต่อเมื่อยังไม่มี Report ยอดขายตามเมนูที่ Process สำเร็จ
+- ไม่มี DB migration
+
+# v1.48.3 — POS Process Relaxed Bill Mapping
+
+- ผ่อนเงื่อนไขขั้นตอน 2 สำหรับ Report รายละเอียดบิล ไม่บังคับต้อง auto-detect วันที่/เวลาให้เจอจากหัวคอลัมน์
+- เพิ่มตัวเดาคอลัมน์รายละเอียดบิลแบบกว้างขึ้น รองรับ Bill No, Receipt, Invoice, Total, Paid Amount และชื่อหัวคอลัมน์ภาษาไทยหลายแบบ
+- ถ้าไฟล์รายละเอียดบิลไม่มีวันที่ชัดเจน ระบบจะใช้วันที่สิ้นสุดของ Report เป็น fallback เพื่อให้ Process ต่อได้
+- ยังต้องมีเลขบิล/ใบเสร็จและยอดขายเพื่อใช้จับคู่กับรอบเปิดโต๊ะ
+- ไม่มี DB migration
+
+# v1.48.2 — POS Upload Staging Relaxed Validation
+
+- เอาเงื่อนไขตรวจหัวคอลัมน์ POS ออกจากหน้า Import เพื่อให้ IT อัปโหลดไฟล์ไว้รอได้ก่อน
+- ยังคงตรวจชนิด Report, ช่วงวันที่ และไฟล์ซ้ำตามประเภทเดิม
+- การตรวจคอลัมน์/Mapping ยังไปเกิดตอนทีมทำเงินเดือนเลือกไฟล์ไป Process ในขั้นตอน 2
+- ไม่มี DB migration
+
+# v1.48.1 — Split POS Import Inbox
+
+- แยกหน้า Import POS เป็น 2 ช่องอิสระ: รายละเอียดบิล และยอดขายตามเมนู
+- แต่ละช่องอัปโหลดตรงเข้า Server ได้ทันที ไม่ต้องแนบไฟล์อีกประเภทพร้อมกัน
+- เพิ่มรายการไฟล์บน Server แยกตามประเภท เพื่อให้ IT เห็นว่าไฟล์ไหนรอทีมทำเงินเดือนไป Process ต่อ
+- ปรับ duplicate check ให้แยกตามประเภท Report ไม่ให้ไฟล์คนละประเภทชนกัน
+- ไม่มี DB migration
+
+# v1.48.0 — Full System Report Center
+
+- เพิ่มหน้า Report Center รวมข้อมูลทุกฟังก์ชันหลัก: Operations, Workforce, Customer CRM, POS, Sales และ System Audit
+- เพิ่ม Tool Sort/Filter/Search/Limit แบบจริงจัง พร้อม Export CSV สำหรับสิทธิ์ที่ export ได้
+- เพิ่มเมนู Report Center ใน Sidebar เพื่อเข้าหน้ารายงานรวมจากระบบ Admin
+- เพิ่ม Hidden Clear Report Tool เฉพาะ Super Admin พร้อมยืนยันหลายชั้น, reason, checkbox และ Audit Log
+- การเคลียร์เป็น Soft Clear เฉพาะ report artifacts/cache หรือ POS report ที่ยังไม่ถูก lock ด้วย payout round
+
 # v1.46.3 — Unified POS Incentive Suite
 
 - รวมเมนูค่าดื่ม ค่าคอม และ Report กลับไว้ใต้ POS Incentive & Commission รายการเดียว
@@ -468,3 +584,18 @@
 - Added permission-aware controls for tables.manage, reservations.seat, operations.move_table, operations.complete, and operations.cancel.
 - Added CSRF protection, active Check-in conflict detection, invalid reservation-state protection, inactive-table checks, confirmations, double-submit prevention, and audit events.
 - No schema migration; existing data is preserved.
+# v1.48.46 - Public Storefront Read-Only Fallback
+
+- Fixed all `/shop/{branch}/` pages returning HTTP 500 when the optional public visit counter could not write to the migrated storage database.
+- Visit counting now fails quietly while the storefront continues rendering; transactional actions still report storage permission problems normally.
+- Production hosting must still grant PHP write access to the active database for bookings, check-ins, attendance, and Admin changes.
+- No database schema migration required.
+
+# v1.48.45 - Production Domain Readiness & Regression Audit
+
+- Audited all 112 PHP files and aligned the automated regression suite with the current split POS workflow.
+- Updated HTTPS fallback URLs so root-domain deployment on `mrbarsupport.com` no longer falls back to the test host or `/it` path.
+- Restricted `preflight.php` and `migrate.php` to authenticated Super Admin users; schema mutation now requires a CSRF-protected POST.
+- Synchronized release metadata to v1.48.45 / Schema 28.
+- Added a production migration checklist covering code, runtime data, media, permissions, DNS/SSL, verification, and rollback.
+- No database schema migration and no calculation formula changes.

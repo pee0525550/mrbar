@@ -252,7 +252,9 @@ function mr_theme_install(): void {
     try{$brandingData=db_load();}catch(Throwable $e){$brandingData=[];}
     $faviconScope=mr_branding_favicon_scope();$favicon=mr_branding_asset_url('favicon_'.$faviconScope,$brandingData);
     if($favicon==='')$favicon=$base.'/assets/icons/mrbar-time-192.png?v='.$ver;
-    $branchUi=(!db_is_customer_request()&&current_user())?branch_switcher_html($brandingData):'';
+    $isStaffTime=in_array($script,['time.php','employee-time.php'],true)||($script==='pr.php'&&(string)($_GET['source']??'')==='pwa');
+    $isEmbedded=((string)($_GET['embed']??'')==='1');
+    $branchUi=(!$isStaffTime&&!$isEmbedded&&!db_is_customer_request()&&current_user())?branch_switcher_html($brandingData):'';
     ob_start(function($html)use($base,$ver,$favicon,$branchUi){
         if(!is_string($html)||stripos($html,'<html')===false||stripos($html,'</head>')===false)return $html;
         if(stripos($html,'data-mr-theme-engine')!==false)return $html;

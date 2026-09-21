@@ -18,13 +18,12 @@ function admin_sidebar($active, $user=array()) {
             array('prview','staff-preview.php','◉','MR BAR TIME Preview','ทดสอบหน้าจอพนักงาน / Read-only'),
         )),
         array('icon'=>'◴', 'label'=>'ตารางงาน & เวลา', 'hint'=>'WORKFORCE', 'items'=>array(
-            array('workforce','workforce-schedule.php','▦','Workforce Schedule','กะงานพนักงาน / ปฏิทิน'),
-            array('roster','shift-roster.php','✣','Shift Template & Auto Roster','แม่แบบกะ / จัดกะหลายคน / ตรวจชน'),
+            array('workforce','workforce-schedule.php','▦','ปฏิทินพนักงาน','จัดตารางงาน / Attendance / Leave'),
             array('payroll','payroll-attendance.php','◴','Attendance & Payroll','เวลา / รูป / เงินเดือน'),
-            array('exceptions','workforce-exceptions.php','⚠','Workforce Exceptions','Missing Check-out / คนมาแทน'),
-            array('leaves','admin-leaves.php','☂','Leave Requests','อนุมัติลา / ประวัติลา'),
+            array('approvals','hr-approval-center.php','✓','HR Approval Center','ลา / แก้เวลา / PR มาแทน / Exception'),
         )),
         array('icon'=>'◈', 'label'=>'รายงาน & ช่องทางลูกค้า', 'hint'=>'REPORTS & CUSTOMER', 'items'=>array(
+            array('reports','system-reports.php','▣','Report Center','รายงานรวม / Sort / Export / Audit'),
             array('customers','customers.php','♧','Customer CRM','สมาชิก / VIP / ประวัติจอง / Sales & PR'),
             array('customerweb','customer-web.php','◈','Customer Web','หน้าเว็บ / Content / Booking CTA'),
             array('zonestudio','zone-studio.php','▧','Zone Studio','ผังร้าน 2D / 2.5D / โต๊ะ / Booking Map'),

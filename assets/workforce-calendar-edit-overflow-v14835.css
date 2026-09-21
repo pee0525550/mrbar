@@ -1,0 +1,50 @@
+/* Selected schedule edit form overflow fix v1.48.35 */
+.v19-selected-manage .v19-manage-grid{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  align-items:start;
+}
+.v19-selected-manage .day-section,
+.v19-selected-manage .shift-card,
+.v19-selected-manage .shift-detail,
+.v19-selected-manage .shift-detail form,
+.v19-selected-manage .form-grid,
+.v19-selected-manage .form-grid label{
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+.v19-selected-manage .shift-detail .form-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:9px!important;
+  width:100%!important;
+}
+.v19-selected-manage .shift-detail .form-grid .full{
+  grid-column:1/-1!important;
+}
+.v19-selected-manage .shift-detail input,
+.v19-selected-manage .shift-detail select,
+.v19-selected-manage .shift-detail textarea{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+.v19-selected-manage .shift-detail select{
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.v19-selected-manage .shift-detail .full-btn{
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+@media(max-width:980px){
+  .v19-selected-manage .v19-manage-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:560px){
+  .v19-selected-manage .shift-detail .form-grid{grid-template-columns:1fr!important}
+  .v19-selected-manage .shift-detail .form-grid .full{grid-column:auto!important}
+}

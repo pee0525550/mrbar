@@ -1,0 +1,32 @@
+/* Sales table public QR A4 print layout v1.48.41 */
+.qr-panel-head{align-items:flex-start}
+.qr-print-actions{display:grid;justify-items:end;gap:5px}
+.qr-print-actions small{font-size:10px;color:#758099}
+.qr-security-note{margin-top:6px!important;font-size:11px;color:#68748a}
+.qr-table-code{font-size:28px}
+.qr-zone{margin:6px 0 10px}
+.qr-public-label{display:block;margin-top:7px;font-weight:900;letter-spacing:.1em;color:#6c58b4}
+.qr-url{display:block;margin-top:6px;word-break:break-all;font-size:8px;color:#7c8499}
+
+@media print{
+  @page{size:A4 portrait;margin:8mm}
+  html,body{background:#fff!important;width:auto!important;height:auto!important}
+  body.admin-v14-page>*:not(main){display:none!important}
+  body.admin-v14-page main{display:block!important;max-width:none!important;margin:0!important;padding:0!important}
+  body.admin-v14-page main>*:not(.qr-print-panel){display:none!important}
+  .qr-print-panel{display:block!important;margin:0!important;padding:0!important;border:0!important;background:#fff!important;box-shadow:none!important}
+  .qr-print-panel .panel-head{display:flex!important;margin:0 0 4mm!important;padding:0 0 3mm!important;border-bottom:1px solid #bbb!important}
+  .qr-print-panel .panel-head .step,
+  .qr-print-panel .panel-head p,
+  .qr-print-panel .panel-head a,
+  .qr-print-panel .qr-print-actions,
+  .no-print{display:none!important}
+  .qr-print-panel .panel-head h2{margin:0!important;color:#000!important;font-size:16pt!important}
+  .qrgrid{display:grid!important;grid-template-columns:repeat(4,44mm)!important;gap:2.5mm!important;justify-content:center!important}
+  .qrcard{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;width:44mm!important;height:50mm!important;padding:2.5mm!important;border:1px solid #777!important;border-radius:3mm!important;background:#fff!important;box-shadow:none!important;break-inside:avoid!important;page-break-inside:avoid!important;color:#000!important}
+  .qrcard .qr-table-code{font-size:16pt!important;line-height:1!important;color:#000!important}
+  .qrcard .qr-zone{font-size:8pt!important;line-height:1.1!important;margin:1.2mm 0 1.5mm!important;color:#444!important}
+  .qrcard img{width:31mm!important;height:31mm!important;padding:0!important;margin:0!important;border-radius:0!important;object-fit:contain!important;background:#fff!important}
+  .qrcard .qr-public-label{font-size:6.3pt!important;line-height:1!important;margin-top:1.5mm!important;color:#000!important;letter-spacing:.06em!important}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+}

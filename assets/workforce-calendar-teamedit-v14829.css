@@ -1,0 +1,8 @@
+/* Team-wide selected-day schedule management v1.48.29 */
+.v14829-team-schedules{margin-bottom:14px}
+.v14829-team-list{display:grid;gap:8px}
+.v14829-team-row{display:grid;grid-template-columns:38px minmax(0,1.2fr) 150px auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid #e1e5ee;border-radius:12px;background:linear-gradient(180deg,#fff,#fbfcff)}
+.v14829-team-row:hover{border-color:#cfc4f7;box-shadow:0 8px 20px rgba(66,57,122,.06)}
+.v14829-team-info b,.v14829-team-time b{display:block;font-size:11px;color:#253049}.v14829-team-info small,.v14829-team-time small{display:block;margin-top:2px;color:#8d96aa;font-size:8px}
+.v14829-edit-link{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:0 11px;border-radius:9px;background:linear-gradient(135deg,#7451df,#4275ea);color:#fff!important;text-decoration:none;font-size:9px;font-weight:900;white-space:nowrap;box-shadow:0 6px 14px rgba(91,76,207,.18)}
+@media(max-width:760px){.v14829-team-row{grid-template-columns:38px 1fr}.v14829-team-time{grid-column:2}.v14829-edit-link{grid-column:1/-1;justify-self:stretch}}

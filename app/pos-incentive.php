@@ -144,15 +144,15 @@ function posi_parse_xlsx_file(string $path,int $limit=0): array {
 function posi_parse_file(string $path,string $ext,int $limit=0): array {$ext=strtolower($ext);if($ext==='csv')return posi_parse_csv_file($path,$limit);if($ext==='xlsx')return posi_parse_xlsx_file($path,$limit);throw new RuntimeException('รองรับไฟล์ .xlsx และ .csv เท่านั้น');}
 function posi_guess_columns(array $headers): array {
     $sets=[
-        'date'=>['date','วันที่','วันขาย','sale date','transaction date'],
+        'date'=>['date','datetime','date time','วันที่','วันที่/เวลา','วันขาย','วันที่ขาย','sale date','sale datetime','transaction date','transaction time','business date','closed at','เวลา'],
         'item'=>['item','menu','ชื่อเมนู','ชื่อสินค้า','สินค้า','product','item name'],
         'group'=>['กลุ่ม','กลุ่มสินค้า','group','product group'],
         'category'=>['หมวดสินค้า','หมวดหมู่','category','product category'],
         'qty'=>['qty','quantity','จำนวน','จำนวนขาย','จำนวนการขาย','units'],
-        'sales'=>['ราคาสุทธิ','ยอดขายสุทธิ','net sales','net amount','sales amount','amount'],
+        'sales'=>['ราคาสุทธิ','ยอดขายสุทธิ','ยอดขาย','ยอดสุทธิ','ยอดชำระ','ยอดรวม','net sales','net amount','net total','sales amount','amount','total','grand total','paid amount'],
         'cost'=>['ต้นทุน ต้นทุนเฉลี่ย x จำนวนการขาย','ต้นทุนรวม','total cost'],
         'profit'=>['กำไร ยอดรวม - ต้นทุน - ส่วนลด','กำไรรวม','profit'],
-        'ref'=>['bill','receipt','transaction','reference','บิล','เลขที่บิล','receipt no','เลขบิล'],
+        'ref'=>['bill','bill no','bill number','receipt','receipt no','receipt number','invoice','invoice no','transaction','transaction no','reference','reference no','doc no','บิล','เลขที่บิล','เลขบิล','ใบเสร็จ','เลขใบเสร็จ','เลขที่ใบเสร็จ','เลขที่ใบกำกับ'],
         'table'=>['table','table no','table number','โต๊ะ','หมายเลขโต๊ะ']
     ];$out=array_fill_keys(array_keys($sets),-1);
     // Prefer exact header matches first so "รหัสสินค้า" cannot steal the "ชื่อสินค้า" mapping.
@@ -179,8 +179,38 @@ function posi_void_bill_batch(array &$d,int $batchId,int $userId): array {
 }
 
 function posi_bill_report_label(string $kind): string {return $kind==='bill_detail'?'รายงานรายละเอียดบิล':'รายงานยอดขายตามเมนู';}
+function posi_bill_map_relaxed(array $parsed,array $map): array {
+    if(($map['ref']??-1)>=0&&($map['sales']??-1)>=0&&($map['date']??-1)>=0)return $map;
+    $headers=$parsed['headers']??[];$rows=array_slice($parsed['rows']??[],0,80);$max=count($headers);
+    foreach($rows as $row)$max=max($max,count($row));
+    $scores=[];
+    for($i=0;$i<$max;$i++){
+        $header=posi_norm((string)($headers[$i]??''));$scores[$i]=['ref'=>0,'date'=>0,'sales'=>0];
+        if(preg_match('/(bill|receipt|invoice|reference|transaction|doc|บิล|ใบเสร็จ|เลขที่|เลขใบ)/iu',$header))$scores[$i]['ref']+=8;
+        if(preg_match('/(date|time|วันที่|เวลา|วันขาย)/iu',$header))$scores[$i]['date']+=8;
+        if(preg_match('/(sales|amount|total|net|paid|ยอด|สุทธิ|รวม|ชำระ|ราคา)/iu',$header))$scores[$i]['sales']+=8;
+        foreach($rows as $row){
+            $value=trim((string)($row[$i]??''));if($value===''||mb_strtolower($value,'UTF-8')==='total')continue;
+            $date=posi_parse_date($value);if($date!=='')$scores[$i]['date']+=3;
+            $num=posi_parse_number($value);if($num>0)$scores[$i]['sales']+=2;
+            if($date===''&&preg_match('/[0-9]/u',$value)&&!is_numeric(str_replace([',',' '],'',$value))&&mb_strlen($value,'UTF-8')<=50)$scores[$i]['ref']+=2;
+        }
+    }
+    foreach(['ref','date','sales'] as $key){
+        if(($map[$key]??-1)>=0)continue;
+        $best=-1;$bestScore=0;
+        foreach($scores as $idx=>$score){
+            if($key==='sales'&&($idx===(int)($map['ref']??-1)||$idx===(int)($map['date']??-1)))continue;
+            if($key==='ref'&&($idx===(int)($map['sales']??-1)||$idx===(int)($map['date']??-1)))continue;
+            if($score[$key]>$bestScore){$bestScore=$score[$key];$best=(int)$idx;}
+        }
+        if($best>=0&&$bestScore>=3)$map[$key]=$best;
+    }
+    return $map;
+}
 function posi_commit_bill_import(array $d,array $entry,array $parsed,array $map,int $userId): array {
-    if(($map['ref']??-1)<0||($map['sales']??-1)<0||($map['date']??-1)<0)throw new RuntimeException('ไฟล์รายละเอียดบิลต้องมีคอลัมน์เลขบิล วันที่/เวลา และยอดขาย');
+    $map=posi_bill_map_relaxed($parsed,$map);
+    if(($map['ref']??-1)<0||($map['sales']??-1)<0)throw new RuntimeException('ไฟล์รายละเอียดบิลต้องมีเลขบิลหรือใบเสร็จ และยอดขาย');
     if(!isset($d['pos_bill_batches'])||!is_array($d['pos_bill_batches']))$d['pos_bill_batches']=[];
     if(!isset($d['pos_bill_rows'])||!is_array($d['pos_bill_rows']))$d['pos_bill_rows']=[];
     foreach($d['pos_bill_batches'] as $old)if(($old['sha256']??'')===($entry['sha256']??'')&&($old['status']??'active')==='active')throw new RuntimeException('ไฟล์รายละเอียดบิลนี้ Process แล้ว');
@@ -188,7 +218,7 @@ function posi_commit_bill_import(array $d,array $entry,array $parsed,array $map,
     foreach($parsed['rows'] as $raw){
         $get=fn(string $k)=>(int)($map[$k]??-1)>=0?($raw[(int)$map[$k]]??''):'';
         $receipt=mb_strtoupper(trim((string)$get('ref')),'UTF-8');if($receipt===''||mb_strtolower($receipt,'UTF-8')==='total')continue;
-        $amount=posi_parse_number($get('sales'));$dateRaw=trim((string)$get('date'));$saleDate=posi_parse_date($dateRaw);
+        $amount=posi_parse_number($get('sales'));$dateRaw=trim((string)$get('date'));$saleDate=posi_parse_date($dateRaw);if($saleDate==='')$saleDate=posi_parse_date($entry['period_to']??$entry['period_from']??'');
         $table=trim((string)$get('table'));if(!isset($agg[$receipt]))$agg[$receipt]=['receipt_no'=>$receipt,'sale_date'=>$saleDate,'sale_datetime_raw'=>$dateRaw,'table_code'=>$table,'net_sales'=>0.0,'source_rows'=>0];
         $agg[$receipt]['net_sales']+=$amount;$agg[$receipt]['source_rows']++;
         if($agg[$receipt]['sale_date']===''&&$saleDate!=='')$agg[$receipt]['sale_date']=$saleDate;

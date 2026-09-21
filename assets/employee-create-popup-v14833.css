@@ -1,0 +1,30 @@
+/* Employee create popup overflow fix v1.48.33 */
+.emp-create form{
+  width:min(560px,calc(100vw - 48px))!important;
+  max-width:calc(100vw - 48px)!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  box-sizing:border-box!important;
+  overflow-x:hidden!important;
+}
+.emp-create form>*{min-width:0!important;box-sizing:border-box!important}
+.emp-create label{min-width:0!important}
+.emp-create input,.emp-create select,.emp-create textarea{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+.emp-create select{overflow:hidden;text-overflow:ellipsis}
+.emp-create .create-pr-note{min-width:0!important;overflow-wrap:anywhere}
+@media(max-width:680px){
+  .emp-create form{
+    left:12px!important;
+    right:12px!important;
+    top:8vh!important;
+    width:auto!important;
+    max-width:none!important;
+    grid-template-columns:1fr!important;
+    max-height:84vh!important;
+    padding:15px!important;
+  }
+}

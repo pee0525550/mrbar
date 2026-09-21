@@ -8,7 +8,7 @@ $failures = [];
 
 $checks = [
     'server clamps requested step' => strpos($php, '$step=min($requestedStep,$maxStep)') !== false,
-    'step navigation is status only' => strpos($php, '<section class="posi-workflow posi-wizard-nav"') !== false && strpos($php, '<div class="<?=$step===1?') !== false,
+    'suite navigation replaces duplicate wizard strip' => strpos($php, '<nav class="pos-suite-nav">') !== false && strpos($php, '<section class="posi-workflow posi-wizard-nav"') === false,
     'period is compact after step one' => strpos($php, 'if($step>1):?><section class="posi-period-locked"') !== false,
     'sales selection confirms step two' => strpos($php, '&sort_confirmed=1') !== false,
     'final requires review guard' => strpos($php, 'empty($_POST[\'flow_ready\'])') !== false,

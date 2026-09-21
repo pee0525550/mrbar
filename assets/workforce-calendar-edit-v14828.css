@@ -1,0 +1,9 @@
+/* Existing schedule edit discoverability v1.48.28 */
+.v19-modal-card .team-pop-row{grid-template-columns:32px minmax(0,1fr) auto auto}
+.team-pop-manage{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:0 10px;border-radius:9px;background:linear-gradient(135deg,#7452e5,#3f77ee);color:#fff!important;text-decoration:none;font-size:9px;font-weight:900;white-space:nowrap;box-shadow:0 6px 14px rgba(85,76,205,.18)}
+.team-pop-manage:hover{transform:translateY(-1px);filter:brightness(1.04)}
+.v19-selected-manage:target{scroll-margin-top:18px}
+.v19-selected-manage .shift-card{border:1px solid rgba(112,91,205,.16);border-radius:14px;background:#fff;box-shadow:0 8px 20px rgba(48,58,96,.05)}
+.v19-selected-manage .shift-summary [data-toggle-shift]{background:linear-gradient(135deg,#7654df,#4a72eb);color:#fff;border:0;border-radius:9px;padding:8px 11px;font-weight:900;cursor:pointer}
+.v19-selected-manage .shift-detail:not([hidden]){margin-top:10px;padding-top:10px;border-top:1px solid #e5e8f0}
+@media(max-width:720px){.v19-modal-card .team-pop-row{grid-template-columns:32px minmax(0,1fr) auto}.team-pop-manage{grid-column:2/-1;justify-self:start}.team-pop-time{grid-column:3}}

@@ -181,6 +181,74 @@ function workforce_payroll_final(array $a): bool {
 function workforce_income_minutes(?string $in,?string $out): int {
     if(!$in||!$out)return 0;try{$a=new DateTime($in);$b=new DateTime($out);}catch(Throwable $e){return 0;}$seconds=$b->getTimestamp()-$a->getTimestamp();return $seconds>0?(int)floor($seconds/60):0;
 }
+
+function workforce_shift_end_datetime(array $shift): ?DateTime {
+    $date=(string)($shift['date']??'');$start=(string)($shift['start']??'18:00');$end=(string)($shift['end']??'02:00');
+    if(!preg_match('/^\d{4}-\d{2}-\d{2}$/',$date)||!preg_match('/^\d{2}:\d{2}$/',$end))return null;
+    try{$dt=new DateTime($date.' '.$end);}catch(Throwable $e){return null;}
+    if(strcmp($end,$start)<=0)$dt->modify('+1 day');
+    return $dt;
+}
+function workforce_shift_has_attendance(array $d,array $shift): bool {
+    $eid=(int)($shift['employee_id']??0);$pid=(int)($shift['pr_id']??0);$date=(string)($shift['date']??'');
+    foreach($d['attendance']??[] as $a){
+        if(empty($a['check_in'])||substr((string)$a['check_in'],0,10)!==$date)continue;
+        if(($eid>0&&(int)($a['employee_id']??0)===$eid)||($pid>0&&(int)($a['pr_id']??0)===$pid))return true;
+    }
+    return false;
+}
+function workforce_shift_has_approved_leave(array $d,array $shift): bool {
+    $eid=(int)($shift['employee_id']??0);$pid=(int)($shift['pr_id']??0);$date=(string)($shift['date']??'');
+    foreach($d['leave_requests']??[] as $l){
+        if((string)($l['status']??'')!=='approved')continue;
+        $same=($eid>0&&(int)($l['employee_id']??0)===$eid)||($pid>0&&(int)($l['pr_id']??0)===$pid);
+        if(!$same)continue;$from=(string)($l['start_date']??'');$to=(string)($l['end_date']??$from);
+        if($from!==''&&$date>=$from&&$date<=$to)return true;
+    }
+    return false;
+}
+function workforce_shift_has_approved_substitute(array $d,array $shift): bool {
+    if((string)($shift['status']??'')==='substituted'||!empty($shift['substitution_id']))return true;
+    $sid=(int)($shift['id']??0);if($sid<1)return false;
+    foreach($d['substitute_requests']??[] as $r){
+        if((int)($r['shift_id']??0)!==$sid)continue;
+        if(in_array((string)($r['status']??''),['approved','completed'],true))return true;
+    }
+    return false;
+}
+function workforce_penalty_rule(array $d): array {
+    $s=$d['settings']??[];$mode=(string)($s['pr_no_show_penalty_mode']??'fixed');if(!in_array($mode,['fixed','daily_rate'],true))$mode='fixed';
+    return ['enabled'=>(string)($s['pr_no_show_penalty_enabled']??'1')==='1','mode'=>$mode,'amount'=>max(0,(float)($s['pr_no_show_penalty_amount']??500)),'grace_minutes'=>max(0,(int)($s['pr_no_show_penalty_grace_minutes']??60))];
+}
+function workforce_penalty_amount_for_employee(array $d,array $employee): float {
+    $rule=workforce_penalty_rule($d);
+    if($rule['mode']==='daily_rate')return max(0,(float)($employee['payroll']['daily_rate']??0));
+    return (float)$rule['amount'];
+}
+function workforce_no_show_candidates(array $d,string $from,string $to,?DateTime $now=null): array {
+    $rule=workforce_penalty_rule($d);if(!$rule['enabled'])return [];$now=$now?:new DateTime('now');$existing=[];
+    foreach($d['attendance_penalties']??[] as $p)if((int)($p['shift_id']??0)>0)$existing[(int)$p['shift_id']]=true;
+    $rows=[];
+    foreach($d['shifts']??[] as $shift){
+        $date=(string)($shift['date']??'');if($date<$from||$date>$to)continue;
+        if(in_array((string)($shift['status']??'scheduled'),['cancelled','off','substituted'],true))continue;
+        $sid=(int)($shift['id']??0);if($sid<1||isset($existing[$sid]))continue;
+        $eid=(int)($shift['employee_id']??0);if($eid<1)continue;$employee=workforce_employee_by_id($d,$eid);
+        if(!$employee||empty($employee['active'])||(string)($employee['position']??'')!=='pr')continue;
+        $end=workforce_shift_end_datetime($shift);if(!$end)continue;$due=clone $end;$due->modify('+'.$rule['grace_minutes'].' minutes');if($now<=$due)continue;
+        if(workforce_shift_has_attendance($d,$shift)||workforce_shift_has_approved_leave($d,$shift)||workforce_shift_has_approved_substitute($d,$shift))continue;
+        $rows[]=['shift'=>$shift,'employee'=>$employee,'amount'=>workforce_penalty_amount_for_employee($d,$employee),'reason'=>'ขาดงานตามตารางและไม่มีคนมาแทน'];
+    }
+    usort($rows,fn($a,$b)=>strcmp((string)($b['shift']['date']??''),(string)($a['shift']['date']??'')));
+    return $rows;
+}
+function workforce_confirmed_penalties(array $d,int $employeeId,string $from,string $to): array {
+    $rows=[];foreach($d['attendance_penalties']??[] as $p){
+        if((int)($p['employee_id']??0)!==$employeeId||(string)($p['status']??'pending')!=='confirmed')continue;
+        $date=(string)($p['date']??'');if($date<$from||$date>$to)continue;$rows[]=$p;
+    }return $rows;
+}
+
 function workforce_employee_income_estimate(array $d,array $employee,string $from,string $to): array {
     $eid=(int)($employee['id']??0);$prId=(int)($employee['pr_id']??0);$pay=is_array($employee['payroll']??null)?$employee['payroll']:[];$type=(string)($pay['type']??'daily');if(!in_array($type,['daily','hourly','monthly'],true))$type='daily';
     $daily=max(0,(float)($pay['daily_rate']??0));$hourly=max(0,(float)($pay['hourly_rate']??0));$monthly=max(0,(float)($pay['monthly_salary']??0));$otRate=max(0,(float)($pay['overtime_rate']??0));$stdHours=max(1,min(24,(float)($pay['standard_hours']??8)));$stdMinutes=(int)round($stdHours*60);
@@ -195,8 +263,9 @@ function workforce_employee_income_estimate(array $d,array $employee,string $fro
     if($type==='monthly'&&$monthly>0){try{$sd=new DateTime($from);$ed=new DateTime($to);$same=$sd->format('Y-m')===$ed->format('Y-m');$days=(int)$sd->diff($ed)->days+1;$dim=(int)$sd->format('t');$ratio=$same?min(1,max(0,$days/$dim)):1;$basePay=$monthly*$ratio;}catch(Throwable $e){$basePay=$monthly;}}
     $completedJobs=0;$commissionPay=0.0;$otherPay=0.0;$drinkRate=0.0;$commissionRate=0.0;$otherRate=0.0;$isPr=$prId>0||((string)($employee['position']??'')==='pr');
     if($isPr){$pc=is_array($employee['pr_compensation']??null)?$employee['pr_compensation']:[];$commissionRate=max(0,(float)($pc['commission_rate']??0));$drinkRate=max(0,(float)($pc['drink_rate']??0));$otherRate=max(0,(float)($pc['other_rate']??0));foreach($d['checkins']??[] as $c){if((int)($c['pr_id']??0)!==$prId||($c['status']??'')!=='completed')continue;$at=(string)($c['completed_at']??$c['updated_at']??'');if($at==='')continue;$date=substr($at,0,10);if($date>=$from&&$date<=$to)$completedJobs++;}$commissionPay=$completedJobs*$commissionRate;$otherPay=$finalDays*$otherRate;}
-    $total=$basePay+$otPay+$commissionPay+$otherPay;
-    return ['employee_id'=>$eid,'pr_id'=>$prId?:null,'from'=>$from,'to'=>$to,'type'=>$type,'final_days'=>$finalDays,'pending_count'=>$pending,'work_minutes'=>$workMinutes,'ot_minutes'=>$otMinutes,'base_pay'=>$basePay,'ot_pay'=>$otPay,'completed_jobs'=>$completedJobs,'commission_rate'=>$commissionRate,'commission_pay'=>$commissionPay,'drink_rate'=>$drinkRate,'drink_units'=>null,'drink_pay'=>0.0,'other_rate'=>$otherRate,'other_pay'=>$otherPay,'total'=>$total,'rows'=>$rows,'is_pr'=>$isPr];
+    $penaltyRows=$isPr?workforce_confirmed_penalties($d,$eid,$from,$to):[];$penaltyPay=array_sum(array_map(fn($p)=>max(0,(float)($p['amount']??0)),$penaltyRows));
+    $gross=$basePay+$otPay+$commissionPay+$otherPay;$total=max(0,$gross-$penaltyPay);
+    return ['employee_id'=>$eid,'pr_id'=>$prId?:null,'from'=>$from,'to'=>$to,'type'=>$type,'final_days'=>$finalDays,'pending_count'=>$pending,'work_minutes'=>$workMinutes,'ot_minutes'=>$otMinutes,'base_pay'=>$basePay,'ot_pay'=>$otPay,'completed_jobs'=>$completedJobs,'commission_rate'=>$commissionRate,'commission_pay'=>$commissionPay,'drink_rate'=>$drinkRate,'drink_units'=>null,'drink_pay'=>0.0,'other_rate'=>$otherRate,'other_pay'=>$otherPay,'gross_total'=>$gross,'penalty_pay'=>$penaltyPay,'penalties'=>$penaltyRows,'total'=>$total,'rows'=>$rows,'is_pr'=>$isPr];
 }
 function workforce_planned_checkout(array $d,array $a): ?DateTime {
     if(empty($a['check_in']))return null;
