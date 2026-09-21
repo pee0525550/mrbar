@@ -1,9 +1,9 @@
 {
-  "version": "1.48.47",
-  "build_id": "MRBAR-v1.48.47-20260921",
-  "pack": "Hosting Storage Diagnostics v1.48.47",
+  "version": "1.48.48",
+  "build_id": "MRBAR-v1.48.48-20260921",
+  "pack": "MR BAR TIME Secure Preview Fix v1.48.48",
   "schema": 28,
   "migration": false,
-  "base": "1.48.46",
+  "base": "1.48.47",
   "updated_at": "2026-09-21"
 }

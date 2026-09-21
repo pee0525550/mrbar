@@ -606,3 +606,10 @@
 - Synchronized release metadata to v1.48.45 / Schema 28.
 - Added a production migration checklist covering code, runtime data, media, permissions, DNS/SSL, verification, and rollback.
 - No database schema migration and no calculation formula changes.
+# v1.48.48 - MR BAR TIME Secure Preview Fix
+
+- แก้หน้า MR BAR TIME Preview ว่าง เมื่อ HTTP ถูก redirect ไปยัง HTTPS virtual host ที่ยังตั้งค่าไม่สมบูรณ์
+- อนุญาตเฉพาะ Admin Preview แบบ read-only ให้แสดงผ่าน origin ปัจจุบัน โดยยังตรวจสิทธิ์และ preview token ตามเดิม
+- คงการบังคับ HTTPS สำหรับหน้า Time Staff ที่ใช้งานจริง เพื่อให้ Camera และ GPS ทำงานใน secure context
+- เพิ่มการตรวจ HTTPS หลัง reverse proxy และป้องกัน Host/URI ผิดรูปในการ redirect
+- ไม่มี DB migration

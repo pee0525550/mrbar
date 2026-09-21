@@ -1,12 +1,7 @@
 <?php
-// v1.11.3: mobile secure-context / permissions hardening
-$https = (!empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off') || strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
-if (!$https) {
-    $host = (string)($_SERVER['HTTP_HOST'] ?? 'mrbarsupport.com');
-    $uri = (string)($_SERVER['REQUEST_URI'] ?? '/pr.php');
-    header('Location: https://'.$host.$uri, true, 302);
-    exit;
-}
+// Admin Preview is read-only and may stay on the current origin while hosting SSL is being configured.
+require_once __DIR__.'/app/secure-context.php';
+mrbar_require_https('/pr.php',true);
 header('Permissions-Policy: geolocation=(self), camera=(self)');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');

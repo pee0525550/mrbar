@@ -1,15 +1,15 @@
 {
-  "version": "1.48.47",
-  "build_id": "MRBAR-v1.48.47-20260921",
-  "name": "Hosting Storage Diagnostics",
+  "version": "1.48.48",
+  "build_id": "MRBAR-v1.48.48-20260921",
+  "name": "MR BAR TIME Secure Preview Fix",
   "date": "2026-09-21",
   "schema": "v28",
   "migration_required": false,
-  "base": "1.48.46",
+  "base": "1.48.47",
   "highlights": [
-    "Shows the exact active database and permissions visible to PHP",
-    "Performs a real temporary write/delete probe inside storage",
-    "Distinguishes data.php from runtime-data.php hosting failures"
+    "Keeps authenticated read-only Staff Preview on the current origin",
+    "Recognizes HTTPS correctly behind common hosting proxies",
+    "Hardens HTTPS redirects against malformed host and request URI values"
   ],
   "production_data_included": false
 }

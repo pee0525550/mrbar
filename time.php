@@ -1,6 +1,6 @@
 <?php
-$https=(!empty($_SERVER['HTTPS'])&&strtolower((string)$_SERVER['HTTPS'])!=='off')||strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO']??''))==='https';
-if(!$https){$host=(string)($_SERVER['HTTP_HOST']??'mrbarsupport.com');$uri=(string)($_SERVER['REQUEST_URI']??'/time.php');header('Location: https://'.$host.$uri,true,302);exit;}
+require_once __DIR__.'/app/secure-context.php';
+mrbar_require_https('/time.php');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('X-Robots-Tag: noindex, nofollow, noarchive');
