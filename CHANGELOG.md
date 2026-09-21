@@ -613,3 +613,10 @@
 - คงการบังคับ HTTPS สำหรับหน้า Time Staff ที่ใช้งานจริง เพื่อให้ Camera และ GPS ทำงานใน secure context
 - เพิ่มการตรวจ HTTPS หลัง reverse proxy และป้องกัน Host/URI ผิดรูปในการ redirect
 - ไม่มี DB migration
+# v1.48.49 - MR BAR TIME Navigation and Mobile Overlay Fix
+
+- เอากล่อง `ACTIVE SHOP` ออกจากหน้า Time Staff และ PR Time ทั้งชุด เพื่อไม่ให้บัง Check-in / Check-out บนมือถือ
+- ครอบคลุมหน้าเวลา, ปฏิทิน, รายได้ และงาน ทั้งฝั่ง Staff และ PR
+- แก้ PR Calendar ที่อ้างตัวแปร Employee ก่อนกำหนด ซึ่งอาจทำให้บางบัญชีเกิด warning/error
+- เพิ่ม regression test สำหรับ shell และเส้นทาง Preview ของ Time Staff
+- ไม่มี DB migration

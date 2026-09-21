@@ -3,7 +3,7 @@ require __DIR__.'/app/bootstrap.php';
 require_once __DIR__.'/app/pr-preview.php';
 $previewCtx=pr_preview_context();$isAdminPreview=(bool)$previewCtx;
 if($previewCtx){$u=$previewCtx['user'];$d=$previewCtx['data'];$pr=$previewCtx['pr'];}
-else{$u=require_roles('pr');$d=db_load();$pr=user_pr($d,(int)$u['id']);$employee=workforce_employee_by_pr($d,(int)$pr['id'])?:$employee;$employeeId=(int)($employee['id']??($pr['employee_id']??0));}
+else{$u=require_roles('pr');$d=db_load();$pr=user_pr($d,(int)$u['id']);}
 if(!$pr){http_response_code(403);exit('PR profile is not linked.');}
 $employee=workforce_employee_by_pr($d,(int)$pr['id']);$employeeId=(int)($employee['id']??($pr['employee_id']??0));
 

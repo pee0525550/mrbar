@@ -1,9 +1,9 @@
 {
-  "version": "1.48.48",
-  "build_id": "MRBAR-v1.48.48-20260921",
-  "pack": "MR BAR TIME Secure Preview Fix v1.48.48",
+  "version": "1.48.49",
+  "build_id": "MRBAR-v1.48.49-20260921",
+  "pack": "MR BAR TIME Navigation and Mobile Overlay Fix v1.48.49",
   "schema": 28,
   "migration": false,
-  "base": "1.48.47",
+  "base": "1.48.48",
   "updated_at": "2026-09-21"
 }
