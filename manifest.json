@@ -1,15 +1,15 @@
 {
-  "version": "1.48.46",
-  "build_id": "MRBAR-v1.48.46-20260921",
-  "name": "Public Storefront Read-Only Fallback",
+  "version": "1.48.47",
+  "build_id": "MRBAR-v1.48.47-20260921",
+  "name": "Hosting Storage Diagnostics",
   "date": "2026-09-21",
   "schema": "v28",
   "migration_required": false,
-  "base": "1.48.45",
+  "base": "1.48.46",
   "highlights": [
-    "Public shop pages remain available when the optional visit counter cannot write",
-    "Prevents storage-permission errors in analytics from returning HTTP 500",
-    "No customer, booking, attendance, or calculation behavior changed"
+    "Shows the exact active database and permissions visible to PHP",
+    "Performs a real temporary write/delete probe inside storage",
+    "Distinguishes data.php from runtime-data.php hosting failures"
   ],
   "production_data_included": false
 }

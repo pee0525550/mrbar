@@ -584,6 +584,13 @@
 - Added permission-aware controls for tables.manage, reservations.seat, operations.move_table, operations.complete, and operations.cancel.
 - Added CSRF protection, active Check-in conflict detection, invalid reservation-state protection, inactive-table checks, confirmations, double-submit prevention, and audit events.
 - No schema migration; existing data is preserved.
+# v1.48.47 - Hosting Storage Diagnostics
+
+- Expanded the Super Admin preflight screen to show the exact active database file, PHP-visible permissions, readability, and writability.
+- Added a real temporary write/delete probe in `storage` so hosting owner/ACL problems can be distinguished from FileZilla permission displays.
+- Diagnostics explicitly report whether `runtime-data.php` is overriding `data.php`.
+- No database schema or business logic changes.
+
 # v1.48.46 - Public Storefront Read-Only Fallback
 
 - Fixed all `/shop/{branch}/` pages returning HTTP 500 when the optional public visit counter could not write to the migrated storage database.
