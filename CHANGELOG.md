@@ -636,3 +636,12 @@
 - เพิ่มคำแนะนำ Secure Context สำหรับ Camera/GPS แทนข้อผิดพลาดที่ไม่ชัดเจน
 - คง HTTP fallback จนกว่า Hosting จะตั้ง SSL และ HTTPS Document Root ถูกต้อง แล้วจึงเปิด `MRBAR_FORCE_STAFF_HTTPS=1`
 - ไม่มี DB migration
+# v1.48.52 - MR BAR TIME HTTPS Landing
+
+- เปิด HTTPS เป็นค่าเริ่มต้นบน `mrbarsupport.com` และ `www.mrbarsupport.com` สำหรับ Time Staff, PR Time และ Staff Preview
+- บังคับ HTTPS ให้หน้า Login, ตั้ง PIN และเปิดใช้งานบัญชีพนักงานด้วย
+- อัปเกรดไอคอน PWA เก่าที่เปิดด้วย HTTP ไป HTTPS อัตโนมัติ
+- ตั้ง PWA Manifest `start_url`, `scope` และ shortcut เป็น HTTPS บนโดเมน Production
+- ลิงก์ Invite พนักงานสร้างเป็น HTTPS แม้ Admin เปิดระบบผ่าน HTTP
+- เปลี่ยน Service Worker cache และ version ของ asset เพื่อให้มือถือโหลดชุดใหม่
+- ไม่มี DB migration

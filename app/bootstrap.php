@@ -2,6 +2,9 @@
 declare(strict_types=1);
 $config=require __DIR__.'/../config/app.php';
 date_default_timezone_set($config['timezone']);
+require_once __DIR__.'/secure-context.php';
+$staffTimeScripts=['time.php','employee-time.php','employee-calendar.php','employee-income.php','pr.php','pr-calendar.php','pr-jobs.php','staff-preview.php','login.php','setup-pin.php','employee-activate.php'];
+if(in_array(basename((string)($_SERVER['SCRIPT_NAME']??'')),$staffTimeScripts,true))mrbar_require_https('/'.basename((string)$_SERVER['SCRIPT_NAME']));
 if(session_status()!==PHP_SESSION_ACTIVE) session_start();
 require_once __DIR__.'/db.php';
 require_once __DIR__.'/permissions.php';

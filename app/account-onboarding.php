@@ -27,6 +27,7 @@ function account_active_invite_for_employee(array $d,int $employeeId): ?array {
 function account_request_base_url(): string {
     $https=(!empty($_SERVER['HTTPS'])&&strtolower((string)$_SERVER['HTTPS'])!=='off')||strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO']??''))==='https';
     $host=(string)($_SERVER['HTTP_HOST']??'');$host=preg_replace('/[^A-Za-z0-9.\-:\[\]]/','',$host)?:'localhost';
+    if(in_array(strtolower(preg_replace('/:\\d+$/','',$host)??''),['mrbarsupport.com','www.mrbarsupport.com'],true))$https=true;
     $script=(string)($_SERVER['SCRIPT_NAME']??'/it/employees.php');$dir=rtrim(str_replace('\\','/',dirname($script)),'/');if($dir==='.'||$dir==='/')$dir='';
     return ($https?'https':'http').'://'.$host.$dir;
 }

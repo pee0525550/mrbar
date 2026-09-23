@@ -1,15 +1,15 @@
 {
-  "version": "1.48.51",
-  "build_id": "MRBAR-v1.48.51-20260923",
-  "name": "MR BAR TIME Mobile Recovery",
+  "version": "1.48.52",
+  "build_id": "MRBAR-v1.48.52-20260923",
+  "name": "MR BAR TIME HTTPS Landing",
   "date": "2026-09-23",
   "schema": "v28",
   "migration_required": false,
-  "base": "1.48.50",
+  "base": "1.48.51",
   "highlights": [
-    "Prevents PHP and PWA JavaScript from redirecting to the missing HTTPS app",
-    "Refreshes the Time Staff service-worker and mobile script caches",
-    "Adds iPhone-specific secure-context guidance without causing a blank page"
+    "Redirects all Time Staff and Staff Preview routes to HTTPS on production domains",
+    "Starts the PWA Home Screen app and shortcuts from the HTTPS URL",
+    "Upgrades old HTTP Home Screen links to HTTPS and refreshes service-worker caches"
   ],
   "production_data_included": false
 }

@@ -1,6 +1,12 @@
 /* MR BAR TIME PWA helper — v1.27.21 */
 (function(){
   'use strict';
+  const productionHost=/^(?:www\.)?mrbarsupport\.com$/i.test(location.hostname);
+  if(productionHost&&location.protocol!=='https:'){
+    const secureUrl='https://'+location.host+location.pathname+location.search+location.hash;
+    location.replace(secureUrl);
+    return;
+  }
   const script=document.currentScript;
   const scriptUrl=script&&script.src?new URL(script.src,location.href):new URL('assets/pwa-time.js',location.href);
   const appBase=new URL('../',scriptUrl);
@@ -9,7 +15,7 @@
   const standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
   document.documentElement.classList.toggle('mr-pwa-standalone',standalone);
   if('serviceWorker' in navigator&&secure){
-    window.addEventListener('load',()=>navigator.serviceWorker.register(new URL('pwa-sw.js?v=1.48.51',appBase).href,{scope:appBase.pathname}).catch(()=>{}));
+    window.addEventListener('load',()=>navigator.serviceWorker.register(new URL('pwa-sw.js?v=1.48.52',appBase).href,{scope:appBase.pathname}).catch(()=>{}));
   }
   const page=location.pathname.split('/').pop()||'';
   const relevant=['login.php','setup-pin.php','employee-activate.php','employee-time.php','employee-calendar.php','employee-income.php','pr.php','pr-calendar.php','pr-jobs.php','time.php'].includes(page)||new URLSearchParams(location.search).get('pwa')==='1';

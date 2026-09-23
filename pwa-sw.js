@@ -1,7 +1,7 @@
-const MRBAR_PWA_CACHE='mrbar-time-static-v14851';
+const MRBAR_PWA_CACHE='mrbar-time-static-v14852';
 const MRBAR_PWA_STATIC=[
   './assets/pwa-time.css?v=1.27.21',
-  './assets/pwa-time.js?v=1.48.51',
+  './assets/pwa-time.js?v=1.48.52',
   './assets/staff-auth-v12721.css?v=12721',
   './assets/staff-auth-v12721.js?v=12721',
   './assets/typography.css?v=1.27.21',

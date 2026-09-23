@@ -18,8 +18,10 @@ assert_secure(!mrbar_admin_preview_requested(['admin_staff_preview'=>'0']),'disa
 assert_secure(mrbar_safe_request_host(['HTTP_HOST'=>'mrbarsupport.com'])==='mrbarsupport.com','valid host must be kept');
 assert_secure(mrbar_safe_request_host(['HTTP_HOST'=>"evil.test\r\nX-Test: 1"])==='mrbarsupport.com','invalid host must fall back');
 assert_secure(mrbar_safe_request_uri('/time.php',['REQUEST_URI'=>'//evil.test/path'])==='/time.php','network-path URI must fall back');
-assert_secure(!mrbar_force_staff_https_enabled(['HTTP_HOST'=>'mrbarsupport.com']),'production must use HTTP fallback until its HTTPS document root serves the app');
-assert_secure(!mrbar_force_staff_https_enabled(['HTTP_HOST'=>'www.mrbarsupport.com']),'www must use HTTP fallback until hosting SSL is ready');
+assert_secure(mrbar_force_staff_https_enabled(['HTTP_HOST'=>'mrbarsupport.com']),'production must use HTTPS by default');
+assert_secure(mrbar_force_staff_https_enabled(['HTTP_HOST'=>'www.mrbarsupport.com']),'www must use HTTPS by default');
+assert_secure(!mrbar_force_staff_https_enabled(['HTTP_HOST'=>'localhost']),'non-production hosts must keep their configured protocol');
+assert_secure(!mrbar_force_staff_https_enabled(['HTTP_HOST'=>'mrbarsupport.com','MRBAR_FORCE_STAFF_HTTPS'=>'0']),'explicit HTTPS override may disable redirect');
 assert_secure(mrbar_force_staff_https_enabled(['MRBAR_FORCE_STAFF_HTTPS'=>'1']),'HTTPS redirect accepts explicit 1');
 assert_secure(mrbar_force_staff_https_enabled(['MRBAR_FORCE_STAFF_HTTPS'=>'on']),'HTTPS redirect accepts on');
 
