@@ -4,12 +4,14 @@ declare(strict_types=1);
 require __DIR__.'/../app/db.php';
 require __DIR__.'/../app/workforce.php';
 require __DIR__.'/../app/branches.php';
+require __DIR__.'/../app/account-onboarding.php';
 require __DIR__.'/../app/reservation-sales.php';
 
 function expect_true(bool $condition,string $message): void {
     if(!$condition){fwrite(STDERR,"FAIL: {$message}\n");exit(1);}
     fwrite(STDOUT,"PASS: {$message}\n");
 }
+function next_id(array $rows): int {return $rows?max(array_map(fn($row)=>(int)($row['id']??0),$rows))+1:1;}
 
 $fixture=[
     'meta'=>['schema'=>27,'active_branch_id'=>1],
@@ -43,6 +45,24 @@ expect_true(($salesB['position']??'')==='sales','creates Sales employee in secon
 expect_true(!array_filter($a['employees'],fn($e)=>(int)($e['user_id']??0)===3),'does not copy employee across branches');
 expect_true(($prA['position']??'')==='pr' && !empty($prA['pr_id']),'creates one PR extension for linked PR employee');
 expect_true((int)($migrated['users'][1]['employee_ids_by_branch']['1']??0)===(int)$salesA['id'],'records per-branch employee link');
+
+$branchBView=db_branch_view($migrated,2);
+$branchBView['employees'][]=['id'=>next_id($branchBView['employees']),'code'=>'STB01','name'=>'Branch B Staff','position'=>'staff','active'=>1,'branch_id'=>2,'user_id'=>null];
+$branchBEmployeeId=(int)$branchBView['employees'][array_key_last($branchBView['employees'])]['id'];
+$newBranchBUser=account_create_and_link($branchBView,$branchBEmployeeId,'branch-b-staff','password-123');
+expect_true(($newBranchBUser['branch_ids']??[])===[2],'new employee account inherits its employee branch membership');
+$_SERVER['SCRIPT_NAME']='/it/employees.php';$_SERVER['HTTP_HOST']='example.test';
+expect_true(str_contains(account_invite_url(str_repeat('x',40),'b'),'public_branch=b'),'employee invite link carries the employee branch slug');
+expect_true(branch_publicly_available(['active'=>1,'published'=>1]),'active published branch is public');
+expect_true(!branch_publicly_available(['active'=>1,'published'=>0]),'unpublished branch is not public');
+expect_true(!branch_publicly_available(['active'=>0,'published'=>1]),'inactive branch is hidden by default');
+expect_true(branch_publicly_available(['active'=>0,'published'=>1],['show_closed_branches'=>'1']),'inactive branch follows the show-closed portal setting');
+expect_true(branch_admin_preview_authorized(['super_admin'=>1],'valid','valid'),'Super Admin may use a valid branch preview token');
+expect_true(!branch_admin_preview_authorized(['super_admin'=>0],'valid','valid'),'regular users cannot preview unpublished branches');
+expect_true(!branch_admin_preview_authorized(['super_admin'=>1],'invalid','valid'),'invalid branch preview token is rejected');
+expect_true(count(branch_user_related_branch_ids(['branch_ids'=>[1],'employee_ids_by_branch'=>['1'=>4,'2'=>8]]))===2,'linked employee cards identify a shared account across branches');
+$_REQUEST['public_branch']='missing-branch';
+expect_true(branch_resolve_request($migrated)===null,'unknown public branch slug does not resolve to the default branch');
 
 $view=db_branch_view($migrated,1);
 $health=workforce_people_health($view);

@@ -34,6 +34,18 @@ function branch_slug_path(array $branch,string $tail=''): string {
 function branch_resolve_request(array $raw): ?array {
     $slug=db_requested_branch_slug();return $slug!==''?db_branch_by_slug_raw($raw,$slug):null;
 }
+function branch_publicly_available(array $branch,array $portalSettings=[]): bool {
+    $portalSettings=array_replace(db_portal_defaults(),$portalSettings);
+    return !empty($branch['published'])&&(!empty($branch['active'])||($portalSettings['show_closed_branches']??'0')==='1');
+}
+function branch_user_related_branch_ids(array $user): array {
+    $ids=db_user_branch_ids($user);
+    foreach($user['employee_ids_by_branch']??[] as $branchId=>$employeeId)if((int)$employeeId>0&&(int)$branchId>0)$ids[]=(int)$branchId;
+    $ids=array_values(array_unique(array_map('intval',$ids)));sort($ids);return $ids;
+}
+function branch_admin_preview_authorized(?array $user,string $token,string $expectedToken): bool {
+    return $user!==null&&!empty($user['super_admin'])&&$token!==''&&$expectedToken!==''&&hash_equals($expectedToken,$token);
+}
 function branch_redirect_old_slug(array $raw): void {
     $resolved=branch_resolve_request($raw);if(!$resolved||empty($resolved['alias']))return;
     $branch=$resolved['branch'];$uri=(string)($_SERVER['REQUEST_URI']??'');$query=$_GET;unset($query['branch']);

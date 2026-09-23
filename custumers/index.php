@@ -7,8 +7,13 @@ require_once __DIR__.'/../app/pr-showcase.php';
 require_once __DIR__.'/../app/floor-plan.php';
 require_once __DIR__.'/../app/customer-weather.php';
 $requestedPublicSlug=db_requested_branch_slug();
-if($requestedPublicSlug===''&&!((string)($_GET['admin_preview']??'')==='1'&&trim((string)($_GET['preview_token']??''))!=='')){header('Location: '.branch_public_base().'/Portal',true,302);exit;}
+$previewUser=current_user();$adminPreview=false;
+if((string)($_GET['admin_preview']??'')==='1')$adminPreview=branch_admin_preview_authorized($previewUser,(string)($_GET['preview_token']??''),(string)csrf_token());
+if($requestedPublicSlug===''&&!$adminPreview){header('Location: '.branch_public_base().'/Portal',true,302);exit;}
 $branchRaw=db_load_global();branch_redirect_old_slug($branchRaw);
+$resolvedPublicBranch=$requestedPublicSlug!==''?branch_resolve_request($branchRaw):null;
+if($requestedPublicSlug!==''&&!$resolvedPublicBranch){http_response_code(404);exit('ไม่พบร้านที่ร้องขอ');}
+if($resolvedPublicBranch&&!$adminPreview&&!branch_publicly_available($resolvedPublicBranch['branch'],$branchRaw['portal_settings']??[])){http_response_code(404);exit('ร้านนี้ยังไม่เปิดให้บริการ');}
 $d=db_load();
 $currentBranch=branch_current($d);$publicBranchSlug=(string)($currentBranch['slug']??'');
 $settings=$d['settings']??[];
@@ -18,11 +23,6 @@ $privacyConsent=$privacyEnabled?privacy_current_consent($d):null;
 $privacyCategories=privacy_category_flags($settings);
 $privacyPreferences=$privacyEnabled?privacy_preferences($privacyConsent,$settings):['necessary'=>true,'functional'=>true,'analytics'=>false,'marketing'=>false];
 $privacyVersion=privacy_policy_version($settings);
-$adminPreview=false;
-if(isset($_GET['admin_preview'],$_GET['preview_token'])&&(string)$_GET['admin_preview']==='1'){
- $given=(string)$_GET['preview_token'];$expected=(string)csrf_token();
- if($given!==''&&$expected!==''){ $adminPreview=function_exists('hash_equals')?hash_equals($expected,$given):($expected===$given); }
-}
 $visitDate=date('Y-m-d');$visitBranchId=max(1,(int)($currentBranch['id']??1));$visitSessionKey='cw_public_visit_'.$visitBranchId.'_'.$visitDate;
 if(!$adminPreview&&empty($_SESSION[$visitSessionKey])){
     try{

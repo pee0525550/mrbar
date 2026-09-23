@@ -31,7 +31,10 @@ function account_request_base_url(): string {
     $script=(string)($_SERVER['SCRIPT_NAME']??'/it/employees.php');$dir=rtrim(str_replace('\\','/',dirname($script)),'/');if($dir==='.'||$dir==='/')$dir='';
     return ($https?'https':'http').'://'.$host.$dir;
 }
-function account_invite_url(string $token): string { return account_request_base_url().'/employee-activate.php?token='.rawurlencode($token); }
+function account_invite_url(string $token,string $branchSlug=''): string {
+    $query=['token'=>$token];if(trim($branchSlug)!=='')$query['public_branch']=$branchSlug;
+    return account_request_base_url().'/employee-activate.php?'.http_build_query($query);
+}
 function account_time_url(): string { return account_request_base_url().'/time.php'; }
 function account_create_and_link(array &$d,int $employeeId,string $username,string $password): array {
     $username=trim($username);if(!account_username_valid($username))throw new RuntimeException('Username ใช้ A-Z, 0-9, จุด, ขีดกลาง หรือ _ จำนวน 3-40 ตัว');
@@ -40,7 +43,8 @@ function account_create_and_link(array &$d,int $employeeId,string $username,stri
     $employee=$d['employees'][$idx];if(empty($employee['active']))throw new RuntimeException('พนักงานคนนี้ถูกปิดใช้งาน');if(!empty($employee['user_id']))throw new RuntimeException('พนักงานคนนี้มีบัญชีเข้าสู่ระบบแล้ว');
     foreach($d['users']??[] as $x)if(strcasecmp((string)($x['username']??''),$username)===0)throw new RuntimeException('Username นี้ถูกใช้แล้ว');
     $role=account_employee_role($employee);$uid=next_id($d['users']??[]);
-    $user=['id'=>$uid,'username'=>$username,'password_hash'=>password_hash($password,PASSWORD_DEFAULT),'role'=>$role,'display_name'=>(string)($employee['name']??$username),'active'=>1,'created_at'=>date('c'),'trusted_devices'=>[],'permission_overrides'=>[],'super_admin'=>0];
+    $branchId=(int)($employee['branch_id']??0);if($branchId<=0)$branchId=(int)($d['_branch_context']['id']??$d['meta']['active_branch_id']??1);
+    $user=['id'=>$uid,'username'=>$username,'password_hash'=>password_hash($password,PASSWORD_DEFAULT),'role'=>$role,'display_name'=>(string)($employee['name']??$username),'active'=>1,'created_at'=>date('c'),'trusted_devices'=>[],'permission_overrides'=>[],'super_admin'=>0,'branch_ids'=>[$branchId]];
     $d['users'][]=$user;$d['employees'][$idx]['user_id']=$uid;$d['employees'][$idx]['updated_at']=date('c');
     $prId=(int)($employee['pr_id']??0);if($prId>0){foreach($d['prs'] as &$p)if((int)($p['id']??0)===$prId){$p['user_id']=$uid;break;}unset($p);}
     return $user;

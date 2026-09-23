@@ -75,7 +75,7 @@ if(($_SERVER['REQUEST_METHOD']??'GET')==='POST'&&empty($_POST)&&empty($_FILES)&&
    $_SESSION['mrbar_active_branch_id']=$savedId;$msg=$id?'บันทึกข้อมูลร้านแล้ว':'สร้างร้านใหม่และเลือกเป็นร้านปัจจุบันแล้ว';
   }elseif($action==='save_access'){
    $userId=max(1,(int)($_POST['user_id']??0));$ids=array_values(array_unique(array_filter(array_map('intval',$_POST['branch_ids']??[]),fn($x)=>$x>0)));if(!$ids)throw new RuntimeException('ต้องเลือกอย่างน้อย 1 ร้าน');
-   db_mutate_global(function($d)use($userId,$ids,$u){$found=false;foreach($d['users'] as &$row){if((int)$row['id']!==$userId)continue;if(!empty($row['super_admin']))throw new RuntimeException('Owner / Super Admin เข้าถึงทุกร้านอยู่แล้ว');$row['branch_ids']=$ids;$found=true;break;}unset($row);if(!$found)throw new RuntimeException('ไม่พบบัญชีผู้ใช้');$d['audit'][]=['at'=>date('c'),'action'=>'user_branch_access_updated','branch_id'=>(int)($ids[0]??1),'by'=>(int)$u['id'],'user_id'=>$userId,'branch_ids'=>$ids];return $d;});$msg='บันทึกสิทธิ์ร้านของทีมงานแล้ว';
+   db_mutate_global(function($d)use($userId,$ids,$u){$activeIds=array_map(fn($b)=>(int)$b['id'],array_filter($d['branches']??[],fn($b)=>!empty($b['active'])&&empty($b['deleted_at'])));if(array_diff($ids,$activeIds))throw new RuntimeException('เลือกได้เฉพาะสาขาที่เปิดใช้งานอยู่');$found=false;foreach($d['users'] as &$row){if((int)$row['id']!==$userId)continue;if(!empty($row['super_admin']))throw new RuntimeException('Owner / Super Admin เข้าถึงทุกร้านอยู่แล้ว');$row['branch_ids']=$ids;$found=true;break;}unset($row);if(!$found)throw new RuntimeException('ไม่พบบัญชีผู้ใช้');$d['audit'][]=['at'=>date('c'),'action'=>'user_branch_access_updated','branch_id'=>(int)($ids[0]??1),'by'=>(int)$u['id'],'user_id'=>$userId,'branch_ids'=>$ids];return $d;});$msg='บันทึกสิทธิ์ร้านของทีมงานแล้ว';
   }
  }catch(Throwable $e){$err=$e->getMessage();}
 }
@@ -92,7 +92,7 @@ if(!$edit)$edit=db_normalize_branch(['id'=>0,'name'=>'','slug'=>'','active'=>1,'
 <article class="<?php echo !empty($branchRow['active'])?'':'muted';?>">
  <div class="mb-thumb"><?php if($thumb!==''):?><img src="<?=h($thumb)?>" alt="" loading="lazy"><?php endif;?><b><?php echo h($initial);?></b></div>
  <div><h3><?php echo h((string)$branchRow['name']);?></h3><code>/shop/<?php echo h((string)$branchRow['slug']);?>/</code><p><?php echo h((string)($branchRow['address']??''));?></p><span><?php echo !empty($branchRow['published'])?'● PUBLIC':'○ HIDDEN';?> · <?php echo !empty($branchRow['active'])?'ACTIVE':'INACTIVE';?> · <?=count($branchStats['tables']??[])?> โต๊ะ · <?=count($branchStats['prs']??[])?> PR · <?=count($branchStats['customer_media']??[])?> รูป</span></div>
- <nav><a href="<?php echo h(branch_slug_path($branchRow));?>" target="_blank">Preview</a><a href="?edit=<?php echo (int)$branchRow['id'];?>">แก้ไข</a></nav>
+ <nav><a href="<?php echo h(branch_slug_path($branchRow).'?'.http_build_query(['admin_preview'=>'1','preview_token'=>csrf_token()]));?>" target="_blank" rel="noopener">Preview</a><a href="?edit=<?php echo (int)$branchRow['id'];?>">แก้ไข</a></nav>
 </article>
 <?php }?>
 </div></section>
