@@ -285,7 +285,7 @@ function db_portal_defaults(): array {
     return [
         'enabled'=>'1','brand_name'=>'MR BAR GROUP','eyebrow'=>'CHOOSE YOUR EXPERIENCE',
         'title'=>'เลือกร้านที่คุณต้องการ','subtitle'=>'ดูบรรยากาศ โปรโมชั่น PR และโต๊ะว่างของแต่ละสาขา',
-        'logo'=>'','favicon'=>'','hero_image'=>'','contact_label'=>'ติดต่อเรา','contact_url'=>'','footer_text'=>'MR BAR GROUP',
+        'logo'=>'','favicon'=>'','hero_image'=>'','banner_image'=>'','contact_label'=>'ติดต่อเรา','contact_url'=>'','footer_text'=>'MR BAR GROUP',
         'show_closed_branches'=>'0'
     ];
 }

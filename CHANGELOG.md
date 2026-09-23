@@ -1,3 +1,11 @@
+# v1.48.58 — Portal Black Gold RGB Banner
+
+- เพิ่มช่องอัปโหลดภาพ Banner ส่วนหัว Portal ในหน้า Config แยกจาก Logo และ Hero Background
+- แสดง Banner แนวนอนใน Hero พร้อมภาพ fallback ของแบรนด์ และ badge จำนวนสาขาที่ใช้ข้อความสั้น “N ร้าน”
+- ปรับ Portal เป็นธีมดำ-ทอง ตัดขอบ RGB Neon และถอดเอฟเฟกต์เด้งออกจากตัวนับสาขา
+- เพิ่มการรองรับจัดวาง Banner/Badge สำหรับหน้าจอมือถือ และรองรับ motion preference
+- ไม่มี DB migration
+
 # v1.48.14 — POS Sales Direct Drink Save
 
 - เพิ่มปุ่ม “เสร็จสิ้น / บันทึกยอด” หลังคำนวณค่าดื่ม Sales ดื่มตรง
