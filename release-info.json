@@ -1,9 +1,9 @@
 {
-  "version": "1.48.56",
-  "build_id": "MRBAR-v1.48.56-20260923",
-  "pack": "MR BAR Portal Visual Refresh v1.48.56",
+  "version": "1.48.57",
+  "build_id": "MRBAR-v1.48.57-20260923",
+  "pack": "MR BAR Portal Discovery GPS v1.48.57",
   "schema": 28,
   "migration": false,
-  "base": "1.48.55",
+  "base": "1.48.56",
   "updated_at": "2026-09-23"
 }
