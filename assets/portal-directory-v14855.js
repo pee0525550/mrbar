@@ -14,7 +14,7 @@
   var visible=0;
   cards.forEach(function(card){
    var matchesText=(card.getAttribute('data-search')||'').toLocaleLowerCase().indexOf(query)!==-1;
-   var matchesFilter=active==='all'||(active==='open'&&card.getAttribute('data-open')==='1')||(active==='featured'&&card.getAttribute('data-featured')==='1');
+   var matchesFilter=active==='all'||(active==='open'&&card.getAttribute('data-open')==='1')||(active==='available'&&card.getAttribute('data-available')==='1')||(active==='featured'&&card.getAttribute('data-featured')==='1');
    var show=matchesText&&matchesFilter;
    card.hidden=!show;
    if(show)visible++;

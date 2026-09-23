@@ -19,13 +19,13 @@ function element(attrs = {}) {
 }
 
 const cards = [
-  element({ 'data-search': 'priest exclusive club bangkok p01', 'data-open': '1', 'data-featured': '1' }),
-  element({ 'data-search': 'meet way chiang mai m02', 'data-open': '1', 'data-featured': '0' }),
-  element({ 'data-search': 'remember phuket r03', 'data-open': '0', 'data-featured': '0' }),
+  element({ 'data-search': 'priest exclusive club bangkok p01', 'data-open': '1', 'data-available': '1', 'data-featured': '1' }),
+  element({ 'data-search': 'meet way chiang mai m02', 'data-open': '1', 'data-available': '0', 'data-featured': '0' }),
+  element({ 'data-search': 'remember phuket r03', 'data-open': '0', 'data-available': '1', 'data-featured': '0' }),
 ];
 const search = element();
 const clear = element();
-const filters = ['all', 'open', 'featured'].map((filter) => element({ 'data-portal-filter': filter, 'aria-pressed': 'false' }));
+const filters = ['all', 'open', 'available', 'featured'].map((filter) => element({ 'data-portal-filter': filter, 'aria-pressed': 'false' }));
 const count = element();
 const status = element();
 const empty = element();
@@ -54,6 +54,11 @@ filters[1].fire('click');
 assert.deepEqual(cards.map((card) => card.hidden), [false, false, true]);
 assert.equal(count.textContent, '2');
 
+filters[2].fire('click');
+assert.deepEqual(cards.map((card) => card.hidden), [false, true, false]);
+assert.equal(count.textContent, '2');
+
+filters[0].fire('click');
 search.value = 'chiang';
 search.fire('input');
 assert.deepEqual(cards.map((card) => card.hidden), [true, false, true]);

@@ -1,15 +1,15 @@
 {
-  "version": "1.48.55",
-  "build_id": "MRBAR-v1.48.55-20260923",
+  "version": "1.48.56",
+  "build_id": "MRBAR-v1.48.56-20260923",
   "name": "MR BAR TIME HTTPS Landing",
   "date": "2026-09-23",
   "schema": "v28",
   "migration_required": false,
-  "base": "1.48.54",
+  "base": "1.48.55",
   "highlights": [
-    "Adds branch search by name, location, code, and description on the public portal",
-    "Adds branch filters for all, active, and featured shops",
-    "Shows clearer branch availability and booking entry points"
+    "Adds live branch, available table, and active PR summary to the public portal",
+    "Adds Thai date and live Bangkok clock to the portal welcome area",
+    "Refines the responsive portal layout and adds an available-table branch filter"
   ],
   "production_data_included": false
 }
