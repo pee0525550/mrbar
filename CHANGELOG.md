@@ -627,3 +627,12 @@
 - รองรับการเปิดบังคับ HTTPS กลับด้วย environment `MRBAR_FORCE_STAFF_HTTPS=1` เมื่อโฮสต์พร้อม
 - คงการตรวจ secure context ของ Camera/GPS ภายในหน้า เพื่อไม่รายงานว่าปลอดภัยผิดจากความจริง
 - ไม่มี DB migration
+
+# v1.48.51 - MR BAR TIME Mobile Recovery
+
+- รวม cache recovery สำหรับ iPhone/PWA โดยไม่ redirect ไป HTTPS ที่ Production ยังตอบ 404
+- ให้ PWA Manifest ใช้ origin ปัจจุบัน เพื่อไม่พา Home Screen ไป Document Root ที่ไม่มีแอป
+- เปลี่ยน Service Worker cache เป็น `v14851` และ bump script query เพื่อบังคับมือถือโหลด logic ใหม่
+- เพิ่มคำแนะนำ Secure Context สำหรับ Camera/GPS แทนข้อผิดพลาดที่ไม่ชัดเจน
+- คง HTTP fallback จนกว่า Hosting จะตั้ง SSL และ HTTPS Document Root ถูกต้อง แล้วจึงเปิด `MRBAR_FORCE_STAFF_HTTPS=1`
+- ไม่มี DB migration

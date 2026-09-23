@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/manifest+json; charset=utf-8');
-header('Cache-Control: public, max-age=300, must-revalidate');
+header('Cache-Control: public, max-age=60, must-revalidate');
 $manifest=[
   'id'=>'./time.php',
   'name'=>'MR BAR TIME',

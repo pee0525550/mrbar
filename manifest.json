@@ -1,15 +1,15 @@
 {
-  "version": "1.48.50",
-  "build_id": "MRBAR-v1.48.50-20260921",
-  "name": "MR BAR TIME HTTP Recovery",
-  "date": "2026-09-21",
+  "version": "1.48.51",
+  "build_id": "MRBAR-v1.48.51-20260923",
+  "name": "MR BAR TIME Mobile Recovery",
+  "date": "2026-09-23",
   "schema": "v28",
   "migration_required": false,
-  "base": "1.48.49",
+  "base": "1.48.50",
   "highlights": [
-    "Stops redirecting Time Staff to a missing HTTPS document root",
-    "Restores mobile and Preview pages through a graceful HTTP fallback",
-    "Keeps HTTPS enforcement configurable for when hosting SSL is ready"
+    "Prevents PHP and PWA JavaScript from redirecting to the missing HTTPS app",
+    "Refreshes the Time Staff service-worker and mobile script caches",
+    "Adds iPhone-specific secure-context guidance without causing a blank page"
   ],
   "production_data_included": false
 }

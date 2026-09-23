@@ -1,9 +1,9 @@
 {
-  "version": "1.48.50",
-  "build_id": "MRBAR-v1.48.50-20260921",
-  "pack": "MR BAR TIME HTTP Recovery v1.48.50",
+  "version": "1.48.51",
+  "build_id": "MRBAR-v1.48.51-20260923",
+  "pack": "MR BAR TIME Mobile Recovery v1.48.51",
   "schema": 28,
   "migration": false,
-  "base": "1.48.49",
-  "updated_at": "2026-09-21"
+  "base": "1.48.50",
+  "updated_at": "2026-09-23"
 }

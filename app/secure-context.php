@@ -34,9 +34,7 @@ function mrbar_safe_request_uri(string $fallback='/',?array $server=null): strin
 function mrbar_force_staff_https_enabled(?array $server=null): bool {
     $server=$server??$_SERVER;
     $value=$server['MRBAR_FORCE_STAFF_HTTPS']??getenv('MRBAR_FORCE_STAFF_HTTPS');
-    if($value!==false&&$value!==null&&trim((string)$value)!=='')return in_array(strtolower(trim((string)$value)),['1','true','yes','on'],true);
-    $host=strtolower(preg_replace('/:\\d+$/','',mrbar_safe_request_host($server))??'');
-    return in_array($host,['mrbarsupport.com','www.mrbarsupport.com'],true);
+    return in_array(strtolower(trim((string)$value)),['1','true','yes','on'],true);
 }
 
 function mrbar_require_https(string $fallbackUri='/',bool $allowAdminPreview=false): void {

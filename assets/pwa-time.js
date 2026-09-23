@@ -9,7 +9,7 @@
   const standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
   document.documentElement.classList.toggle('mr-pwa-standalone',standalone);
   if('serviceWorker' in navigator&&secure){
-    window.addEventListener('load',()=>navigator.serviceWorker.register(new URL('pwa-sw.js?v=1.27.21',appBase).href,{scope:appBase.pathname}).catch(()=>{}));
+    window.addEventListener('load',()=>navigator.serviceWorker.register(new URL('pwa-sw.js?v=1.48.51',appBase).href,{scope:appBase.pathname}).catch(()=>{}));
   }
   const page=location.pathname.split('/').pop()||'';
   const relevant=['login.php','setup-pin.php','employee-activate.php','employee-time.php','employee-calendar.php','employee-income.php','pr.php','pr-calendar.php','pr-jobs.php','time.php'].includes(page)||new URLSearchParams(location.search).get('pwa')==='1';
