@@ -50,6 +50,31 @@ function cw_weather_code(int $code): array {
     return ['icon'=>'🌙','label'=>'สภาพอากาศคืนนี้','tone'=>'neutral'];
 }
 
+function cw_weather_hourly_forecast(array $hourly,array $current,DateTimeImmutable $now,int $limit=8): array {
+    $times=is_array($hourly['time']??null)?$hourly['time']:[];
+    $temps=is_array($hourly['temperature_2m']??null)?$hourly['temperature_2m']:[];
+    $rains=is_array($hourly['precipitation_probability']??null)?$hourly['precipitation_probability']:[];
+    $codes=is_array($hourly['weather_code']??null)?$hourly['weather_code']:[];
+    $currentRain=0;
+    foreach($times as $i=>$time){try{$at=new DateTimeImmutable((string)$time,new DateTimeZone('Asia/Bangkok'));}catch(Throwable $unused){continue;}if($at<=$now&&$at->modify('+1 hour')>$now){$currentRain=max(0,min(100,(int)round((float)($rains[$i]??0))));break;}}
+    $currentCode=is_numeric($current['weather_code']??null)?(int)$current['weather_code']:0;
+    $forecast=[['time'=>'ตอนนี้','temperature'=>is_numeric($current['temperature_2m']??null)?(float)$current['temperature_2m']:null,'rain_probability'=>$currentRain,'icon'=>cw_weather_code($currentCode)['icon'],'label'=>cw_weather_code($currentCode)['label'],'current'=>true]];
+    foreach($times as $i=>$time){
+        if(count($forecast)>=$limit)break;
+        try{$at=new DateTimeImmutable((string)$time,new DateTimeZone('Asia/Bangkok'));}catch(Throwable $unused){continue;}
+        if($at<=$now)continue;
+        $code=is_numeric($codes[$i]??null)?(int)$codes[$i]:0;$condition=cw_weather_code($code);
+        $forecast[]=['time'=>$at->format('H:i'),'temperature'=>is_numeric($temps[$i]??null)?(float)$temps[$i]:null,'rain_probability'=>max(0,min(100,(int)round((float)($rains[$i]??0)))),'icon'=>$condition['icon'],'label'=>$condition['label'],'current'=>false];
+    }
+    return $forecast;
+}
+
+function cw_weather_thai_date(DateTimeImmutable $date): string {
+    $days=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+    $months=[1=>'มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+    return 'วัน'.$days[(int)$date->format('w')].'ที่ '.$date->format('j').' '.$months[(int)$date->format('n')].' '.((int)$date->format('Y')+543);
+}
+
 function cw_weather_window(): array {
     $tz=new DateTimeZone('Asia/Bangkok');
     $now=new DateTimeImmutable('now',$tz);
@@ -141,9 +166,11 @@ function cw_weather_summary(float $lat,float $lng,int $branchId=0): ?array {
     $temp=is_numeric($current['temperature_2m']??null)?(float)$current['temperature_2m']:($nightTemps?reset($nightTemps):null);
     $wind=is_numeric($current['wind_speed_10m']??null)?(float)$current['wind_speed_10m']:null;
     $currentCode=is_numeric($current['weather_code']??null)?(int)$current['weather_code']:($nightCodes?reset($nightCodes):0);
+    $currentVisual=cw_weather_code($currentCode);
     $worstCode=$currentCode;
     foreach($nightCodes as $c){if(in_array($c,[95,96,99],true)){$worstCode=$c;break;}if(in_array($c,[61,63,65,66,67,80,81,82],true))$worstCode=$c;}
     $visual=cw_weather_code($worstCode);
+    $hourlyForecast=cw_weather_hourly_forecast($hourly,$current,$now,8);
 
     $level='normal';$title='คืนนี้อากาศกำลังดี';$suggestion='เช็กโต๊ะว่างแล้วจองได้เลย คืนนี้เจอกันที่ MR BAR';
     if(in_array($worstCode,[95,96,99],true)||$maxRain>=80){
@@ -163,6 +190,7 @@ function cw_weather_summary(float $lat,float $lng,int $branchId=0): ?array {
         $suggestion='โอกาสฝนน้อย วางแผนค่ำคืนนี้ได้สบายขึ้น';
     }
 
+    $sourceTime=(string)($current['time']??'');$updatedAt=preg_match('/T(\d{2}:\d{2})/',$sourceTime,$timeMatch)?$timeMatch[1]:$now->format('H:i');
     $weather=[
         'temperature'=>$temp,
         'wind'=>$wind,
@@ -170,11 +198,15 @@ function cw_weather_summary(float $lat,float $lng,int $branchId=0): ?array {
         'rain_at'=>$maxRainAt,
         'icon'=>$visual['icon'],
         'condition'=>$visual['label'],
+        'current_condition'=>$currentVisual['label'],
         'level'=>$level,
         'title'=>$title,
         'suggestion'=>$suggestion,
         'window'=>$start->format('H:i').'–'.$end->format('H:i'),
-        'updated_at'=>$now->format('H:i'),
+        'date_label'=>cw_weather_thai_date($now),
+        'now_iso'=>$now->format(DATE_ATOM),
+        'hourly_forecast'=>$hourlyForecast,
+        'updated_at'=>$updatedAt,
     ];
     $weather['scene']=cw_weather_scene_key($weather);
     return $weather;

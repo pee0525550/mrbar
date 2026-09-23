@@ -1,9 +1,9 @@
 {
-  "version": "1.48.53",
-  "build_id": "MRBAR-v1.48.53-20260923",
-  "pack": "MR BAR Multi Branch Integrity v1.48.53",
+  "version": "1.48.54",
+  "build_id": "MRBAR-v1.48.54-20260923",
+  "pack": "MR BAR Customer Hourly Weather v1.48.54",
   "schema": 28,
   "migration": false,
-  "base": "1.48.52",
+  "base": "1.48.53",
   "updated_at": "2026-09-23"
 }
