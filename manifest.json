@@ -1,15 +1,15 @@
 {
-  "version": "1.48.49",
-  "build_id": "MRBAR-v1.48.49-20260921",
-  "name": "MR BAR TIME Navigation and Mobile Overlay Fix",
+  "version": "1.48.50",
+  "build_id": "MRBAR-v1.48.50-20260921",
+  "name": "MR BAR TIME HTTP Recovery",
   "date": "2026-09-21",
   "schema": "v28",
   "migration_required": false,
-  "base": "1.48.48",
+  "base": "1.48.49",
   "highlights": [
-    "Removes the administration branch switcher from every staff-facing Time route",
-    "Prevents the branch selector from covering mobile Check-in and Check-out actions",
-    "Fixes an uninitialized employee fallback in PR Calendar"
+    "Stops redirecting Time Staff to a missing HTTPS document root",
+    "Restores mobile and Preview pages through a graceful HTTP fallback",
+    "Keeps HTTPS enforcement configurable for when hosting SSL is ready"
   ],
   "production_data_included": false
 }

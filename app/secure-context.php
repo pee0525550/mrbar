@@ -31,8 +31,20 @@ function mrbar_safe_request_uri(string $fallback='/',?array $server=null): strin
     return str_replace(["\r","\n"],'',$uri);
 }
 
+function mrbar_force_staff_https_enabled(?array $server=null): bool {
+    $server=$server??$_SERVER;
+    $value=$server['MRBAR_FORCE_STAFF_HTTPS']??getenv('MRBAR_FORCE_STAFF_HTTPS');
+    if($value!==false&&$value!==null&&trim((string)$value)!=='')return in_array(strtolower(trim((string)$value)),['1','true','yes','on'],true);
+    $host=strtolower(preg_replace('/:\\d+$/','',mrbar_safe_request_host($server))??'');
+    return in_array($host,['mrbarsupport.com','www.mrbarsupport.com'],true);
+}
+
 function mrbar_require_https(string $fallbackUri='/',bool $allowAdminPreview=false): void {
     if(mrbar_request_is_https()||($allowAdminPreview&&mrbar_admin_preview_requested()))return;
+    if(!mrbar_force_staff_https_enabled()){
+        header('X-MR-BAR-Secure-Context: http-fallback');
+        return;
+    }
     header('Location: https://'.mrbar_safe_request_host().mrbar_safe_request_uri($fallbackUri),true,302);
     exit;
 }

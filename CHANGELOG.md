@@ -620,3 +620,10 @@
 - แก้ PR Calendar ที่อ้างตัวแปร Employee ก่อนกำหนด ซึ่งอาจทำให้บางบัญชีเกิด warning/error
 - เพิ่ม regression test สำหรับ shell และเส้นทาง Preview ของ Time Staff
 - ไม่มี DB migration
+# v1.48.50 - MR BAR TIME HTTP Recovery
+
+- แก้ Time Staff หน้าขาวบนมือถือจากการ redirect ไป HTTPS ที่ Document Root ยังไม่พบไฟล์ระบบ
+- เปลี่ยนเป็น graceful HTTP fallback เพื่อให้ Time Staff และ Preview โหลดหน้าได้ระหว่างรอแก้ SSL/VHost
+- รองรับการเปิดบังคับ HTTPS กลับด้วย environment `MRBAR_FORCE_STAFF_HTTPS=1` เมื่อโฮสต์พร้อม
+- คงการตรวจ secure context ของ Camera/GPS ภายในหน้า เพื่อไม่รายงานว่าปลอดภัยผิดจากความจริง
+- ไม่มี DB migration
