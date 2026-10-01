@@ -1,7 +1,12 @@
 /* HR approval detail surfaces: remove nested scrolling and keep embedded pages on-theme. */
-.ha-workframe{height:820px!important;min-height:620px;overflow:hidden;background:transparent!important}
+.ha-workframe{height:820px;min-height:620px;overflow:hidden;background:transparent!important}
 .ha-frame-wrap{overflow:hidden;background:transparent!important;border-color:rgba(122,143,183,.28)!important}
 .ha-detail-head{align-items:center}
+html[data-mr-theme="dark"] .ha-shell .ha-calendar-sort label span{color:#f2f5ff}
+html[data-mr-theme="dark"] .ha-shell .ha-calendar-sort label:hover{background:#1c2941;border-color:#455673}
+html[data-mr-theme="light"] body.hr-embedded :is(.wx-head span,.wx-title small,.wx-kpis small,.wx-kpis span,.wx-empty){color:#52637b!important}
+html[data-mr-theme="light"] .ha-shell .ha-kpis article:first-child :is(small,b,span){color:#fff!important}
+@media(max-width:900px){.ha-shell .ha-work{min-height:0}.ha-shell .ha-head,.ha-shell .ha-layout>aside,.ha-shell .ha-work{border-radius:8px!important}.ha-shell :is(h1,h2,b,small){letter-spacing:0!important}}
 .ha-detail-head p{max-width:680px;line-height:1.65}
 .ha-shell .ha-side:not(.ha-quick-leave) .ha-urgent>a{min-height:58px}
 

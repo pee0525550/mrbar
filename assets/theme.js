@@ -29,6 +29,7 @@
     try{window.dispatchEvent(new CustomEvent('mrbar:themechange',{detail:{theme:t}}));}catch(e){}
   }
   function createSwitch(){
+    if(document.body.classList.contains('hr-embedded'))return;
     if(document.querySelector('.mr-theme-toggle'))return;
     var btn=document.createElement('button');
     btn.type='button';
@@ -40,5 +41,6 @@
     updateButton(btn,safeGet());
   }
   function init(){apply(safeGet(),false);createSwitch();}
+  window.addEventListener('storage',function(event){if(event.key===key)apply(safeGet(),false);});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();

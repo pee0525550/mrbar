@@ -118,6 +118,66 @@ async function run() {
       assert.equal(dimensions.problems.length, 0, JSON.stringify(dimensions));
       assert.ok(dimensions.document <= width + 1 && dimensions.main <= dimensions.mainWidth + 1, `horizontal overflow at ${width}: ${JSON.stringify(dimensions)}`);
     }
+    const designReport = [];
+    const designRoutes = ['admin.php', 'admin-tools.php', 'reservations.php', 'reservation-settings.php', 'night-ops.php', 'employees.php', 'workforce-schedule.php', 'payroll-attendance.php', 'hr-approval-center.php', 'hr-approval-center.php?view=exception', 'admin-leaves.php?embed=1', 'workforce-exceptions.php?embed=1', 'customers.php', 'customer-web.php', 'system-reports.php', 'admin-manage.php', 'role-permissions.php', 'settings.php', 'line-settings.php', 'account.php', 'employee-time.php', 'employee-calendar.php', 'employee-income.php'];
+    for (const width of [390, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      for (const route of designRoutes) {
+        const response = await page.goto(`${url}/${route}`);
+        await page.waitForFunction(() => !document.documentElement.classList.contains('mr-loading-init') && !document.querySelector('#mrPageLoader.is-visible'));
+        await page.waitForTimeout(350);
+        const measurements = await page.evaluate(() => ({
+          width: innerWidth, documentWidth: document.documentElement.scrollWidth,
+          overflow: Array.from(document.querySelectorAll('main *')).filter(el => {
+            const box = el.getBoundingClientRect();
+            if (!box.width || box.left >= innerWidth || box.right <= 0) return false;
+            for (let parent = el.parentElement; parent; parent = parent.parentElement) {
+              if (['auto', 'scroll'].includes(getComputedStyle(parent).overflowX)) return false;
+            }
+            return box.right > innerWidth + 2 || box.left < -2;
+          }).slice(0, 10).map(el => `${el.tagName}.${el.className}`)
+        }));
+        designReport.push({ route, width, status: response.status(), finalUrl: page.url().replace(url, ''), ...measurements });
+        await page.screenshot({ path: path.join(artifacts, `design-${route.replace(/[^a-z0-9]/gi, '-')}-${width}.png`), fullPage: true });
+      }
+    }
+    fs.writeFileSync(path.join(artifacts, 'design-report.json'), JSON.stringify(designReport, null, 2));
+    assert.ok(designReport.every(row => row.status === 200), 'all audited screens must render');
+    assert.ok(designReport.every(row => row.documentWidth <= row.width + 1 && row.overflow.length === 0), 'audited pages must fit the viewport; see design-report.json');
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(`${url}/admin.php`);
+    await page.locator('#adminMobileLauncher').click();
+    assert.equal(await page.locator('#sidebar').evaluate(el => el.inert), false);
+    assert.equal(await page.locator('#adminMobileLauncher').getAttribute('aria-expanded'), 'true');
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('#sidebar').evaluate(el => el.inert), true);
+    assert.equal(await page.locator('#adminMobileLauncher').evaluate(el => el === document.activeElement), true);
+    await page.goto(`${url}/admin-leaves.php?embed=1`);
+    assert.equal(await page.locator('.mr-theme-toggle').count(), 0, 'embedded approvals use parent theme without a duplicate toggle');
+    for (const width of [320, 768]) {
+      await page.setViewportSize({ width, height: 844 });
+      for (const route of ['employee-time.php', 'employee-calendar.php', 'employee-income.php', 'hr-approval-center.php?view=exception']) {
+        await page.goto(`${url}/${route}`);
+        await page.waitForFunction(() => !document.documentElement.classList.contains('mr-loading-init'));
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${route} fits ${width}`);
+        await page.screenshot({ path: path.join(artifacts, `focused-${route.replace(/[^a-z0-9]/gi, '-')}-${width}.png`), fullPage: true });
+      }
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(`${url}/hr-approval-center.php?view=exception`);
+    const embedded = page.frameLocator('iframe[data-auto-height]');
+    await embedded.locator('.wx-shell').waitFor();
+    assert.equal(await embedded.locator('.mr-theme-toggle').count(), 0);
+    await page.waitForFunction(() => {
+      const frame = document.querySelector('iframe[data-auto-height]');
+      return frame.style.height && frame.getBoundingClientRect().height >= frame.contentDocument.querySelector('main').scrollHeight;
+    });
+    await page.locator('.mr-theme-toggle').click();
+    await page.waitForFunction(() => document.querySelector('iframe').contentDocument.documentElement.dataset.mrTheme === 'light');
+    await page.screenshot({ path: path.join(artifacts, 'hr-approval-light-390.png'), fullPage: true });
+    await page.locator('.mr-theme-toggle').click();
+    await page.goto(`${url}/employee-calendar.php`);
+    assert.equal(await page.locator('.mobile-dock').evaluate(el => getComputedStyle(el).position), 'fixed');
     await page.goto(`${url}/__qa/device`); await page.goto(`${url}/login.php`);
     const pinCsrf = await page.locator('#pinForm [name=csrf]').inputValue();
     for (let attempt = 1; attempt <= 5; attempt++) {
@@ -134,7 +194,7 @@ async function run() {
     const expired = await context.request.post(`${url}/login.php`, { form: { csrf: pinCsrf, action: 'pin', pin: '123456' }, maxRedirects: 0 });
     assert.equal(expired.status(), 200); assert.match(await expired.text(), /ไม่พบอุปกรณ์ที่จดจำ/);
     assert.deepEqual(errors, [], 'no browser JS errors');
-    assert.doesNotMatch(log, /PHP (?:Fatal|Warning|Parse)/);
+    assert.deepEqual(log.split('\n').filter(line => /PHP (?:Fatal|Warning|Parse)/.test(line)), [], 'no PHP errors');
     console.log(`Web request, duplicate booking, deposit gates and mobile QA passed. Screenshots: ${artifacts}`);
   } finally {
     if (browser) await browser.close();

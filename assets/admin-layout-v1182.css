@@ -219,6 +219,19 @@ html[data-mr-theme="light"] .admin-mobile-launcher{
   .admin-v14-sidebar ~ main{padding-left:11px!important;padding-right:11px!important}
 }
 
+@media(max-width:900px){
+  body.admin-mobile-nav-open{overflow:hidden}
+  .admin-v14-sidebar ~ main .topbar{flex-wrap:wrap;max-width:100%;gap:12px;margin-inline:0}
+  .admin-v14-sidebar ~ main .topbar>div{min-width:0;max-width:100%;flex-wrap:wrap}
+  .admin-v14-sidebar ~ main .topbar :is(h1,p){overflow-wrap:anywhere}
+  .admin-v14-sidebar ~ main .top-actions{justify-content:flex-start}
+  .admin-v14-sidebar{max-width:calc(100vw - 48px);overscroll-behavior:contain}
+  .admin-v14-sidebar .admin-sidebar-collapse{display:grid!important;min-width:44px;min-height:44px}
+  .admin-mobile-launcher{bottom:calc(16px + env(safe-area-inset-bottom))}
+  .admin-v14-sidebar ~ main :is(input:not([type=checkbox]):not([type=radio]),select,textarea){font-size:16px}
+  .admin-v14-sidebar ~ main :is(button,a,input,select,textarea):focus-visible{outline:2px solid #20c997;outline-offset:3px}
+}
+
 @media(prefers-reduced-motion:reduce){
   .admin-v14-sidebar,.admin-v14-sidebar ~ main,.admin-sidebar-collapse,.admin-sidebar-backdrop{transition:none!important}
 }

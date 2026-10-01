@@ -54,12 +54,12 @@ function admin_sidebar($active, $user=array()) {
     );
     ob_start(); ?>
 <script>(function(){try{if(window.matchMedia&&window.matchMedia('(min-width: 901px)').matches&&localStorage.getItem('mrbar_admin_sidebar_compact')==='1'){document.documentElement.classList.add('admin-sidebar-collapsed');}}catch(e){}})();</script>
-<link rel="stylesheet" href="assets/admin-layout-v1182.css?v=1182">
+<link rel="stylesheet" href="assets/admin-layout-v1182.css?v=14919">
 <link rel="stylesheet" href="assets/admin-sidebar-groups-v1274.css?v=1274">
 <link rel="stylesheet" href="assets/admin-sidebar-groups-v14877.css?v=14877">
 <link rel="stylesheet" href="assets/admin-branding-v1276.css?v=1276">
 <link rel="stylesheet" href="assets/admin-sidebar-footer-v1305.css?v=1305">
-<script src="assets/admin-layout-v1182.js?v=1182" defer></script>
+<script src="assets/admin-layout-v1182.js?v=14919" defer></script>
 <script src="assets/admin-sidebar-groups-v1274.js?v=1274" defer></script>
 <aside class="sidebar admin-v14-sidebar" id="sidebar" aria-label="Admin navigation">
   <button type="button" class="admin-sidebar-collapse" id="adminSidebarCollapse" aria-label="ย่อหรือขยายเมนู" title="ย่อ / ขยายเมนู"><span class="collapse-icon">‹</span></button>

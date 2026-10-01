@@ -12,6 +12,11 @@
 .staff-time-page.staff-keyboard-open .mobile-dock{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(120%)}
 
 /* Calendar */
+.staff-calendar-page .mobile-dock{position:fixed;left:50%;transform:translateX(-50%);z-index:90;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));max-width:560px}
+.staff-calendar-page .mobile-dock a{display:grid;align-content:center;justify-items:center;gap:4px;text-decoration:none;color:var(--mr-muted,#aab6cd);line-height:1.2}
+.staff-calendar-page .mobile-dock a.active{color:var(--mr-text,#f2f5ff)}
+.staff-calendar-page .mobile-dock span{font-size:20px}.staff-calendar-page .mobile-dock small{font-size:11px;letter-spacing:0}
+.staff-time-page :is(input,select,textarea):focus-visible{outline:2px solid #20c997;outline-offset:2px}
 .staff-calendar-page .cal-shell{padding-bottom:calc(106px + env(safe-area-inset-bottom))}
 .staff-calendar-page .cal-appbar{grid-template-columns:48px minmax(0,1fr) auto;gap:9px;min-height:68px;padding-bottom:8px}
 .staff-calendar-page .cal-appbar>.cal-title{text-align:center;min-width:0}.staff-calendar-page .cal-title small,.staff-calendar-page .cal-title strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.staff-calendar-page .cal-title strong{font-size:clamp(17px,4.8vw,20px)}
@@ -73,7 +78,7 @@ html[data-mr-theme="light"] .staff-time-page .mobile-dock{background:#f9fbfff2;b
 }
 
 @media(max-width:360px){
- .staff-calendar-page .cal-today{font-size:0;width:38px;min-width:38px}.staff-calendar-page .cal-today:after{content:'•';font-size:20px;line-height:1;color:#ffe27a}.staff-calendar-page .cal-head-actions{gap:2px}
+ .staff-calendar-page .cal-today{font-size:11px;width:auto;min-width:40px}.staff-calendar-page .cal-head-actions{gap:2px}
  .staff-calendar-page .legend{grid-template-columns:1fr}.staff-income-page .estimate-pill{display:none}.staff-income-page .income-person h1{font-size:26px}
 }
 

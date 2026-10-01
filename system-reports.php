@@ -568,7 +568,7 @@ $viewUrl = function (string $target) use ($filters): string {
     <article class="sr-panel sr-module-report">
       <div class="sr-panel-head"><div><small>ACTIVITY BY MODULE</small><h2>กิจกรรมแยกตามหมวด</h2><p>จำนวนรายการในช่วงวันที่เลือก</p></div><span><?=number_format(count($moduleSummary))?> modules</span></div>
       <div class="sr-module-bars">
-        <?php $maxModuleCount=max(1,...array_map(fn($v)=>(int)$v['count'],$moduleSummary?:[['count'=>0]])); foreach($moduleSummary as $module=>$summary):?>
+        <?php $maxModuleCount=max(1,...array_values(array_map(fn($v)=>(int)$v['count'],$moduleSummary?:[['count'=>0]]))); foreach($moduleSummary as $module=>$summary):?>
         <div class="sr-module-bar"><div><b><?=h($module)?></b><span><?=number_format($summary['count'])?> รายการ<?=!empty($summary['risk'])?' · ติดตาม '.number_format($summary['risk']):''?></span></div><i><span style="width:<?=max(2,(int)round($summary['count']/$maxModuleCount*100))?>%"></span></i></div>
         <?php endforeach; if(!$moduleSummary):?><p class="sr-empty">ไม่มีข้อมูลในช่วงวันที่เลือก</p><?php endif;?>
       </div>

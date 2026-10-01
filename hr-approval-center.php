@@ -75,7 +75,7 @@ $attFilter=(string)($_GET['att']??'all');if(!in_array($attFilter,['all','normal'
 <title>MR BAR — HR Approval Center</title>
 <link rel="stylesheet" href="assets/admin.css?v=1220">
 <link rel="stylesheet" href="assets/admin-v14.css?v=1220">
-<link rel="stylesheet" href="assets/hr-approval-center-v14822.css?v=14822"><link rel="stylesheet" href="assets/hr-approval-center-v14823.css?v=14823"><link rel="stylesheet" href="assets/hr-approval-center-v14824.css?v=14824"><link rel="stylesheet" href="assets/hr-approval-date-nav-v14842.css?v=14842"><link rel="stylesheet" href="assets/hr-approval-center-theme-v14869.css?v=14869"><link rel="stylesheet" href="assets/hr-approval-center-v14880.css?v=14880"><link rel="stylesheet" href="assets/hr-approval-mobile-v14890.css?v=14890">
+<link rel="stylesheet" href="assets/hr-approval-center-v14822.css?v=14822"><link rel="stylesheet" href="assets/hr-approval-center-v14823.css?v=14823"><link rel="stylesheet" href="assets/hr-approval-center-v14824.css?v=14824"><link rel="stylesheet" href="assets/hr-approval-date-nav-v14842.css?v=14842"><link rel="stylesheet" href="assets/hr-approval-center-theme-v14869.css?v=14869"><link rel="stylesheet" href="assets/hr-approval-center-v14880.css?v=14919"><link rel="stylesheet" href="assets/hr-approval-mobile-v14890.css?v=14890">
 </head>
 <body class="admin-v14-page hr-approval-page">
 <?php require_once __DIR__.'/app/admin-nav.php';echo admin_sidebar('approvals',$u);?>
