@@ -6,6 +6,7 @@ require_once __DIR__.'/../app/floor-plan.php';
 require_once __DIR__.'/../app/customer-integrations.php';
 require_once __DIR__.'/../app/reservation-payments.php';
 require_once __DIR__.'/../app/reservation-request.php';
+require_once __DIR__.'/../app/line-outbox.php';
 
 $d=db_load();
 $branch=branch_current($d);
@@ -43,6 +44,7 @@ $requestLimits=reservation_request_limits($d);
 $preferredParty=min($preferredParty,$requestLimits['party']);
 $receipt=reservation_request_receipt($d,(string)($_GET['receipt']??''),(string)($lineIdentity['line_user_id']??''));
 if($receipt)$msg=reservation_receipt_message($receipt);
+if($receipt)mrbar_line_outbox_after_response((int)($d['_branch_context']['id']??0));
 $lineAuthUrl=$lineLiffReady?'https://liff.line.me/'.rawurlencode($lineLoginConfig['liff_id']).'/?'.http_build_query(['flow'=>'customer_booking','return_to'=>$reservationReturn]):'';
 
 if(($d['settings']['reservation_enabled']??'1')!=='1'){
@@ -148,6 +150,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'&&$err===''){
                 customer_crm_upsert_from_reservation($data,$reservation,true);
                 $data['reservations'][]=$reservation;
                 mrbar_notify_booking_created($data,$reservation);
+                mrbar_line_enqueue_booking($data,$reservation);
                 $createdReservationId=(int)$reservation['id'];
                 $data['audit'][]=['at'=>date('c'),'action'=>'customer_reservation_created','sales_selection'=>$reservation['sales_selection'],'sales_employee_id'=>$reservation['sales_employee_id'],'requested_table_id'=>$requestedTableId?:null,'requested_table_code'=>$requestedCode,'line_user_id'=>$lineIdentity['line_user_id'],'payment_mode'=>$paymentMode,'deposit_status'=>$depositStatus];
                 return $data;
@@ -160,18 +163,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'&&$err===''){
                 header('Location: '.$reservationReturn.'&receipt='.$requestKey,true,303);exit;
             }
             $reservationCommitted=true;
-            $customerLineDelivery=['status'=>'not_configured'];
-            foreach($committedData['reservations']??[] as $createdReservation){
-                if((int)($createdReservation['id']??0)!==$createdReservationId)continue;
-                try{
-                    $customerLineDelivery=($createdReservation['status']??'')==='confirmed'
-                        ?mrbar_send_customer_reservation_confirmation($committedData,$createdReservation)
-                        :mrbar_send_customer_booking_confirmation($committedData,$createdReservation);
-                    $delivery=mrbar_send_booking_line_notifications($committedData,$createdReservation);
-                    db_mutate(function(array $data)use($createdReservation,$delivery,$customerLineDelivery):array{mrbar_apply_booking_line_delivery($data,$createdReservation,$delivery,$customerLineDelivery);if(($createdReservation['status']??'')==='confirmed')mrbar_apply_customer_reservation_confirmation_delivery($data,$createdReservation,$customerLineDelivery);return $data;});
-                }catch(Throwable $lineError){error_log('LINE booking notification dispatch failed for reservation '.$createdReservationId);}
-                break;
-            }
+            mrbar_line_outbox_after_response((int)($committedData['_branch_context']['id']??0));
             header('Location: '.$reservationReturn.'&receipt='.$requestKey,true,303);exit;
         }catch(Throwable $error){
             if(!$reservationCommitted&&$uploadedSlipPath!==''){

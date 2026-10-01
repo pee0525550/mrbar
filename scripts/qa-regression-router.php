@@ -49,9 +49,28 @@ if($route==='/__qa/expire-device'){
     });
     echo 'expired';exit;
 }
+if($route==='/__qa/outbox-worker'){
+    require_once $root.'/app/line-outbox.php';
+    $previous=getenv('MRBAR_LINE_CHANNEL_ACCESS_TOKEN');putenv('MRBAR_LINE_CHANNEL_ACCESS_TOKEN=synthetic-worker-only');
+    $calls=[];$status=(int)($_GET['status']??503);
+    try{
+        $processed=mrbar_line_outbox_run(1,1,static function(string $destination,string $message,string $key)use(&$calls,$status):array{
+            $calls[]=['key'=>$key,'message'=>$message];
+            return ['ok'=>$status===200,'status'=>$status,'accepted_request_id'=>$status===409?'synthetic-accepted':''];
+        });
+    }finally{putenv($previous===false?'MRBAR_LINE_CHANNEL_ACCESS_TOKEN':'MRBAR_LINE_CHANNEL_ACCESS_TOKEN='.$previous);}
+    header('Content-Type: application/json');echo json_encode(['processed'=>$processed,'calls'=>$calls]);exit;
+}
+if($route==='/__qa/outbox-due'){
+    db_mutate_global(static function(array $data):array{
+        foreach($data['branch_data']['1']['line_outbox'] as &$job)$job['next_attempt_at']=time()-1;
+        unset($job);$data['portal_settings']['line_customer_confirmation_template']='Changed after enqueue';return $data;
+    });
+    echo 'due';exit;
+}
 if($route==='/__qa/state'){
     $data=db_load();header('Content-Type: application/json');
     $device=$data['users'][0]['trusted_devices'][0]??[];
-    echo json_encode(['reservations'=>$data['reservations'],'checkins'=>$data['checkins'],'tables'=>$data['tables'],'notifications'=>$data['notifications'],'device_attempts'=>$device['failed_attempts']??0,'device_lock'=>$device['locked_until']??null]);exit;
+    echo json_encode(['reservations'=>$data['reservations'],'line_outbox'=>$data['line_outbox']??[],'checkins'=>$data['checkins'],'tables'=>$data['tables'],'notifications'=>$data['notifications'],'device_attempts'=>$device['failed_attempts']??0,'device_lock'=>$device['locked_until']??null]);exit;
 }
 http_response_code(404);

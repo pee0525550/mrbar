@@ -26,7 +26,7 @@ function mrbar_render_customer_line_template(string $template,array $data,array 
     }
     if($tableCode==='')$tableCode=trim((string)($reservation['requested_table_code']??$reservation['table_code_snapshot']??''));
     if($tableCode==='')$tableCode='ทีมงานจะจัดโต๊ะให้';
-    $zone=trim((string)($reservation['requested_zone']??''))?:$tableZone;
+    $zone=$tableZone!==''?$tableZone:trim((string)($reservation['requested_zone']??''));
     if($zone==='')$zone='ไม่ระบุ';
     $date=trim((string)($reservation['date']??''));
     $timestamp=$date!==''?strtotime($date):false;
@@ -149,7 +149,16 @@ function mrbar_booking_notification_event_key(array $data,array $reservation): s
 }
 
 function mrbar_line_push_accepted(array $result): bool {
-    return !empty($result['ok'])||(int)($result['status']??0)===409;
+    return !empty($result['ok'])||((int)($result['status']??0)===409&&trim((string)($result['accepted_request_id']??''))!=='');
+}
+
+function mrbar_booking_line_staff_message(array $reservation): string {
+    $table=trim((string)($reservation['requested_table_code']??$reservation['table_code_snapshot']??''));
+    if($table==='')$table=empty($reservation['table_id'])?'รอจัดโต๊ะ':'โต๊ะที่จอง';
+    return 'MR BAR · มีรายการจองใหม่'."\n".
+        'ลูกค้า: '.trim((string)($reservation['guest_name']??'ลูกค้า'))."\n".
+        'วันเวลา: '.trim((string)($reservation['date']??'')).' '.trim((string)($reservation['time']??''))."\n".
+        'จำนวน: '.max(1,(int)($reservation['party_size']??1)).' คน · '.$table;
 }
 
 function mrbar_notify_booking_created(array &$data,array $reservation): int {
@@ -172,12 +181,7 @@ function mrbar_send_booking_line_notifications(array $data,array $reservation,?c
     $eventKey=mrbar_booking_notification_event_key($data,$reservation);
     $accounts=[];
     foreach($data['users']??[] as $account)$accounts[(int)($account['id']??0)]=$account;
-    $table=trim((string)($reservation['requested_table_code']??$reservation['table_code_snapshot']??''));
-    if($table==='')$table=empty($reservation['table_id'])?'รอจัดโต๊ะ':'โต๊ะที่จอง';
-    $message='MR BAR · มีรายการจองใหม่'."\n".
-        'ลูกค้า: '.trim((string)($reservation['guest_name']??'ลูกค้า'))."\n".
-        'วันเวลา: '.trim((string)($reservation['date']??'')).' '.trim((string)($reservation['time']??''))."\n".
-        'จำนวน: '.max(1,(int)($reservation['party_size']??1)).' คน · '.$table;
+    $message=mrbar_booking_line_staff_message($reservation);
     $tokenReady=mrbar_integration_env('MRBAR_LINE_CHANNEL_ACCESS_TOKEN')!=='';
     $push=$push??static fn(string $lineUserId,string $text,string $retryKey):array=>mrbar_line_push_text($lineUserId,$text,$retryKey);
     $delivery=[];
@@ -237,7 +241,7 @@ function mrbar_apply_customer_reservation_confirmation_delivery(array &$data,arr
         if((int)($row['id']??0)!==(int)($reservation['id']??0))continue;
         $row['line_customer_confirmation_status']=(string)($delivery['status']??'failed');
         if(!empty($delivery['http_status']))$row['line_customer_confirmation_http_status']=(int)$delivery['http_status'];
-        if(($delivery['status']??'')==='sent')$row['line_customer_confirmation_sent_at']=date('c');
+        if(($delivery['status']??'')==='sent'&&empty($row['line_customer_confirmation_sent_at']))$row['line_customer_confirmation_sent_at']=date('c');
         break;
     }
     unset($row);
@@ -253,7 +257,7 @@ function mrbar_apply_booking_line_delivery(array &$data,array $reservation,array
         if(!is_array($notice['meta']['channels']??null))$notice['meta']['channels']=[];
         $notice['meta']['channels']['line']=(string)$delivery[$userId]['status'];
         if(!empty($delivery[$userId]['http_status']))$notice['meta']['line_http_status']=(int)$delivery[$userId]['http_status'];
-        if(($delivery[$userId]['status']??'')==='sent')$notice['meta']['line_sent_at']=date('c');
+        if(($delivery[$userId]['status']??'')==='sent'&&empty($notice['meta']['line_sent_at']))$notice['meta']['line_sent_at']=date('c');
     }
     unset($notice);
     $summary=['eligible'=>count($delivery),'sent'=>0,'not_linked'=>0,'failed'=>0,'not_configured'=>0];
@@ -265,7 +269,7 @@ function mrbar_apply_booking_line_delivery(array &$data,array $reservation,array
         if($customerDelivery!==null){
             $row['line_customer_notification_status']=(string)($customerDelivery['status']??'failed');
             if(!empty($customerDelivery['http_status']))$row['line_customer_notification_http_status']=(int)$customerDelivery['http_status'];
-            if(($customerDelivery['status']??'')==='sent')$row['line_customer_notification_sent_at']=date('c');
+            if(($customerDelivery['status']??'')==='sent'&&empty($row['line_customer_notification_sent_at']))$row['line_customer_notification_sent_at']=date('c');
         }
         break;
     }
@@ -303,9 +307,19 @@ function mrbar_line_post(string $path,array $payload,string $retryKey=''): array
         'timeout'=>8,'ignore_errors'=>true,
     ],'ssl'=>['verify_peer'=>true,'verify_peer_name'=>true]]);
     $body=@file_get_contents('https://api.line.me'.$path,false,$context);
-    $status=0;
-    foreach($http_response_header??[] as $header)if(preg_match('#^HTTP/\S+\s+(\d{3})#',$header,$m))$status=(int)$m[1];
-    return ['ok'=>$status>=200&&$status<300,'status'=>$status,'error'=>$status>=200&&$status<300?'':('LINE API request failed (HTTP '.$status.')'),'response'=>$body===false?'':substr($body,0,1000)];
+    return mrbar_line_http_result($http_response_header??[],$body===false?'':$body);
+}
+
+function mrbar_line_http_result(array $headers,string $body): array {
+    $status=0;$requestId='';$acceptedId='';
+    foreach($headers as $header){
+        if(preg_match('#^HTTP/\S+\s+(\d{3})#',$header,$match)){
+            $status=(int)$match[1];$requestId='';$acceptedId='';
+        }elseif(preg_match('/^x-line-request-id:\s*(.+)$/i',$header,$match))$requestId=trim($match[1]);
+        elseif(preg_match('/^x-line-accepted-request-id:\s*(.+)$/i',$header,$match))$acceptedId=trim($match[1]);
+    }
+    return ['ok'=>$status>=200&&$status<300,'status'=>$status,'request_id'=>$requestId,'accepted_request_id'=>$acceptedId,
+        'error'=>$status>=200&&$status<300?'':('LINE API request failed (HTTP '.$status.')'),'response'=>substr($body,0,1000)];
 }
 
 function mrbar_line_liff_get(string $endpoint,string $accessToken): array {

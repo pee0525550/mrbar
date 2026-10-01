@@ -42,8 +42,9 @@ function reservation_receipt_message(array $row): string {
     elseif(($row['deposit_status']??'')==='verified')$message='ตรวจสอบมัดจำผ่านแล้ว · รอทีมงานยืนยันโต๊ะ';
     elseif(in_array($row['payment_mode']??'none',['slip_manual','slip_api'],true))$message='รับคำขอและสลิปแล้ว · ทีมงานจะตรวจสอบและติดต่อกลับ';
     else $message='รับคำขอจองแล้ว ทีมงานจะตรวจสอบและติดต่อกลับ';
-    $status=$row['line_customer_notification_status']??'';
-    if($status==='sent')$message.=' · ส่งข้อความไปยัง LINE แล้ว';
+    $status=in_array($status,['confirmed','booked'],true)?($row['line_customer_confirmation_status']??$row['line_customer_notification_status']??''):($row['line_customer_notification_status']??'');
+    if($status==='sent')$message.=' · LINE รับคำขอส่งข้อความแล้ว';
+    elseif(in_array($status,['queued','processing','retrying'],true))$message.=' · ข้อความ LINE อยู่ในคิวส่ง';
     elseif($status==='failed')$message.=' · ส่ง LINE ไม่สำเร็จ กรุณาติดต่อร้าน';
     elseif($status==='not_configured')$message.=' · ร้านยังไม่ได้ตั้งค่า LINE แจ้งเตือน';
     elseif($status==='not_linked')$message.=' · ไม่พบ LINE สำหรับส่งข้อความ';

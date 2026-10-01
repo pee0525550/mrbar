@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__.'/../app/bootstrap.php';
+require_once __DIR__.'/../app/line-outbox.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
@@ -11,6 +12,7 @@ if(!$user){http_response_code(401);echo json_encode(['error'=>'unauthorized']);e
 if($_SERVER['REQUEST_METHOD']!=='GET'){http_response_code(405);header('Allow: GET');echo json_encode(['error'=>'method_not_allowed']);exit;}
 
 $data=db_load();
+mrbar_line_outbox_after_response((int)($data['_branch_context']['id']??0));
 session_write_close();
 $settings=$data['settings']??[];
 $enabled=(string)($settings['reservation_staff_notifications']??'1')==='1';

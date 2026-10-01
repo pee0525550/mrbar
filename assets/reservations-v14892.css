@@ -11,6 +11,9 @@
 .reservation-header-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 @media(min-width:761px) and (max-width:1400px){.status-action,.seat-action{grid-column:span 2}}
 .reservation-line-delivery{white-space:normal!important;overflow-wrap:anywhere}
+.line-delivery-row button:disabled{opacity:.45;cursor:not-allowed}
+.line-delivery-list{display:grid;gap:0}.line-delivery-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid #293955}.line-delivery-row:last-child{border-bottom:0}.line-delivery-row b,.line-delivery-row small{display:block;overflow-wrap:anywhere}.line-delivery-row b{font-size:13px}.line-delivery-row small{font-size:12px;color:#aab6cc;margin-top:4px}.line-delivery-row form{margin:0}.delivery-sent{color:#80e2c1}.delivery-failed,.delivery-expired{color:#f0a2b1}.delivery-retrying,.delivery-queued,.delivery-processing{color:#ffd276}
+@media(max-width:760px){.line-delivery-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.line-delivery-row form{grid-column:1/-1;justify-self:end}}
 .deposit-review-list{display:grid;gap:10px}
 .deposit-review-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(110px,.6fr) auto;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #293955}
 .deposit-review-row:last-child{border-bottom:0}

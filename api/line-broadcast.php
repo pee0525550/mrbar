@@ -51,7 +51,7 @@ try{
 if(!$reserved)line_broadcast_json(429,['error'=>'rate_limited','retry_after'=>$retryAfter]);
 
 $result=mrbar_line_post('/v2/bot/message/broadcast',$payload,$retryKey);
-$accepted=!empty($result['ok'])||(int)($result['status']??0)===409;
+$accepted=mrbar_line_push_accepted($result);
 try{
     db_mutate_global(function(array $global)use($user,$result,$accepted):array{
         $global['audit'][]=['at'=>date('c'),'action'=>$accepted?'line_broadcast_accepted':'line_broadcast_failed','by'=>(int)($user['id']??0),'http_status'=>(int)($result['status']??0)];

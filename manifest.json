@@ -1,16 +1,16 @@
 {
-  "version": "1.49.17",
-  "build_id": "MRBAR-v1.49.17-20261001",
-  "name": "Auth, Booking & Notification Reliability",
+  "version": "1.49.18",
+  "build_id": "MRBAR-v1.49.18-20261001",
+  "name": "Durable LINE Booking Delivery",
   "date": "2026-10-01",
   "schema": "v28",
   "migration_required": false,
-  "base": "1.49.16",
+  "base": "1.49.17",
   "highlights": [
-    "Persist PIN attempts and enforce trusted-device expiry and credential changes",
-    "Keep real notifications visible until acknowledged and stop unauthorized polling",
-    "Validate reservation date, time and configured limits; make customer submissions idempotent",
-    "Enforce deposit verification when seating via Operations and repair responsive reservation layouts"
+    "Commit customer and staff LINE messages atomically with reservations",
+    "Retry network failures with frozen payloads, stable keys, leases and bounded backoff",
+    "Show separate receipt, confirmation and staff delivery status with guarded manual retry",
+    "Release sessions and finish PHP-FPM responses before bounded background dispatch"
   ],
   "production_data_included": false
 }

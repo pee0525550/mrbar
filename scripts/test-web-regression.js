@@ -7,10 +7,12 @@ const { spawn } = require('node:child_process');
 const { chromium } = require(require.resolve('playwright', { paths: [process.env.MRBAR_PLAYWRIGHT_MODULES || 'C:/Users/admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'] }));
 const source = path.resolve(__dirname, '..');
 const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'mrbar-web-qa-'));
-const artifacts = path.join(path.dirname(source), '_qa_v14917');
+const artifacts = process.env.MRBAR_QA_ARTIFACTS || path.join(path.dirname(source), '_qa_v14918');
 async function run() {
   for (const dir of ['app', 'api', 'config', 'assets', 'custumers']) fs.cpSync(path.join(source, dir), path.join(fixture, dir), { recursive: true });
   for (const file of fs.readdirSync(source).filter(name => name.endsWith('.php'))) fs.copyFileSync(path.join(source, file), path.join(fixture, file));
+  fs.mkdirSync(path.join(fixture, 'scripts'));
+  fs.copyFileSync(path.join(source, 'scripts', 'line-outbox-worker.php'), path.join(fixture, 'scripts', 'line-outbox-worker.php'));
   fs.mkdirSync(path.join(fixture, 'storage')); fs.mkdirSync(artifacts, { recursive: true });
   const listener = net.createServer(); await new Promise(resolve => listener.listen(0, '127.0.0.1', resolve));
   const port = listener.address().port; await new Promise(resolve => listener.close(resolve));
@@ -26,6 +28,8 @@ async function run() {
     }
     browser = await chromium.launch({ headless: true, channel: process.env.MRBAR_BROWSER_CHANNEL || 'msedge' });
     const anonymous = await browser.newContext();
+    const publicWorker = await anonymous.request.get(`${url}/scripts/line-outbox-worker.php`);
+    assert.equal(publicWorker.status(), 404, 'CLI worker is inaccessible over HTTP');
     for (const route of ['line-login.php', 'customer-line-auth.php']) {
       const csrfRejected = await anonymous.request.post(`${url}/api/${route}`, { form: {} });
       assert.equal(csrfRejected.status(), 419, `missing CSRF in ${route}`);
@@ -46,8 +50,38 @@ async function run() {
     await page.goto(url + posted.headers().location); await page.reload();
     assert.equal(await page.locator('.flash.ok').count(), 1);
     const state = await (await context.request.get(`${url}/__qa/state`)).json(); assert.equal(state.reservations.length, 2, 'refresh and duplicate POST only create one booking');
+    assert.equal(state.line_outbox.length, 1, 'booking and its customer message commit atomically once');
+    assert.equal(state.line_outbox[0].status, 'not_configured', 'missing token never loses queued payload');
+    const failedWorker = await (await context.request.get(`${url}/__qa/outbox-worker?status=503`)).json();
+    assert.equal(failedWorker.processed, 1);
+    const failedState = await (await context.request.get(`${url}/__qa/state`)).json();
+    assert.equal(failedState.line_outbox[0].status, 'retrying');
+    assert.equal(failedState.reservations[1].line_customer_notification_status, 'retrying', 'worker result persists to booking receipt');
+    const coolingWorker = await (await context.request.get(`${url}/__qa/outbox-worker?status=409`)).json();
+    assert.equal(coolingWorker.processed, 0, 'server enforces retry cooldown');
+    await context.request.get(`${url}/__qa/outbox-due`);
+    const acceptedWorker = await (await context.request.get(`${url}/__qa/outbox-worker?status=409`)).json();
+    assert.deepEqual(acceptedWorker.calls, failedWorker.calls, 'persisted worker retry uses exact original key and message');
+    const acceptedState = await (await context.request.get(`${url}/__qa/state`)).json();
+    assert.equal(acceptedState.line_outbox[0].status, 'sent');
+    assert.equal(acceptedState.reservations[1].line_customer_notification_status, 'sent');
+    assert.equal((await (await context.request.get(`${url}/__qa/outbox-worker?status=200`)).json()).processed, 0, 'accepted message cannot be sent again');
     await page.goto(`${url}/__qa/admin`); await page.goto(`${url}/reservations.php`);
     const adminCsrf = await page.locator('[name=csrf]').first().inputValue();
+    const confirmFields = { csrf: adminCsrf, action: 'reservation_status', id: '2', status: 'confirmed' };
+    await context.request.post(`${url}/reservations.php`, { form: confirmFields });
+    const confirmationState = await (await context.request.get(`${url}/__qa/state`)).json();
+    assert.equal(confirmationState.line_outbox.length, 2, 'confirmation creates a separate durable message');
+    assert.equal(confirmationState.line_outbox[1].kind, 'confirmation');
+    await context.request.post(`${url}/reservations.php`, { form: confirmFields });
+    const reconfirmationState = await (await context.request.get(`${url}/__qa/state`)).json();
+    assert.equal(reconfirmationState.line_outbox.length, 2, 'saving confirmed status twice never queues duplicate');
+    await page.goto(`${url}/reservations.php`);
+    assert.equal(await page.locator('.line-delivery-row').count(), 2, 'staff can inspect receipt and confirmation delivery separately');
+    assert.equal(await page.locator('.line-delivery-row').filter({ hasText: 'ยืนยันให้ลูกค้า' }).locator('button').textContent(), 'ลองส่งใหม่');
+    assert.ok(await page.locator('.line-delivery-row').filter({ hasText: 'ยืนยันให้ลูกค้า' }).locator('button').isDisabled(), 'no unusable retry when token is missing');
+    const missingRetryCsrf = await context.request.post(`${url}/reservations.php`, { form: { action: 'line_delivery_retry', job_id: confirmationState.line_outbox[1].id } });
+    assert.equal(missingRetryCsrf.status(), 419, 'retry delivery requires nonempty CSRF');
     for (const route of ['reservations.php', 'night-ops.php']) {
       const blocked = await context.request.post(`${url}/${route}`, { form: { csrf: adminCsrf, action: 'seat_reservation', id: '1', table_id: '1' } });
       assert.match(await blocked.text(), /ต้องตรวจและรับรองสลิปมัดจำก่อนรับลูกค้าเข้าร้าน/);
