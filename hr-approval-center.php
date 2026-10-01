@@ -7,9 +7,11 @@ $u=current_user();
 if(!$u){header('Location:login.php');exit;}
 $d=db_load();
 
-$canLeaveManage=(($u['role']??'')==='admin')||user_can($u,'leave.manage',$d);
+$globalLeaveManage=(($u['role']??'')==='admin')||user_can($u,'leave.manage',$d);$teamReportIds=workforce_user_direct_report_ids($d,$u);
+$canLeaveManage=$globalLeaveManage||count($teamReportIds)>0;
 $canLeave=$canLeaveManage||user_can($u,'leave.view',$d);
-$canExceptions=(($u['role']??'')==='admin')||user_can($u,'workforce.exceptions.view',$d)||user_can($u,'workforce.exceptions.manage',$d)||user_can($u,'attendance.view',$d)||user_can($u,'attendance.manage',$d)||user_can($u,'substitute.manage',$d);
+$canGlobalExceptions=(($u['role']??'')==='admin')||user_can($u,'workforce.exceptions.view',$d)||user_can($u,'workforce.exceptions.manage',$d)||user_can($u,'attendance.view',$d)||user_can($u,'attendance.manage',$d)||user_can($u,'substitute.manage',$d);
+$canExceptions=$canGlobalExceptions||count($teamReportIds)>0;
 $canPayroll=(($u['role']??'')==='admin')||user_can($u,'payroll.view',$d)||user_can($u,'payroll.manage',$d);
 if(!$canLeave&&!$canExceptions&&!$canPayroll){http_response_code(403);exit('Permission denied');}
 
@@ -38,10 +40,10 @@ function ha_thai_date(string $date): string {
     $t=strtotime($date);if(!$t)return $date;return 'วันที่ '.date('j',$t).' '.$months[(int)date('n',$t)].' '.((int)date('Y',$t)+543);
 }
 
-$missing=[];foreach($d['attendance']??[] as $a){$st=workforce_attendance_state($a);if(in_array($st,['missing_checkout','provisional'],true))$missing[]=$a;}
-$corrections=array_values(array_filter($d['time_correction_requests']??[],fn($r)=>(string)($r['status']??'')==='pending'));
-$subs=array_values(array_filter($d['substitute_requests']??[],fn($r)=>(string)($r['status']??'')==='pending'));
-$leaves=array_values(array_filter($d['leave_requests']??[],fn($r)=>(string)($r['status']??'')==='pending'));
+$missing=[];foreach($d['attendance']??[] as $a){$st=workforce_attendance_state($a);if(in_array($st,['missing_checkout','provisional'],true)&&($canGlobalExceptions||workforce_can_review_assigned_employee($d,$u,workforce_attendance_employee_id($d,$a))))$missing[]=$a;}
+$corrections=array_values(array_filter($d['time_correction_requests']??[],fn($r)=>(string)($r['status']??'')==='pending'&&($canGlobalExceptions||workforce_can_review_assigned_employee($d,$u,(int)($r['employee_id']??0)))));
+$subs=$canGlobalExceptions?array_values(array_filter($d['substitute_requests']??[],fn($r)=>(string)($r['status']??'')==='pending')):[];
+$leaves=array_values(array_filter($d['leave_requests']??[],fn($r)=>(string)($r['status']??'')==='pending'));if(!$globalLeaveManage&&$teamReportIds)$leaves=array_values(array_filter($leaves,fn($r)=>workforce_can_review_leave($d,$u,$r)));
 $penalties=array_values(array_filter($d['attendance_penalties']??[],fn($r)=>(string)($r['status']??'pending')==='pending'));
 
 $queue=[];
@@ -62,7 +64,7 @@ $todayCount=count(array_filter($queue,fn($q)=>substr((string)$q['at'],0,10)===$t
 $leavesForDate=array_values(array_filter($leaves,function($r)use($selectedDate){$start=(string)($r['start_date']??'');$end=(string)($r['end_date']??$start);return $start!==''&&$selectedDate>=$start&&$selectedDate<=($end!==''?$end:$start);}));
 $urgent=array_slice($queue,0,6);
 $attendanceRows=[];$attendanceCounts=['normal'=>0,'late'=>0,'missing'=>0,'all'=>0];
-foreach($d['attendance']??[] as $a){$in=(string)($a['check_in']??'');if($in===''||substr($in,0,10)!==$selectedDate)continue;$eid=(int)($a['employee_id']??0);if(!$eid&&!empty($a['pr_id']))$eid=(int)(workforce_employee_by_pr($d,(int)$a['pr_id'])['id']??0);$e=ha_emp($d,$eid);$avatar=workforce_employee_avatar_url($d,$e);$late=ha_late_minutes($d,$e,$in);$state=workforce_attendance_state($a);$bucket=in_array($state,['missing_checkout','provisional'],true)?'missing':($late>0?'late':'normal');$attendanceCounts[$bucket]++;$attendanceCounts['all']++;$attendanceRows[]=['a'=>$a,'employee'=>$e,'avatar'=>$avatar,'late'=>$late,'bucket'=>$bucket];}
+foreach($d['attendance']??[] as $a){$in=(string)($a['check_in']??'');if($in===''||substr($in,0,10)!==$selectedDate)continue;$eid=workforce_attendance_employee_id($d,$a);if(!$canGlobalExceptions&&!workforce_can_review_assigned_employee($d,$u,$eid))continue;$e=ha_emp($d,$eid);$avatar=workforce_employee_avatar_url($d,$e);$late=ha_late_minutes($d,$e,$in);$state=workforce_attendance_state($a);$bucket=in_array($state,['missing_checkout','provisional'],true)?'missing':($late>0?'late':'normal');$attendanceCounts[$bucket]++;$attendanceCounts['all']++;$attendanceRows[]=['a'=>$a,'employee'=>$e,'avatar'=>$avatar,'late'=>$late,'bucket'=>$bucket];}
 usort($attendanceRows,fn($x,$y)=>strcmp((string)($y['a']['check_in']??''),(string)($x['a']['check_in']??'')));
 $attFilter=(string)($_GET['att']??'all');if(!in_array($attFilter,['all','normal','late','missing'],true))$attFilter='all';$attendanceShown=$attFilter==='all'?$attendanceRows:array_values(array_filter($attendanceRows,fn($r)=>(string)$r['bucket']===$attFilter));
 ?><!doctype html>
@@ -73,9 +75,9 @@ $attFilter=(string)($_GET['att']??'all');if(!in_array($attFilter,['all','normal'
 <title>MR BAR — HR Approval Center</title>
 <link rel="stylesheet" href="assets/admin.css?v=1220">
 <link rel="stylesheet" href="assets/admin-v14.css?v=1220">
-<link rel="stylesheet" href="assets/hr-approval-center-v14822.css?v=14822"><link rel="stylesheet" href="assets/hr-approval-center-v14823.css?v=14823"><link rel="stylesheet" href="assets/hr-approval-center-v14824.css?v=14824"><link rel="stylesheet" href="assets/hr-approval-date-nav-v14842.css?v=14842">
+<link rel="stylesheet" href="assets/hr-approval-center-v14822.css?v=14822"><link rel="stylesheet" href="assets/hr-approval-center-v14823.css?v=14823"><link rel="stylesheet" href="assets/hr-approval-center-v14824.css?v=14824"><link rel="stylesheet" href="assets/hr-approval-date-nav-v14842.css?v=14842"><link rel="stylesheet" href="assets/hr-approval-center-theme-v14869.css?v=14869"><link rel="stylesheet" href="assets/hr-approval-center-v14880.css?v=14880"><link rel="stylesheet" href="assets/hr-approval-mobile-v14890.css?v=14890">
 </head>
-<body class="admin-v14-page">
+<body class="admin-v14-page hr-approval-page">
 <?php require_once __DIR__.'/app/admin-nav.php';echo admin_sidebar('approvals',$u);?>
 <main class="ha-shell">
 <header class="ha-head">
@@ -133,7 +135,7 @@ $attFilter=(string)($_GET['att']??'all');if(!in_array($attFilter,['all','normal'
       </div>
     <?php else:$detailTitle=['leave'=>'การลา','correction'=>'แก้ไขเวลา','substitute'=>'PR มาแทน','exception'=>'Attendance Exception','penalty'=>'No-show / Penalty'][$view]??'รายละเอียด';?>
       <div class="ha-detail-head"><div><small>HR APPROVAL CENTER / <?=h(strtoupper($view))?></small><h2><?=h($detailTitle)?></h2><p>รายละเอียดและประวัติคำขออยู่ในหัวข้อนี้ โดยยังใช้ระบบอนุมัติเดิมทั้งหมด</p></div><a href="hr-approval-center.php">← กลับภาพรวม</a></div>
-      <div class="ha-frame-wrap"><iframe class="ha-workframe" name="ha-workframe" src="<?=h((string)($viewUrls[$view]??''))?>" title="<?=h($detailTitle)?>"></iframe></div>
+      <div class="ha-frame-wrap"><iframe class="ha-workframe" name="ha-workframe" data-auto-height src="<?=h((string)($viewUrls[$view]??''))?>" title="<?=h($detailTitle)?>"></iframe></div>
     <?php endif;?>
   </section>
 
@@ -168,4 +170,5 @@ $attFilter=(string)($_GET['att']??'all');if(!in_array($attFilter,['all','normal'
 
 <footer>MR BAR HR Approval Center · <?=h((string)(app_config()['pack']??'MR BAR'))?> · Schema v<?=h((string)($d['meta']['schema']??28))?></footer>
 </main>
+<script src="assets/hr-approval-center-v14880.js?v=14880" defer></script>
 </body></html>

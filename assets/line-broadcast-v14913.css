@@ -1,0 +1,22 @@
+.line-broadcast-step{margin-top:18px}
+.line-broadcast-warning{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;margin:14px 0;border:1px solid #a9732f;border-radius:7px;background:#2a2118;color:#f3d4a5;font-size:13px;line-height:1.65}
+.line-broadcast-warning strong{display:block;color:#ffe2b2}
+.line-broadcast-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start;margin-top:14px}
+.line-broadcast-grid label{display:block;font-size:13px;font-weight:700}
+.line-broadcast-grid textarea{display:block;width:100%;min-height:190px;resize:vertical;margin-top:7px;padding:12px;border:1px solid #304153;border-radius:6px;background:#0c1422;color:#f1f5ff;font:inherit;line-height:1.65}
+.line-broadcast-grid textarea:focus,.line-broadcast-confirm input[type=text]:focus{outline:2px solid #21b994;outline-offset:1px}
+.line-broadcast-count{display:block;margin-top:5px;color:#aabec8;text-align:right;font-size:12px;font-variant-numeric:tabular-nums}
+.line-broadcast-preview{min-height:190px;margin-top:7px;padding:12px;border:1px solid #304153;border-radius:6px;background:#0c1422;color:#dce6f5;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}
+.line-broadcast-preview:empty:before{content:'ตัวอย่างข้อความจะแสดงที่นี่';color:#8492a5}
+.line-broadcast-confirm{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:12px;align-items:end;margin-top:14px}
+.line-broadcast-confirm label{display:flex;align-items:flex-start;gap:9px;color:#e7edf7;font-size:13px;line-height:1.6}
+.line-broadcast-confirm input[type=checkbox]{margin-top:3px;accent-color:#18b887}
+.line-broadcast-confirm input[type=text]{width:100%;padding:10px;border:1px solid #304153;border-radius:6px;background:#0c1422;color:#f1f5ff;font:inherit}
+.line-broadcast-footer{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px}
+.line-broadcast-footer [data-broadcast-status]{flex:1 1 320px;color:#aabec8;font-size:13px}
+.line-broadcast-footer [data-broadcast-status][data-state=success]{color:#48d6aa}
+.line-broadcast-footer [data-broadcast-status][data-state=error]{color:#ff879b}
+.line-broadcast-footer button:disabled{opacity:.52;cursor:not-allowed}
+.line-broadcast-permission{padding:12px;border:1px solid #304153;border-radius:6px;color:#aabec8}
+@media(max-width:760px){.line-broadcast-grid{grid-template-columns:1fr}.line-broadcast-confirm{grid-template-columns:1fr}.line-broadcast-preview,.line-broadcast-grid textarea{min-height:145px}}
+@media(prefers-reduced-motion:reduce){.line-broadcast-step *{scroll-behavior:auto}}

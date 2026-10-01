@@ -1,0 +1,15 @@
+.mr-live-notifications{position:fixed;z-index:13500;right:18px;bottom:18px;width:min(390px,calc(100vw - 36px));max-height:calc(100dvh - 36px);display:grid;align-content:end;gap:10px;overflow:auto;pointer-events:none}
+.mr-live-notification{pointer-events:auto;padding:14px 15px;background:var(--surface-1,#10182b);color:var(--text,#eef3ff);border:1px solid color-mix(in srgb,var(--accent,#7650ff) 65%,transparent);border-left:4px solid #42d7bb;border-radius:12px;box-shadow:0 18px 48px #0008;animation:mrNoticeIn .2s ease-out}
+.mr-live-notification-head{display:flex;align-items:center;gap:10px;min-height:30px}
+.mr-live-notification-head b{flex:1;font-size:14px}
+.mr-live-notification-mark{width:28px;height:28px;display:grid;place-items:center;border-radius:8px;background:#42d7bb1c;color:#55e5c6;font-weight:800}
+.mr-live-notification-ack{display:block;width:100%;margin-top:12px;padding:9px 12px;border:1px solid #42d7bb66;border-radius:8px;background:#42d7bb18;color:inherit;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.mr-live-notification-ack:disabled{opacity:.55;cursor:wait}
+.mr-live-notification p{margin:9px 0 0 38px;color:var(--muted,#a8b4d0);font-size:13px;line-height:1.55;overflow-wrap:anywhere}
+.mr-live-notification-link{display:inline-flex;margin:11px 0 0 38px;color:var(--text,#eef3ff);font-size:12px;font-weight:700;text-decoration:none;border-bottom:1px solid #42d7bb;padding-bottom:2px}
+.mr-live-notification small{display:block;margin:9px 0 0 38px;color:var(--muted,#a8b4d0)}
+.mr-live-notification-error{color:#ff9b9b!important}
+.mr-live-notification.is-leaving{opacity:0;transform:translateY(8px);transition:opacity .18s ease,transform .18s ease}
+@keyframes mrNoticeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.mr-live-notifications{right:10px;bottom:calc(12px + env(safe-area-inset-bottom));width:calc(100vw - 20px);max-height:calc(100dvh - 24px - env(safe-area-inset-bottom));gap:8px}.mr-live-notification{padding:12px;border-radius:10px}.mr-live-notification p{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.mr-live-notification{animation:none}.mr-live-notification.is-leaving{transition:none}}

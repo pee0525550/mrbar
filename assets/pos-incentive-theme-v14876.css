@@ -1,0 +1,22 @@
+@import url("pos-incentive-theme-v14875.css?v=14875");
+
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-bill-report-grid article {
+  color: #e8eefb !important;
+  background: linear-gradient(145deg, #15233a, #101a2c) !important;
+  border-color: #40516e !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .22) !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-bill-report-grid article small {
+  color: #9ba9ff !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-bill-report-grid article b {
+  color: #f3f6ff !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-bill-report-grid article span,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-bill-report-grid article p,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-bill-report-grid article em {
+  color: #b8c5db !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-bill-report-grid article strong {
+  color: #82e9d1 !important;
+}

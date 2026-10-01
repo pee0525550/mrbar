@@ -57,6 +57,7 @@ function fp_item_defaults(array $i): array {
 function fp_maps(array $d): array {$out=[];foreach($d['floor_plans']??[] as $m)if(is_array($m))$out[]=fp_map_defaults($m);usort($out,fn($a,$b)=>strcmp((string)$b['updated_at'],(string)$a['updated_at']));return $out;}
 function fp_map(array $d,int $id): ?array {foreach(fp_maps($d) as $m)if((int)$m['id']===$id)return $m;return null;}
 function fp_items(array $d,int $mapId): array {$out=[];foreach($d['floor_plan_items']??[] as $i)if(is_array($i)&&(int)($i['map_id']??0)===$mapId)$out[]=fp_item_defaults($i);usort($out,fn($a,$b)=>(int)$a['z_index']<=>(int)$b['z_index']);return $out;}
+function fp_linked_table_duplicates(array $items): array {$seen=[];$duplicates=[];foreach($items as $raw){$i=fp_item_defaults((array)$raw);if($i['type']!=='table'||empty($i['active'])||$i['table_id']<=0)continue;$id=$i['table_id'];if(isset($seen[$id]))$duplicates[$id]=(string)($i['code']?:'#'.$id);else$seen[$id]=true;}return $duplicates;}
 function fp_versions(array $d,int $mapId): array {$out=[];foreach($d['floor_plan_versions']??[] as $v)if((int)($v['map_id']??0)===$mapId)$out[]=$v;usort($out,fn($a,$b)=>(int)($b['version_no']??0)<=>(int)($a['version_no']??0));return $out;}
 function fp_next_id(array $rows): int {$n=0;foreach($rows as $r)$n=max($n,(int)($r['id']??0));return $n+1;}
 function fp_find_table(array $d,int $tableId): ?array {foreach($d['tables']??[] as $t)if((int)($t['id']??0)===$tableId)return $t;return null;}
@@ -73,7 +74,7 @@ function fp_published_plan(array $d,?int $branchId=null,bool $customerOnly=false
 }
 function fp_public_plan(array $d,?int $branchId=null): ?array {return fp_published_plan($d,$branchId,true);}
 function fp_published_items(array $d,int $mapId,bool $customerOnly=false): array {$m=fp_map($d,$mapId);$pvid=(int)($m['published_version_id']??0);$src=null;if($pvid>0){foreach($d['floor_plan_versions']??[] as $v)if((int)($v['id']??0)===$pvid&&(int)($v['map_id']??0)===$mapId){$src=(array)($v['items']??[]);break;}}if($src===null)$src=fp_items($d,$mapId);$out=[];foreach($src as $i){$i=fp_item_defaults((array)$i);if(empty($i['active']))continue;if($customerOnly&&empty($i['customer_visible']))continue;$out[]=$i;}usort($out,fn($a,$b)=>(int)$a['z_index']<=>(int)$b['z_index']);return $out;}
-function fp_public_items(array $d,int $mapId): array {return fp_published_items($d,$mapId,true);}
+function fp_public_items(array $d,int $mapId): array {$items=fp_published_items($d,$mapId,true);$duplicates=fp_linked_table_duplicates($items);if(!$duplicates)return $items;$blocked=array_fill_keys(array_keys($duplicates),true);return array_values(array_filter($items,fn($i)=>$i['type']!=='table'||empty($blocked[(int)$i['table_id']])));}
 function fp_media_url(array $d,int $mediaId,string $prefix='custumers/'): string {if($mediaId<=0)return '';foreach($d['customer_media']??[] as $m)if((int)($m['id']??0)===$mediaId)return $prefix.'customer-media.php?id='.$mediaId.'&v='.urlencode((string)($m['updated_at']??$mediaId));return '';}
 function fp_table_state(array $d,array $item): array {
     $t=!empty($item['table_id'])?fp_find_table($d,(int)$item['table_id']):null;
@@ -97,6 +98,7 @@ function fp_sanitize_items_json(string $json,int $mapId,array $map,array $d): ar
         if($i['type']==='table'&&(int)$i['seat_count']<=0)$i['seat_count']=max(1,(int)$i['capacity']);
         $i['updated_at']=date('c');$out[]=$i;
     }
+    $duplicates=fp_linked_table_duplicates($out);if($duplicates)throw new RuntimeException('เชื่อมโต๊ะซ้ำใน Layout: '.implode(', ',array_values($duplicates)).' กรุณาให้แต่ละโต๊ะมี Hotspot ที่ Active เพียงจุดเดียว');
     return $out;
 }
 function fp_mockup_items(int $mapId,array $tables=[]): array {

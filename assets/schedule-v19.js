@@ -3,6 +3,21 @@
   var dataEl=document.getElementById('scheduleTeamData');
   var teamData={};
   try{teamData=dataEl?JSON.parse(dataEl.textContent||'{}'):{};}catch(e){teamData={};}
+  document.querySelectorAll('.v19-day[data-date]').forEach(function(day){
+    var info=teamData[day.getAttribute('data-date')],rows=info&&info.rows||[],people=[],seen={};
+    rows.forEach(function(row){var id=String(row.employee_id);if(!seen[id]){seen[id]=true;people.push(row);}});
+    var avatars=day.querySelectorAll('.team-avatars .mini-avatar:not(.more)');
+    Array.prototype.forEach.call(avatars,function(avatar,index){
+      var row=people[index];if(!row||Number(row.shift_id||0)<=0)return;
+      var state=String(row.state||''),marker=state==='absent'?'absent':(['worked','late','attendance_pending'].indexOf(state)>=0?'checked-in':'');
+      if(!marker)return;
+      var label=marker==='absent'?'ขาดงาน (มีตารางงาน)':'เข้างานแล้ว';
+      avatar.classList.add('attendance-'+marker);avatar.title+=' · '+label;avatar.setAttribute('aria-label',String(row.code||'')+' '+String(row.name||'')+' · '+label);avatar.setAttribute('role','img');
+    });
+  });
+  var markerLegend=document.querySelector('.v19-legend');
+  var markerStyles=document.createElement('link');markerStyles.rel='stylesheet';markerStyles.href='assets/workforce-calendar-attendance-v14887.css';document.head.appendChild(markerStyles);
+  if(markerLegend){[['checked-in','เข้างานแล้ว'],['absent','ขาดงาน']].forEach(function(item){var entry=document.createElement('span'),dot=document.createElement('i');entry.className='attendance-marker-legend';dot.className='attendance-marker-dot '+item[0];entry.appendChild(dot);entry.appendChild(document.createTextNode(item[1]));markerLegend.appendChild(entry);});}
   var hover=document.getElementById('scheduleHoverCard');
   var modal=document.getElementById('scheduleTeamModal');
   var modalBody=document.getElementById('scheduleTeamModalBody');

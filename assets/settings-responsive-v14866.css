@@ -1,0 +1,15 @@
+@media(max-width:850px){
+  .settings-index{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;overflow:visible}
+  .settings-index .settings-tab{min-width:0;grid-template-columns:28px minmax(0,1fr) auto;gap:7px;padding:8px}
+  .settings-index .settings-tab .ico{width:28px;height:28px}
+  .settings-index .settings-tab b{font-size:11px;white-space:normal}
+  .settings-index .settings-tab small{font-size:8px}
+}
+@media(max-width:580px){
+  .settings-index{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .settings-index .settings-tab{grid-template-columns:24px minmax(0,1fr);gap:6px;padding:7px}
+  .settings-index .settings-tab .ico{width:24px;height:24px}
+  .settings-index .settings-tab .arrow{display:none}
+  .settings-index .settings-tab b{font-size:10px}
+  .settings-index .settings-tab small{font-size:7px}
+}

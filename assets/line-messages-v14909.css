@@ -1,0 +1,15 @@
+.line-message-settings{margin-top:14px}
+.line-template-form{margin-top:18px}
+.line-template-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.line-template-grid label{display:block;min-width:0;color:#c7d4dc;font-size:12px;font-weight:800}
+.line-template-grid textarea{display:block;width:100%;min-height:170px;margin-top:7px;padding:12px;border:1px solid #3c5268;border-radius:6px;background:#0a1220;color:#f4f8fb;font:inherit;font-size:14px;font-weight:500;line-height:1.6;resize:vertical}
+.line-template-grid textarea:focus{outline:2px solid #3ac2a5;outline-offset:1px}
+.line-template-grid textarea[readonly]{opacity:.78}
+.line-template-form .line-help code{display:inline-block;margin:2px;padding:2px 5px;border-radius:4px;background:#0b1422;color:#a9e8de}
+.line-confirm-toggle{display:flex;align-items:flex-start;gap:9px;margin-top:13px;color:#d5e2e8;font-size:13px;line-height:1.55}
+.line-confirm-toggle input{width:17px;height:17px;flex:none;margin:1px 0 0;accent-color:#19a978}
+.line-template-form>.line-primary{margin-top:16px}
+html[data-mr-theme="light"] .line-template-grid label,html[data-mr-theme="light"] .line-confirm-toggle{color:#334a56}
+html[data-mr-theme="light"] .line-template-grid textarea{background:#fff;color:#172a34;border-color:#a9bfca}
+html[data-mr-theme="light"] .line-template-form .line-help code{background:#edf4f5;color:#27665e}
+@media(max-width:760px){.line-template-grid{grid-template-columns:1fr}.line-template-grid textarea{min-height:145px}}

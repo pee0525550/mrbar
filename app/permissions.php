@@ -10,7 +10,7 @@ function permission_catalog(): array {
             'sales_sessions.record'=>'เปิด/ปิดโต๊ะและบันทึก Sales แทน', 'sales_sessions.manage'=>'แก้เจ้าของยอดและใบเสร็จย้อนหลัง',
             'operations.view'=>'ดูคิวงาน','operations.assign_pr'=>'มอบหมาย PR','operations.complete'=>'ปิด/จบงาน','operations.cancel'=>'ยกเลิกงาน','operations.move_table'=>'ย้ายโต๊ะ','operations.quick_floor'=>'สวิตช์สถานะโต๊ะ / PR / เซลแบบด่วน',
         ]],
-        'reservations'=>['label'=>'Reservation & Waitlist','items'=>[
+        'reservations'=>['label'=>'การจองโต๊ะ / Reservation','items'=>[
             'reservations.view'=>'ดูรายการจอง','reservations.manage'=>'สร้าง/แก้/ยืนยัน/ยกเลิกการจอง','reservations.seat'=>'รับลูกค้าเข้าร้าน',
         ]],
         'employees'=>['label'=>'Employees & Workforce','items'=>[

@@ -1,0 +1,231 @@
+/* HR Approval Center mobile layout corrections. */
+@media (max-width: 900px) {
+  body.hr-approval-page {
+    overflow-x: hidden;
+  }
+
+  body.hr-approval-page .ha-shell {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    padding: 12px 12px 28px !important;
+  }
+
+  body.hr-approval-page .ha-shell :is(.ha-head, .ha-kpis, .ha-layout, .ha-local-nav, .ha-work, .ha-side, .ha-frame-wrap) {
+    box-sizing: border-box;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  body.hr-approval-page .ha-layout {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  body.hr-approval-page .ha-layout > * {
+    width: 100%;
+    min-width: 0;
+    grid-column: 1 / -1 !important;
+    position: static !important;
+  }
+
+  body.hr-approval-page .ha-local-nav {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px;
+    padding: 9px !important;
+  }
+
+  body.hr-approval-page .ha-local-title {
+    grid-column: 1 / -1 !important;
+  }
+
+  body.hr-approval-page .ha-local-nav a {
+    min-width: 0;
+    margin: 0 !important;
+    padding: 9px 7px !important;
+    gap: 7px;
+  }
+
+  body.hr-approval-page .ha-local-nav a > span {
+    flex: 0 0 30px;
+  }
+
+  body.hr-approval-page .ha-local-nav a > div,
+  body.hr-approval-page .ha-local-nav a b,
+  body.hr-approval-page .ha-local-nav a small {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  body.hr-approval-page .ha-head {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 52px 0 14px !important;
+  }
+
+  body.hr-approval-page .ha-head > div:first-child {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  body.hr-approval-page .ha-head h1 {
+    font-size: 25px !important;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  body.hr-approval-page .ha-head span,
+  body.hr-approval-page .ha-detail-head p {
+    overflow-wrap: anywhere;
+  }
+
+  body.hr-approval-page .ha-head-actions {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0 !important;
+  }
+
+  body.hr-approval-page .ha-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px;
+    margin: 12px 0;
+  }
+
+  body.hr-approval-page .ha-kpis article {
+    min-width: 0;
+    padding: 11px;
+  }
+
+  body.hr-approval-page .ha-work {
+    width: 100%;
+    overflow: hidden;
+    padding: 12px !important;
+  }
+
+  body.hr-approval-page .ha-detail-head {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: flex-start !important;
+    gap: 10px;
+  }
+
+  body.hr-approval-page .ha-detail-head > div {
+    flex: 1 1 220px;
+    min-width: 0;
+  }
+
+  body.hr-approval-page .ha-detail-head small {
+    overflow-wrap: anywhere;
+  }
+
+  body.hr-approval-page .ha-detail-head h2 {
+    font-size: 20px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  body.hr-approval-page .ha-detail-head > a {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  body.hr-approval-page .ha-frame-wrap {
+    width: 100%;
+    overflow: hidden !important;
+  }
+
+  body.hr-approval-page .ha-workframe {
+    display: block;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  body.hr-approval-page .ha-side {
+    width: 100%;
+  }
+
+  body.hr-approval-page .ha-shell footer {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 600px) {
+  body.hr-approval-page .ha-head h1 {
+    font-size: 22px !important;
+  }
+
+  body.hr-approval-page .ha-kpis b {
+    font-size: 23px;
+  }
+
+  body.hr-approval-page .ha-quick-list,
+  body.hr-approval-page .ha-urgent {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body.hr-approval-page .mr-approval-toast {
+    top: auto !important;
+    right: 10px !important;
+    bottom: calc(68px + env(safe-area-inset-bottom)) !important;
+    box-sizing: border-box;
+    width: calc(100vw - 20px) !important;
+    max-width: 440px;
+    max-height: min(38dvh, 320px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 10px;
+  }
+
+  body.hr-approval-page .mr-approval-toast-head b {
+    font-size: 13px;
+  }
+
+  body.hr-approval-page .mr-approval-toast-head small {
+    font-size: 11px;
+  }
+
+  body.hr-approval-page .mr-approval-toast-items {
+    min-height: 0;
+    max-height: 15dvh;
+    margin-top: 7px;
+    overflow-y: auto;
+  }
+
+  body.hr-approval-page .mr-approval-item {
+    padding: 7px 8px;
+  }
+
+  body.hr-approval-page .mr-approval-toast-link {
+    flex: 0 0 auto;
+    margin-top: 7px;
+    padding: 8px 10px;
+  }
+
+  body.hr-approval-page .mr-approval-reopen {
+    top: auto !important;
+    right: 12px !important;
+    bottom: calc(74px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@media (max-width: 360px) {
+  body.hr-approval-page .ha-shell {
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+  }
+
+  body.hr-approval-page .ha-local-nav {
+    gap: 4px;
+    padding: 7px !important;
+  }
+
+  body.hr-approval-page .ha-local-nav a {
+    font-size: 12px;
+  }
+}

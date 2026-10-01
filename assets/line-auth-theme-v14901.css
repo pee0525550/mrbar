@@ -1,0 +1,30 @@
+html[data-mr-theme="light"] body:has(.auth-shell){background:#f2f7f9;color:#1a2b35}
+html[data-mr-theme="light"] .auth-heading h1,html[data-mr-theme="light"] .auth-brand strong{color:#172a34}
+html[data-mr-theme="light"] .auth-heading p,html[data-mr-theme="light"] .auth-help,html[data-mr-theme="light"] .auth-footer,html[data-mr-theme="light"] .auth-method,html[data-mr-theme="light"] .auth-remember{color:#4b626e!important}
+html[data-mr-theme="light"] .auth-pane label{color:#334a56}
+html[data-mr-theme="light"] .auth-pane input:not([type=checkbox]){background:#fff;color:#172a34;border-color:#a9bfca}
+html[data-mr-theme="light"] .auth-method:before,html[data-mr-theme="light"] .auth-method:after{background:#91a9b4}
+html[data-mr-theme="light"] .auth-account{background:#e5eff2;color:#172a34;border-color:#b4c8d0}
+html[data-mr-theme="light"] .auth-account small{color:#516874}
+html[data-mr-theme="light"] .auth-help{border-color:#b8cbd2}
+html[data-mr-theme="light"] .auth-footer a,html[data-mr-theme="light"] .auth-small-actions button,html[data-mr-theme="light"] .auth-switch{color:#146f6d}
+html[data-mr-theme="light"] .line-link-shell{background:#f2f7f9}
+html[data-mr-theme="light"] .line-link-panel{background:#fff;color:#172a34;border-color:#b7cbd3}
+html[data-mr-theme="light"] .line-link-panel h1{color:#172a34}
+html[data-mr-theme="light"] .line-link-panel p{color:#425a66}
+html[data-mr-theme="light"] .line-link-panel>small{color:#137a65}
+html[data-mr-theme="light"] .line-link-account{border-color:#b7cbd3;background:#f5f9fa}
+html[data-mr-theme="light"] .line-link-account small{color:#526b76}
+html[data-mr-theme="light"] .line-link-status{background:#eef4f5;color:#344d59}
+html[data-mr-theme="light"] .line-link-status[data-state=error]{color:#a32f46}
+html[data-mr-theme="light"] .line-link-status[data-state=success]{color:#08724d}
+html[data-mr-theme="light"] .line-link-back{color:#096f70}
+html[data-mr-theme="light"] .line-admin-page{background:#f2f7f9;color:#172a34}
+html[data-mr-theme="light"] .line-admin-header h1,html[data-mr-theme="light"] .line-readiness strong,html[data-mr-theme="light"] .line-step h2,html[data-mr-theme="light"] .line-linked-section h2,html[data-mr-theme="light"] .line-linked-row strong{color:#172a34}
+html[data-mr-theme="light"] .line-admin-header p,html[data-mr-theme="light"] .line-step p,html[data-mr-theme="light"] .line-readiness p,html[data-mr-theme="light"] .line-readiness-count span,html[data-mr-theme="light"] .line-linked-row small,html[data-mr-theme="light"] .line-linked-row>span{color:#526b76}
+html[data-mr-theme="light"] .line-step,html[data-mr-theme="light"] .line-linked-row{background:#fff;border-color:#b7cbd3}
+html[data-mr-theme="light"] .line-config-form label{color:#334a56}
+html[data-mr-theme="light"] .line-config-form input{background:#fff;color:#172a34;border-color:#a9bfca}
+html[data-mr-theme="light"] .line-endpoint,html[data-mr-theme="light"] .line-banner.muted{background:#edf4f5;border-color:#b7cbd3;color:#425a66}
+html[data-mr-theme="light"] .line-endpoint code{color:#172a34}
+html[data-mr-theme="light"] .line-outline{background:#fff;color:#245161;border-color:#9bb2be}

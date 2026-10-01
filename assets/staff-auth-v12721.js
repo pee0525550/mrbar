@@ -24,6 +24,23 @@
   });
 
   const ua=navigator.userAgent||'';
+  const passwordPanel=document.querySelector('.staff-auth-page .password-panel');
+  const passwordForm=passwordPanel&&passwordPanel.querySelector('form input[name="action"][value="password"]')?.form;
+  if(body&&body.classList.contains('staff-auth-page')&&passwordForm&&!passwordPanel.querySelector('.line-login-btn')){
+    const returnKey=new URLSearchParams(location.search).get('return_to')||'';
+    const safeReturn=['time','income','sales_table'].includes(returnKey)?returnKey:'';
+    const params=new URLSearchParams({flow:'staff_login'});if(safeReturn)params.set('return_to',safeReturn);
+    const link=document.createElement('a');link.className='line-login-btn';link.href='line-link.php?'+params.toString();link.textContent='เข้าสู่ระบบด้วย LINE';
+    const divider=document.createElement('div');divider.className='line-login-divider';divider.textContent='หรือ';
+    passwordForm.insertAdjacentElement('afterend',divider);divider.insertAdjacentElement('afterend',link);
+  }
+  const quickCard=document.querySelector('.staff-auth-page .quick');
+  const quickForm=quickCard&&quickCard.querySelector('#pinForm');
+  const passwordLink=passwordPanel&&passwordPanel.querySelector('.line-login-btn');
+  if(quickForm&&passwordLink&&!quickCard.querySelector('.line-login-btn')){
+    const divider=document.createElement('div');divider.className='line-login-divider';divider.textContent='หรือ';
+    const link=passwordLink.cloneNode(true);quickForm.insertAdjacentElement('afterend',divider);divider.insertAdjacentElement('afterend',link);
+  }
   const inApp=/(Line\/|FBAN|FBAV|Instagram|Twitter|MicroMessenger|wv\)|; wv)/i.test(ua);
   if(inApp && sessionStorage.getItem('mrbar_inapp_note_closed')!=='1'){
     const note=document.createElement('aside');note.className='staff-browser-note';note.innerHTML='<span>!</span><div><b>กำลังเปิดผ่าน Browser ภายในแอป</b><small>เข้าสู่ระบบได้ตามปกติ แต่ตอนลงเวลา หาก GPS/Camera ไม่ขึ้น แนะนำเปิดลิงก์นี้ด้วย Chrome หรือ Safari</small></div><button type="button" aria-label="ปิด">×</button>';

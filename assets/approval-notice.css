@@ -1,0 +1,19 @@
+.mr-approval-toast{position:fixed;z-index:10040;top:16px;right:18px;width:min(390px,calc(100vw - 28px));padding:14px;background:var(--panel,#10182a);color:var(--text,#eef3ff);border:1px solid #40d9c5;border-radius:12px;box-shadow:0 16px 48px #0008;font:inherit}
+.mr-approval-toast[hidden]{display:none}
+.mr-approval-toast-head{display:flex;align-items:center;gap:10px}
+.mr-approval-toast-head>div{display:grid;gap:2px;flex:1;min-width:0}
+.mr-approval-toast-head b{font-size:14px}
+.mr-approval-toast-head small{color:var(--muted,#9eabc5);font-size:12px}
+.mr-approval-bell{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#12b89722;color:#48e0c2;font-weight:800}
+.mr-approval-toast-head button{display:grid;place-items:center;min-width:68px;height:34px;padding:0 10px;border:1px solid #ffffff24;border-radius:8px;background:transparent;color:inherit;cursor:pointer;font:inherit;font-size:11px;font-weight:700}
+.mr-approval-reopen{display:grid;place-items:center;width:34px;height:34px;border:1px solid #ffffff24;border-radius:8px;background:transparent;color:inherit;cursor:pointer;font-size:20px}
+.mr-approval-toast-items{display:grid;gap:7px;margin-top:12px;max-height:min(42vh,320px);overflow:auto}
+.mr-approval-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;padding:9px 10px;border:1px solid #ffffff18;border-radius:8px;background:#ffffff08;text-decoration:none;color:inherit}
+.mr-approval-item:hover{border-color:#40d9c5aa;background:#40d9c511}
+.mr-approval-item b{font-size:12px}
+.mr-approval-item span{grid-column:1;font-size:12px;color:var(--muted,#aab5ca);overflow-wrap:anywhere}
+.mr-approval-item em{grid-column:2;grid-row:1/3;align-self:center;font-size:10px;font-style:normal;color:#6fe5d1}
+.mr-approval-toast-link{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:10px 12px;border-radius:8px;background:linear-gradient(100deg,#672bea,#167fe7);color:#fff;text-decoration:none;font-size:12px;font-weight:700}
+.mr-approval-reopen{position:fixed;z-index:10039;right:18px;top:16px;background:#10182a;border-color:#40d9c5;color:#52e2cb;box-shadow:0 8px 28px #0006}
+.mr-approval-reopen[hidden]{display:none}
+@media(max-width:600px){.mr-approval-toast{top:calc(12px + env(safe-area-inset-top));right:10px;bottom:auto;width:calc(100vw - 20px);padding:12px}.mr-approval-reopen{top:calc(12px + env(safe-area-inset-top));right:12px;bottom:auto}}

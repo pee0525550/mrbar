@@ -1,0 +1,106 @@
+/* Report Center theme contrast fix. */
+html[data-mr-theme="light"] body.admin-v14-page main.sr-shell {
+  color: #17233d !important;
+  background: linear-gradient(145deg, #f7f9fe 0%, #f1f5fb 58%, #edf7fc 100%) !important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .sr-shell :is(.sr-hero h1, .sr-kpis b, .sr-panel-head h2, .sr-danger h2, .sr-table td) {
+  color: #17233d !important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .sr-shell :is(.sr-hero p, .sr-kpis span, .sr-kpis small, .sr-panel-head p, .sr-empty, .sr-table th, .sr-danger p, .sr-danger label) {
+  color: #586782 !important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .sr-shell :is(.sr-kpis article, .sr-filters, .sr-panel, .sr-super) {
+  background: rgba(255, 255, 255, .96) !important;
+  border-color: #d6e0ef !important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .sr-shell .sr-table th {
+  background: #edf2fa !important;
+  color: #445574 !important;
+  border-color: #d7e0ee !important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .sr-shell .sr-table td {
+  background: #fff !important;
+  border-color: #e2e8f1 !important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .sr-shell .sr-table tr:hover td { background: #f6f9ff !important; }
+html[data-mr-theme="light"] body.admin-v14-page .sr-shell .sr-table tr.is-risk td { background: #fff8e9 !important; }
+html[data-mr-theme="light"] body.admin-v14-page .sr-shell .sr-table tr.is-risk:hover td { background: #fff1cf !important; }
+html[data-mr-theme="light"] body.admin-v14-page .sr-shell :is(.sr-filters input, .sr-filters select, .sr-danger input, .sr-danger select, .sr-danger textarea) {
+  color: #17233d !important;
+  background: #fff !important;
+  border-color: #cbd7e8 !important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .sr-shell :is(.sr-hero nav a, .sr-reset) {
+  color: #263450 !important;
+  background: #fff !important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .sr-shell .sr-export { color: #fff !important; }
+html[data-mr-theme="light"] body.admin-v14-page .sr-shell .sr-danger { background: #fff5f5 !important; }
+
+html[data-mr-theme="dark"] body.admin-v14-page main.sr-shell {
+  color: #eaf0ff !important;
+  background:
+    radial-gradient(circle at 8% 0, rgba(137, 74, 255, .11), transparent 27%),
+    radial-gradient(circle at 96% 8%, rgba(35, 151, 224, .1), transparent 29%),
+    linear-gradient(180deg, #0a1020 0%, #0d1424 100%) !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell :is(.sr-hero h1, .sr-kpis b, .sr-panel-head h2, .sr-danger h2, .sr-table td, .sr-super summary) {
+  color: #eaf0ff !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell :is(.sr-hero p, .sr-kpis span, .sr-kpis small, .sr-panel-head p, .sr-empty, .sr-table th, .sr-danger p, .sr-danger label) {
+  color: #aab7d0 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell :is(.sr-kpis article, .sr-filters, .sr-panel, .sr-super) {
+  background: #121b2e !important;
+  border-color: #2a3852 !important;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, .22) !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-kpis article:first-child {
+  background: linear-gradient(145deg, #27365e, #394875) !important;
+  border-color: #53638d !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-kpis article:first-child :is(span, b, small) { color: #fff !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-hero { border-color: #2d3a54 !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-hero small,
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-panel-head small,
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-danger small { color: #e6c46e !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-table-wrap { border-color: #2b3953 !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-table th {
+  background: #1a2740 !important;
+  color: #b9c7e0 !important;
+  border-color: #34415c !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-table th a { color: #dce6fb !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-table td {
+  background: #111a2b !important;
+  color: #e1e9fa !important;
+  border-color: #29364f !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-table tr:hover td { background: #18243a !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-table tr.is-risk td { background: #30291c !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-table tr.is-risk:hover td { background: #3a3020 !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell :is(.sr-module, .sr-status, .sr-panel-head>span) {
+  color: #c7d7ff !important;
+  background: #202d46 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-status { color: #d0d9e9 !important; background: #263247 !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell :is(.sr-filters input, .sr-filters select, .sr-danger input, .sr-danger select, .sr-danger textarea) {
+  color: #eaf0ff !important;
+  background: #0d1628 !important;
+  border-color: #34435f !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-filters input::placeholder,
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-danger input::placeholder,
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-danger textarea::placeholder { color: #8493ae !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell :is(.sr-hero nav a, .sr-reset, .sr-super summary) {
+  color: #e4ebfb !important;
+  background: #18243a !important;
+  border-color: #35435f !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-export { color: #fff !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-danger {
+  color: #ffe1e5 !important;
+  background: #291b28 !important;
+  border-color: #713a4b !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .sr-shell .sr-danger-button { background: #9f2838 !important; color: #fff !important; }

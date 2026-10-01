@@ -29,17 +29,20 @@ function customer_crm_find_index(array $d,int $id): ?int {
     foreach($d['customers']??[] as $index=>$row)if((int)($row['id']??0)===$id)return $index;
     return null;
 }
-function customer_crm_upsert_from_reservation(array &$d,array &$reservation): ?int {
-    $phone=trim((string)($reservation['phone']??''));$phoneKey=customer_crm_phone_key($phone);
+function customer_crm_upsert_from_reservation(array &$d,array &$reservation,bool $lineIdentityFirst=false): ?int {
+    $phone=trim((string)($reservation['phone']??''));$phoneKey=customer_crm_phone_key($phone);$lineUserId=trim((string)($reservation['line_user_id']??''));
     $customerId=max(0,(int)($reservation['customer_id']??0));$index=$customerId?customer_crm_find_index($d,$customerId):null;
-    if($index===null&&$phoneKey!==''){
+    if($index===null&&$lineIdentityFirst&&$lineUserId!==''){
+        foreach($d['customers']??[] as $i=>$row)if((string)($row['line_user_id']??'')===$lineUserId){$index=$i;break;}
+    }
+    if($index===null&&$phoneKey!==''&&!($lineIdentityFirst&&$lineUserId!=='')){
         foreach($d['customers']??[] as $i=>$row)if(customer_crm_phone_key((string)($row['phone_key']??$row['phone']??''))===$phoneKey){$index=$i;break;}
     }
     if($index===null&&$phoneKey==='')return null;
     $now=date('c');$name=trim((string)($reservation['guest_name']??''));
     if($index===null){
         $customer=customer_crm_defaults([
-            'id'=>next_id($d['customers']??[]),'full_name'=>$name,'nickname'=>$name,'phone'=>$phone,'phone_key'=>$phoneKey,
+            'id'=>next_id($d['customers']??[]),'full_name'=>$name,'nickname'=>$name,'phone'=>$phone,'phone_key'=>$phoneKey,'line_user_id'=>$lineUserId,
             'preferred_sales_employee_id'=>$reservation['sales_employee_id']??null,
             'created_at'=>(string)($reservation['created_at']??$now),'updated_at'=>$now
         ]);
@@ -49,6 +52,7 @@ function customer_crm_upsert_from_reservation(array &$d,array &$reservation): ?i
         if($customer['full_name']===''&&$name!=='')$customer['full_name']=$name;
         if($customer['nickname']===''&&$name!=='')$customer['nickname']=$name;
         if($customer['phone']===''&&$phone!=='')$customer['phone']=$phone;
+        if($lineIdentityFirst&&$lineUserId!==''&&(string)($customer['line_user_id']??'')==='')$customer['line_user_id']=$lineUserId;
         if(empty($customer['preferred_sales_employee_id'])&&!empty($reservation['sales_employee_id']))$customer['preferred_sales_employee_id']=(int)$reservation['sales_employee_id'];
         $customer['updated_at']=$now;$d['customers'][$index]=$customer;
     }

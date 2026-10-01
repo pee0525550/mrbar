@@ -1,0 +1,100 @@
+@import url("pos-incentive-theme-v14874.css?v=14874");
+
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-core-card {
+  color: #e8eefb !important;
+  background: linear-gradient(145deg, #101a2c, #0b1424) !important;
+  border-color: #34435e !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, .24) !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section h2,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-core-card h2,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section h3 {
+  color: #f3f6ff !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section p,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-core-card p,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section label,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-core-card label,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section small,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section span {
+  color: #b8c5db !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section input,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section select,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-core-card input,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-core-card select {
+  color: #f0f4ff !important;
+  background: #0a1322 !important;
+  border-color: #42516d !important;
+  color-scheme: dark;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section input::placeholder,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-core-card input::placeholder {
+  color: #8998b2 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section .scroll,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-core-table {
+  border-color: #34435e !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section table,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-core-table table {
+  color: #e7edfa !important;
+  background: #101a2b !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section th,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-core-table th {
+  color: #f0f4ff !important;
+  background: #1b2940 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section td,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-core-table td {
+  border-color: #293750 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section .pos-sales-summary-list p,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section .pos-tier-editor {
+  color: #dce6f8 !important;
+  background: #111e32 !important;
+  border-color: #3b4a65 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section .pos-sales-summary-list b,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section .pos-sales-summary-list strong,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section .pos-tier-editor b {
+  color: #f4f6ff !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-drink-choice {
+  color: #e8eefb !important;
+  background: linear-gradient(145deg, #131e32, #0e1728) !important;
+  border-right-color: #3b4a65 !important;
+  border-bottom-color: #3b4a65 !important;
+  border-left-color: #3b4a65 !important;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .25) !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-drink-choice b {
+  color: #f5f7ff !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-drink-choice span {
+  color: #b8c5db !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-drink-choice small,
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .pos-drink-kicker {
+  color: #82e9d1 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>.note {
+  color: #c6d5ea !important;
+  background: #102238 !important;
+  border-color: #315171 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>.success {
+  color: #b8f5df !important;
+  background: #0d302b !important;
+  border-color: #246e5d !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>.error {
+  color: #ffd2dc !important;
+  background: #351923 !important;
+  border-color: #8f3c55 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page.posi-page .posi-shell>section a:not(button) {
+  color: #82d8ff;
+}

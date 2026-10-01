@@ -7,13 +7,107 @@ function workforce_employee_by_id(array $d,int $id): ?array {
 }
 function workforce_employee_by_user(array $d,int $userId): ?array {
     foreach($d['employees']??[] as $e) if((int)($e['user_id']??0)===$userId) return $e;
+    foreach($d['prs']??[] as $pr)if((int)($pr['user_id']??0)===$userId){$employeeId=(int)($pr['employee_id']??0);if($employeeId>0&&($employee=workforce_employee_by_id($d,$employeeId)))return $employee;return workforce_employee_by_pr($d,(int)($pr['id']??0));}
     return null;
 }
 function workforce_employee_by_pr(array $d,int $prId): ?array {
     foreach($d['employees']??[] as $e) if((int)($e['pr_id']??0)===$prId) return $e;
     return null;
 }
-function workforce_user_employee(array $d,array $u): ?array { return workforce_employee_by_user($d,(int)($u['id']??0)); }
+function workforce_employee_login_account(array $d,array $employee): ?array {
+    $userId=(int)($employee['user_id']??0);
+    if($userId>0){foreach($d['users']??[] as $user)if((int)($user['id']??0)===$userId)return $user;}
+    $prId=(int)($employee['pr_id']??0);
+    foreach($d['prs']??[] as $pr){
+        if($prId<=0&&(!empty($employee['id'])&&(int)($pr['employee_id']??0)===(int)$employee['id']))$prId=(int)($pr['id']??0);
+        if((int)($pr['id']??0)!==$prId)continue;
+        $prUserId=(int)($pr['user_id']??0);
+        if($prUserId>0)foreach($d['users']??[] as $user)if((int)($user['id']??0)===$prUserId)return $user;
+        break;
+    }
+    return null;
+}
+function workforce_user_employee(array $d,array $u): ?array {
+    $userId=(int)($u['id']??0);$employee=workforce_employee_by_user($d,$userId);
+    if($employee)return $employee;
+    foreach($d['prs']??[] as $pr){
+        if((int)($pr['user_id']??0)!==$userId)continue;
+        $employeeId=(int)($pr['employee_id']??0);
+        if($employeeId>0&&($employee=workforce_employee_by_id($d,$employeeId)))return $employee;
+        return workforce_employee_by_pr($d,(int)($pr['id']??0));
+    }
+    return null;
+}
+function workforce_employee_branch_id(array $d,array $employee): int {
+    $branchId=(int)($employee['branch_id']??0);
+    return $branchId>0?$branchId:(int)($d['_branch_context']['id']??$d['meta']['active_branch_id']??0);
+}
+function workforce_direct_report_ids(array $d,int $managerEmployeeId): array {
+    $manager=workforce_employee_by_id($d,$managerEmployeeId);if(!$manager)return [];
+    $branch=workforce_employee_branch_id($d,$manager);$ids=[];
+    foreach($d['employees']??[] as $employee){
+        if((int)($employee['supervisor_employee_id']??0)!==$managerEmployeeId||empty($employee['active'])||!empty($employee['archived_at']))continue;
+        if(workforce_employee_branch_id($d,$employee)!==$branch)continue;
+        $ids[]=(int)($employee['id']??0);
+    }
+    return array_values(array_filter($ids));
+}
+function workforce_user_direct_report_ids(array $d,array $user): array {
+    $manager=workforce_user_employee($d,$user);
+    if(!$manager||empty($manager['active'])||!empty($manager['archived_at']))return [];
+    return workforce_direct_report_ids($d,(int)$manager['id']);
+}
+function workforce_peer_approval_enabled(array $d): bool {
+    return workforce_bool($d['settings']['workforce_peer_approval_enabled']??'0',false);
+}
+function workforce_employee_approval_enabled(array $d,array $employee): bool {
+    $account=workforce_employee_login_account($d,$employee);
+    if(!$account||empty($account['active'])||empty($employee['active'])||!empty($employee['archived_at']))return false;
+    if(array_key_exists('workforce_approval_enabled',$employee))return workforce_bool($employee['workforce_approval_enabled'],false);
+    $privileged=in_array((string)($employee['position']??''),['manager','admin'],true)||($account['role']??'')==='admin'||user_can($account,'leave.manage',$d);
+    return $privileged||workforce_peer_approval_enabled($d);
+}
+function workforce_approver_candidate_eligible(array $d,array $employee,array $candidate): bool {
+    if((int)($employee['id']??0)===(int)($candidate['id']??0)||empty($candidate['active'])||!empty($candidate['archived_at']))return false;
+    if(workforce_employee_branch_id($d,$employee)!==workforce_employee_branch_id($d,$candidate))return false;
+    $account=workforce_employee_login_account($d,$candidate);
+    if(!$account||empty($account['active']))return false;
+    return workforce_employee_approval_enabled($d,$candidate);
+}
+function workforce_approver_candidates(array $d,int $branchId): array {
+    $candidates=[];
+    foreach($d['employees']??[] as $employee){
+        if(empty($employee['active'])||!empty($employee['archived_at'])||workforce_employee_branch_id($d,$employee)!==$branchId)continue;
+        $account=workforce_employee_login_account($d,$employee);
+        $eligible=$account&&!empty($account['active'])&&workforce_approver_candidate_eligible($d,['id'=>0,'branch_id'=>$branchId],$employee);
+        $reason='';
+        if(!$account)$reason='ยังไม่มีบัญชี Login';
+        elseif(empty($account['active']))$reason='บัญชี Login ปิดใช้งาน';
+        elseif(array_key_exists('workforce_approval_enabled',$employee)&&!workforce_bool($employee['workforce_approval_enabled'],false))$reason='ปิดสิทธิ์อนุมัติรายบุคคล';
+        elseif(!$eligible)$reason='Peer Approval ปิดอยู่';
+        $candidates[]=['employee'=>$employee,'selectable'=>(bool)$eligible,'unavailable_reason'=>$reason];
+    }
+    usort($candidates,static fn($a,$b)=>strcmp((string)($a['employee']['name']??''),(string)($b['employee']['name']??'')));
+    return $candidates;
+}
+function workforce_can_review_assigned_employee(array $d,array $user,int $employeeId): bool {
+    if($employeeId<=0)return false;
+    $employee=workforce_employee_by_id($d,$employeeId);$approver=workforce_user_employee($d,$user);
+    if(!$employee||!$approver||empty($employee['active'])||empty($approver['active'])||!empty($employee['archived_at'])||!empty($approver['archived_at']))return false;
+    if((int)($employee['supervisor_employee_id']??0)!==(int)($approver['id']??0))return false;
+    return workforce_approver_candidate_eligible($d,$employee,$approver);
+}
+function workforce_attendance_employee_id(array $d,array $attendance): int {
+    $employeeId=(int)($attendance['employee_id']??0);
+    if($employeeId<=0&&!empty($attendance['pr_id']))$employeeId=(int)(workforce_employee_by_pr($d,(int)$attendance['pr_id'])['id']??0);
+    return $employeeId;
+}
+function workforce_can_review_leave(array $d,array $user,array $leave): bool {
+    if(($user['role']??'')==='admin'||user_can($user,'leave.manage',$d))return true;
+    $employeeId=(int)($leave['employee_id']??0);
+    if($employeeId<=0&&!empty($leave['pr_id']))$employeeId=(int)(workforce_employee_by_pr($d,(int)$leave['pr_id'])['id']??0);
+    return workforce_can_review_assigned_employee($d,$user,$employeeId);
+}
 function workforce_branch(array $d,int $id): ?array { foreach($d['branches']??[] as $b) if((int)($b['id']??0)===$id)return $b; return null; }
 function workforce_bool($v,bool $fallback): bool {
     if($v===null||$v==='inherit'||$v==='') return $fallback;
@@ -43,7 +137,28 @@ function workforce_distance_m(float $lat1,float $lng1,float $lat2,float $lng2): 
     $r=6371000.0;$p1=deg2rad($lat1);$p2=deg2rad($lat2);$dp=deg2rad($lat2-$lat1);$dl=deg2rad($lng2-$lng1);
     $a=sin($dp/2)*sin($dp/2)+cos($p1)*cos($p2)*sin($dl/2)*sin($dl/2);return 2*$r*atan2(sqrt($a),sqrt(max(0,1-$a)));
 }
+function workforce_gps_integrity_check(array $d,int $employeeId,int $prId,float $lat,float $lng,?DateTimeImmutable $now=null): ?array {
+    $now=$now?:new DateTimeImmutable('now');$nowTs=$now->getTimestamp();$latest=null;
+    foreach($d['attendance']??[] as $a){
+        if(!workforce_attendance_matches_identity($a,$employeeId,$prId)&&workforce_attendance_employee_id($d,$a)!==$employeeId)continue;
+        foreach([['check_in','checkin_lat','checkin_lng'],['check_out','checkout_lat','checkout_lng']] as $point){
+            list($timeKey,$latKey,$lngKey)=$point;
+            if(empty($a[$timeKey])||!is_numeric($a[$latKey]??null)||!is_numeric($a[$lngKey]??null))continue;
+            $pointTs=strtotime((string)$a[$timeKey]);$pointLat=(float)$a[$latKey];$pointLng=(float)$a[$lngKey];
+            if($pointTs===false||$pointTs>=$nowTs||$nowTs-$pointTs>1800||$pointLat < -90||$pointLat > 90||$pointLng < -180||$pointLng > 180)continue;
+            if($latest===null||$pointTs>$latest['timestamp'])$latest=['timestamp'=>$pointTs,'lat'=>$pointLat,'lng'=>$pointLng];
+        }
+    }
+    if($latest===null)return null;
+    $elapsed=$nowTs-$latest['timestamp'];$distance=workforce_distance_m($latest['lat'],$latest['lng'],$lat,$lng);$speed=($distance/$elapsed)*3.6;
+    if($distance<1000||$speed<=250)return null;
+    return ['distance_m'=>(int)round($distance),'elapsed_seconds'=>$elapsed,'speed_kmh'=>(int)round($speed),'previous_at'=>date('c',$latest['timestamp'])];
+}
 function workforce_resolve_branch(array $d,array $employee,float $lat,float $lng): array {
+    if((string)($d['settings']['attendance_gps_integrity_enabled']??'1')==='1'&&workforce_policy($d,$employee)['gps_required']){
+        $risk=workforce_gps_integrity_check($d,(int)($employee['id']??0),(int)($employee['pr_id']??0),$lat,$lng);
+        if($risk!==null)throw new RuntimeException('GPS เคลื่อนที่เร็วผิดปกติ: '.number_format((int)$risk['distance_m']).' เมตรใน '.(int)ceil($risk['elapsed_seconds']/60).' นาที (ประมาณ '.(int)$risk['speed_kmh'].' กม./ชม.) กรุณาตรวจ GPS หรือติดต่อผู้จัดการ');
+    }
     $assigned=(int)($employee['branch_id']??0);$candidates=[];
     foreach($d['branches']??[] as $b){if(empty($b['active'])||!is_numeric($b['lat']??null)||!is_numeric($b['lng']??null))continue;$candidates[]=$b;}
     if($assigned>0){foreach($candidates as $b)if((int)$b['id']===$assigned){$b['_distance']=workforce_distance_m($lat,$lng,(float)$b['lat'],(float)$b['lng']);return $b;}}
@@ -63,6 +178,20 @@ function workforce_evidence_save(int $employeeId,string $mode,string $dataUrl): 
     if(!is_dir($dir)&&!@mkdir($dir,0775,true)&&!is_dir($dir))throw new RuntimeException('Server ไม่สามารถสร้างโฟลเดอร์หลักฐาน Attendance ได้');
     $name=$mode.'-'.date('Ymd-His').'-'.bin2hex(random_bytes(4)).'.'.$ext;$file=$dir.'/'.$name;if(@file_put_contents($file,$raw,LOCK_EX)===false)throw new RuntimeException('บันทึกรูปยืนยันไม่ได้');@chmod($file,0664);
     return 'storage/attendance-evidence/'.date('Y/m').'/employee-'.$employeeId.'/'.$name;
+}
+function workforce_attendance_submission_validate(?float $lat,?float $lng,?float $accuracy,string $image,bool $cameraRequired): void {
+    $hasLocation=$lat!==null||$lng!==null||$accuracy!==null;
+    if($hasLocation&&($lat===null||$lng===null||$accuracy===null||$lat < -90||$lat > 90||$lng < -180||$lng > 180||$accuracy <= 0||$accuracy > 100000)){
+        throw new RuntimeException('ข้อมูล GPS ไม่ถูกต้อง กรุณาอัปเดตตำแหน่งแล้วลองใหม่');
+    }
+    if(!$cameraRequired)return;
+    if(!preg_match('#^data:image/(jpeg|jpg|png|webp);base64,(.+)$#',$image,$m))throw new RuntimeException('กรุณาถ่ายภาพจากกล้องก่อนบันทึกเวลา');
+    $raw=base64_decode($m[2],true);
+    if($raw===false||strlen($raw)<1000||strlen($raw)>8*1024*1024)throw new RuntimeException('รูปจากกล้องไม่สมบูรณ์ กรุณาถ่ายใหม่');
+    if(!function_exists('getimagesizefromstring'))throw new RuntimeException('ระบบตรวจสอบภาพไม่พร้อมใช้งาน กรุณาติดต่อผู้ดูแล');
+    $info=@getimagesizefromstring($raw);$mime=(string)($info['mime']??'');
+    $allowed=['image/jpeg'=>['jpeg','jpg'],'image/png'=>['png'],'image/webp'=>['webp']];
+    if(!$info||($info[0]??0)<160||($info[1]??0)<120||!in_array($m[1],$allowed[$mime]??[],true))throw new RuntimeException('ไฟล์ภาพจากกล้องไม่ถูกต้อง กรุณาถ่ายใหม่');
 }
 function workforce_employee_display_name(array $e): string {
     $pf=is_array($e['profile']??null)?$e['profile']:[];
@@ -97,8 +226,7 @@ function workforce_people_health(array $d): array {
     $branchId=(int)($d['_branch_context']['id']??$d['meta']['active_branch_id']??0);
     $accounts=array_values(array_filter($d['users']??[],fn($account)=>$branchId<=0||!function_exists('db_user_can_branch')||db_user_can_branch($account,$branchId)));
     foreach($d['employees']??[] as $employee){
-        $uid=(int)($employee['user_id']??0);$account=null;
-        if($uid>0){foreach($accounts as $row)if((int)($row['id']??0)===$uid){$account=$row;break;}}
+        $account=workforce_employee_login_account(['users'=>$accounts,'prs'=>$d['prs']??[]],$employee);$uid=(int)($account['id']??0);
         if($account){$linked++;$employeeByUser[$uid]=1;if(!workforce_account_role_compatible($employee,$account))$roleMismatch++;if(empty($employee['active'])&&!empty($account['active']))$inactiveLogin++;}
         elseif(!empty($employee['active']))$withoutAccount++;
     }
@@ -111,7 +239,7 @@ function workforce_sync_employee_to_pr(array &$d,array $employee): void {
         if((int)($p['id']??0)!==$prId)continue;
         $p['employee_id']=(int)$employee['id'];
         $p['branch_id']=$employee['branch_id']??null;
-        $p['user_id']=!empty($employee['user_id'])?(int)$employee['user_id']:null;
+        if(!empty($employee['user_id']))$p['user_id']=(int)$employee['user_id'];
         $p['active']=!empty($employee['active'])?1:0;
         $display=workforce_employee_display_name($employee);if($display!=='')$p['name']=$display;
         $pay=$employee['payroll']??[];$comp=$employee['pr_compensation']??[];$epf=is_array($employee['profile']??null)?$employee['profile']:[];$pf=&$p['profile'];if(!is_array($pf))$pf=[];
@@ -172,11 +300,39 @@ function workforce_initial(string $name): string {
 /* v1.20.0 Attendance Exceptions + PR Substitute helpers */
 function workforce_attendance_state(array $a): string {
     $state=(string)($a['attendance_state']??'');
+    if(!empty($a['check_out'])&&!in_array($state,['missing_checkout','provisional'],true)){
+        $issue=workforce_attendance_duration_issue($a);
+        if($issue!==null)return $issue;
+    }
     if($state!=='')return $state;
     return empty($a['check_out'])?'open':'complete';
 }
+function workforce_attendance_duration_issue(array $a): ?string {
+    if(empty($a['check_in'])||empty($a['check_out']))return null;
+    try{$in=new DateTime((string)$a['check_in']);$out=new DateTime((string)$a['check_out']);}catch(Throwable $e){return 'invalid_duration';}
+    $seconds=$out->getTimestamp()-$in->getTimestamp();
+    if($seconds<=0)return 'invalid_duration';
+    if($seconds>24*60*60)return 'duration_over_limit';
+    return null;
+}
+function workforce_attendance_checkout_is_stale(array $a,?DateTimeInterface $now=null): bool {
+    if(empty($a['check_in']))return true;
+    try{$in=new DateTime((string)$a['check_in']);}catch(Throwable $e){return true;}
+    $now=$now?:new DateTime('now');
+    $elapsed=$now->getTimestamp()-$in->getTimestamp();
+    return $elapsed<0||$elapsed>24*60*60;
+}
+function workforce_attendance_matches_identity(array $a,int $employeeId,int $prId): bool {
+    $rowEmployeeId=(int)($a['employee_id']??0);$rowPrId=(int)($a['pr_id']??0);
+    if($prId>0)return $rowPrId===$prId&&($rowEmployeeId<=0||$employeeId<=0||$rowEmployeeId===$employeeId);
+    return $employeeId>0&&$rowEmployeeId===$employeeId&&$rowPrId<=0;
+}
+function workforce_attendance_checkout_matches(array $a,int $employeeId,int $prId): bool {
+    if(!empty($a['check_out']))return false;
+    return workforce_attendance_matches_identity($a,$employeeId,$prId);
+}
 function workforce_payroll_final(array $a): bool {
-    return !empty($a['check_out']) && (string)($a['payroll_status']??'final')==='final' && !in_array(workforce_attendance_state($a),['missing_checkout','provisional'],true);
+    return !empty($a['check_out']) && workforce_attendance_duration_issue($a)===null && (string)($a['payroll_status']??'final')==='final' && !in_array(workforce_attendance_state($a),['missing_checkout','provisional','duration_over_limit','invalid_duration'],true);
 }
 function workforce_income_minutes(?string $in,?string $out): int {
     if(!$in||!$out)return 0;try{$a=new DateTime($in);$b=new DateTime($out);}catch(Throwable $e){return 0;}$seconds=$b->getTimestamp()-$a->getTimestamp();return $seconds>0?(int)floor($seconds/60):0;
@@ -254,7 +410,7 @@ function workforce_employee_income_estimate(array $d,array $employee,string $fro
     $daily=max(0,(float)($pay['daily_rate']??0));$hourly=max(0,(float)($pay['hourly_rate']??0));$monthly=max(0,(float)($pay['monthly_salary']??0));$otRate=max(0,(float)($pay['overtime_rate']??0));$stdHours=max(1,min(24,(float)($pay['standard_hours']??8)));$stdMinutes=(int)round($stdHours*60);
     $rows=[];$finalDays=0;$workMinutes=0;$otMinutes=0;$pending=0;$basePay=0.0;$otPay=0.0;
     foreach($d['attendance']??[] as $a){
-        $match=(int)($a['employee_id']??0)===$eid||($prId>0&&(int)($a['pr_id']??0)===$prId);if(!$match||empty($a['check_in']))continue;$date=substr((string)$a['check_in'],0,10);if($date<$from||$date>$to)continue;
+        $rowEmployeeId=(int)($a['employee_id']??0);$match=$rowEmployeeId>0?$rowEmployeeId===$eid:($prId>0&&(int)($a['pr_id']??0)===$prId);if(!$match||empty($a['check_in']))continue;$date=substr((string)$a['check_in'],0,10);if($date<$from||$date>$to)continue;
         $final=workforce_payroll_final($a);$minutes=$final?workforce_income_minutes((string)$a['check_in'],(string)($a['check_out']??'')):0;$ot=$final?max(0,$minutes-$stdMinutes):0;$regular=max(0,$minutes-$ot);$rowPay=0.0;
         if($final){$finalDays++;$workMinutes+=$minutes;$otMinutes+=$ot;if($type==='hourly'){$rowPay=($regular/60)*$hourly+($ot/60)*$otRate;$basePay+=($regular/60)*$hourly;$otPay+=($ot/60)*$otRate;}elseif($type==='daily'){$rowPay=$daily+($ot/60)*$otRate;$basePay+=$daily;$otPay+=($ot/60)*$otRate;}else{$rowPay=($ot/60)*$otRate;$otPay+=($ot/60)*$otRate;}}else{$pending++;}
         $rows[]=['id'=>(int)($a['id']??0),'date'=>$date,'check_in'=>(string)($a['check_in']??''),'check_out'=>(string)($a['check_out']??''),'minutes'=>$minutes,'ot_minutes'=>$ot,'final'=>$final,'state'=>workforce_attendance_state($a),'pay'=>$rowPay];

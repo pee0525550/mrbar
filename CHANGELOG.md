@@ -1,3 +1,320 @@
+# v1.49.17 - Auth, Booking & Notification Reliability
+- Persist failed PIN attempts and the 15-minute lock inside a single database transaction; validate expiry and revocation before authenticating a trusted device.
+- Refresh session permissions from the live account, revoke sessions after credential changes, and reject missing CSRF tokens in LINE endpoints.
+- Keep real booking alerts visible until acknowledged, retain all unread alerts in a bounded scroll area, and stop polling after logout or disablement.
+- Validate calendar dates, times, party limits and advance-booking policy; redirect successful customer submissions to private receipts and deduplicate replayed requests without resending LINE.
+- Recheck booking/payment/table policies inside the write transaction, preserve committed slips on later errors, and require verified deposits before seating through Operations.
+- Repair reservation action placement and deposit review layouts on mobile and intermediate desktop widths; release session locks early in read-only notification feeds.
+- No database migration. Update pack base: v1.49.16.
+
+# v1.49.16 - P1 Atomic Storage & Permission Fix
+- Serialize shared database reads/writes with a stable lock and atomically replace the data file to prevent partial reads and lost concurrent updates.
+- Remove world-writable `0777` permission fallbacks for customer media directories; retain least-privilege directory permissions.
+- No database migration; existing data and booking flows remain unchanged.
+
+# v1.49.15 - LINE Customer Booking Guard
+- เปิดขั้นตอนจองผ่าน LIFF URL จริง และอ่าน flow / return_to จาก liff.state รองรับการคืนค่าของ LIFF และ PHP-FPM
+- บังคับตรวจสถานะเพื่อน LINE OA ก่อนแสดงแบบฟอร์มและก่อนรับ POST; ต้องตรวจใหม่เมื่อสถานะเก่ากว่า 30 นาที
+- ถ้าไม่ตั้งค่า OA, ปฏิเสธเพิ่มเพื่อน หรือ LIFF ตรวจสถานะไม่ได้ จะไม่สามารถส่งคำขอจองผ่านได้
+- แสดงผลการส่งข้อความ LINE หลังรับคำจองจากผล API ที่บันทึกไว้; ไม่มี Database Migration
+
+# v1.49.14 - Reservation Deposit Controls
+- เพิ่มหน้าหลังบ้าน เงื่อนไขจอง & มัดจำ แยกตามสาขา พร้อมสวิตช์ปิดมัดจำฉุกเฉินโดยไม่ปิดรับจอง
+- เพิ่มช่องทางไม่ชำระ / สแกนจ่ายแนบสลิป / แนบสลิปพร้อมเตรียมตรวจ API, คำนวณมัดจำต่อรายการหรือต่อคน, QR, รายละเอียดบัญชี และเงื่อนไขจอง
+- เพิ่มอัปโหลดสลิปส่วนตัว, หน้าเปิดสลิปตามสิทธิ์สาขา และคิวให้พนักงานรับรอง/ปฏิเสธ โดยล็อกการยืนยันโต๊ะและรับลูกค้าจนกว่ามัดจำผ่าน
+- ผล API ที่ไม่ครบยอด/ผู้รับ/ความไม่ซ้ำจะไม่ยืนยันอัตโนมัติ; ต้องติดตั้ง Provider adapter และ Environment Variables ก่อนใช้ API จริง
+- ไม่มี Database Migration; ค่าเริ่มต้นคง Flow จองแบบไม่ชำระเงินเดิม
+
+# v1.49.13 - LINE OA Broadcast
+- เพิ่มเครื่องมือ Broadcast ข้อความถึงผู้ติดตาม LINE OA แยกจากปุ่มทดสอบส่งหา LINE พนักงาน
+- เพิ่ม Preview, ตัวนับ 5,000 ตัวอักษร, คำเตือนโควตา และยืนยันสองชั้นก่อนส่ง
+- จำกัดสิทธิ์ `settings.manage`, ป้องกันคำขอซ้ำด้วย LINE Retry Key และเว้นช่วงการส่งส่วนกลาง 60 วินาที
+- บันทึก Audit เฉพาะผู้ส่ง ความยาวข้อความ และผลตอบกลับ โดยไม่เก็บเนื้อหาหรือ Channel Access Token
+- ไม่มี Database Migration
+
+# v1.49.12 - LINE Customer Auth Error Handling
+- ดักข้อผิดพลาดระหว่างตรวจ Token ฝั่ง Server และตอบ JSON error แทนปล่อย response ว่าง
+- หน้า LINE อ่าน response แบบป้องกันกรณี body ว่าง/ไม่ใช่ JSON และแสดง HTTP status ที่เป็นมิตร
+- ไม่มี Database Migration
+
+# v1.49.11 - LINE Customer Login Verification Fix
+- ขอ ID Token หลังขั้นตรวจ/เพิ่มเพื่อน OA เพื่อใช้ Token ล่าสุดก่อนยืนยันกับ LINE
+- ตรวจ Channel ID ของ LIFF เทียบกับ LINE Login Channel ID ก่อนส่ง Token
+- แสดงสาเหตุยืนยันไม่ผ่านที่จำแนกได้ เช่น Channel ID ไม่ตรงหรือ Token หมดอายุ โดยไม่เปิดเผย Token
+- ไม่มี Database Migration
+
+# v1.49.10 - LINE Customer OA Friend Flow
+- LINE Login ฝั่งลูกค้าจะตรวจสถานะเพื่อน OA และเรียกหน้าต่างเพิ่มเพื่อนผ่าน LIFF ก่อนกลับไปหน้าจอง
+- เพิ่มช่องตั้งค่า LINE OA Basic ID หรือลิงก์เพิ่มเพื่อนในหลังบ้าน พร้อมตรวจโดเมนปลายทาง
+- แสดงสถานะเพื่อนและลิงก์สำรองในหน้าจอง; ลูกค้ายังจองต่อได้หากข้ามการเพิ่มเพื่อน
+- ไม่มี Database Migration
+
+# v1.48.96 - Notification Acknowledgement Persistence Fix
+- แก้ API “รับทราบ” ให้บันทึก read_by ลงรายการ Notification จริง ป้องกัน Popup กลับมาหลังรีเฟรช
+- ยืนยันสิทธิ์ผู้รับก่อนบันทึก และเก็บสถานะรับทราบแยกตามบัญชี
+- เพิ่ม regression test สำหรับการรับทราบ Notification รายบุคคลและแบบ Role
+- ไม่มี Database Migration
+
+# v1.48.95 - Acknowledged Reservation & Time Staff Notifications
+- Popup คำขอจองค้างจนกด “รับทราบ” และโหลดรายการที่ยังค้างกลับมาเมื่อเปิดหน้าใหม่
+- บันทึกการรับทราบแยกตามผู้ใช้ เพื่อไม่ซ่อน Popup ของบัญชีอื่น
+- เพิ่มสวิตช์ Time Staff แยกจาก Reservation สำหรับรายการคำขอลา/แก้เวลา/อนุมัติ และเปลี่ยนปุ่มปิดเป็น “รับทราบ”
+- รองรับ Push ตอนแอปพับผ่าน PWA ได้เมื่อเชื่อม Push Provider และให้ผู้ใช้สมัครรับบนอุปกรณ์แล้ว; แพ็กนี้ยังไม่รวมการส่ง Push จริง
+- ไม่มี Database Migration
+
+# v1.48.94 - Live Reservation Notifications
+- แสดง Popup คำขอจองใหม่ในหน้าที่เจ้าหน้าที่ล็อกอินอยู่ โดยดึงเฉพาะ Notification ของบัญชีและสาขาปัจจุบัน
+- เพิ่ม Settings Center > การแจ้งเตือน สำหรับเปิด/ปิด Popup และขอ Browser Notification บนอุปกรณ์นั้น
+- Browser Notification ทำงานเมื่อหน้าเว็บยังเปิดอยู่; Mobile Push ตอนปิดแอปและ LINE ยังต้องเชื่อม Provider เพิ่ม
+- ไม่มี Database Migration
+
+# v1.48.93 - Reservation Control Center Navigation
+- ย้ายเมนู “การจองโต๊ะ” ไปไว้ในกลุ่มศูนย์ควบคุม โดยคง Permission เดิม
+- ไม่มี Database Migration
+
+# v1.48.92 - Reservation Management Separation
+- แยกเมนูและหน้าจัดการ Reservation / Waitlist ออกจาก Night Operations ให้ทีมค้นหาและดูแลคำจองได้ตรงจุด
+- จัดหน้าใหม่ด้วยสรุปสถานะ ตัวกรองค้นหา และการ์ดรายการที่ปรับตามมือถือ พร้อมเพิ่ม/เปลี่ยนสถานะ/รับลูกค้าเข้าร้านตามสิทธิ์
+- แยก Permission `reservations.view`, `reservations.manage` และ `reservations.seat`; หน้า Operations เหลือการจัดการโต๊ะและ Service และยังรองรับรับลูกค้าจากผังโต๊ะ
+- ไม่มี Database Migration และไม่เปลี่ยน Schema
+
+# v1.48.91 — Customer Booking Integrations Foundation
+
+- เพิ่มจุดต่อ Slip Verifier แบบ Provider Adapter โดยอ่าน API Key จาก Server Environment และคง Manual Review เมื่อยังไม่มี Provider
+- แจ้งคำขอจองในสาขาให้ผู้มีสิทธิ์ดู/จัดการการจองและ Sales ที่เกี่ยวข้อง ไม่กระจายไปทุกบัญชี
+- เพิ่ม LIFF account-link flow ที่ตรวจ ID Token กับ LINE Platform ก่อนผูกบัญชี และเพิ่ม LINE Messaging API sender foundation
+- เพิ่ม Push/Notification click handlers ใน Service Worker เพื่อเตรียมต่อ Mobile Push
+- ยังไม่เปิดเก็บมัดจำหรือส่งข้อความออกจริงจนกว่าจะตั้ง Provider, กติกามัดจำ และ Credentials
+- ไม่มี DB migration
+
+# v1.48.90 — HR Approval Center Mobile Layout
+
+- แก้หน้าศูนย์อนุมัติบนมือถือที่ยังคงแบ่งเป็นคอลัมน์ desktop จนเนื้อหาถูกบีบและล้นจอ
+- จัดเมนูอนุมัติเป็น 2 คอลัมน์ด้านบน และขยายรายละเอียด/iframe ให้เต็มความกว้างหน้าจอ
+- จำกัดความสูงป๊อปอัปแจ้งเตือนบนมือถือ พร้อมเลื่อนดูรายการภายในโดยไม่บังทั้งหน้า
+- ไม่มี DB migration
+
+# v1.48.89 — Operations Tools QR Cleanup
+
+- เอาส่วนจัดกะ PR, Notification Center และรายงานวันนี้ที่ซ้ำซ้อนออกจากหน้า Operations Tools
+- คง KPI สรุปและเครื่องมือ QR โต๊ะ Sales ไว้
+- ปรับชื่อ/สิทธิ์เมนูให้ตรงกับ QR Tools และส่งลิงก์แจ้งเตือนไปยังหน้า Operations ที่ยังใช้งานอยู่
+- ไม่มี DB migration
+
+# v1.48.88 — GPS Integrity Guard & Fake GPS Test Toggle
+
+- เพิ่มตัวเลือกเปิด/ปิดการตรวจจับพิกัด GPS กระโดดผิดปกติใน Settings Center
+- เมื่อเปิด จะปฏิเสธพิกัดที่ห่างจากจุดลงเวลาล่าสุดอย่างน้อย 1 กม. และประเมินความเร็วเกิน 250 กม./ชม. ภายใน 30 นาที
+- ปิดตัวตรวจนี้ชั่วคราวได้สำหรับการทดสอบ Fake GPS; Geofence และนโยบาย GPS อื่นยังทำงานตามค่าที่ตั้งไว้
+- เพิ่มค่าเริ่มต้นของนโยบายในระบบ โดยไม่ต้องทำ DB migration
+
+# v1.48.87 — Workforce Calendar Attendance Markers
+
+- แสดงวงเขียวรอบรูปพนักงานเมื่อมีตารางและ Check-in แล้ว รวมสถานะมาสาย/ยังไม่ Check-out
+- แสดงวงแดงเมื่อมีตารางแต่พ้นเวลาทำงานแล้วโดยไม่มี Check-in; วันลาหรือกะที่ยังไม่จบไม่แสดงเป็นขาดงาน
+- จับคู่ Attendance ด้วย employee_id หรือ PR Profile ID ให้ตรงกับรายการพนักงานบนปฏิทิน
+- เพิ่ม Legend สถานะและไม่ต้องเปลี่ยน Schema/DB
+
+# v1.48.86 — Per-Employee Approval Access
+
+- เพิ่มสวิตช์เปิด/ปิดสิทธิ์อนุมัติคำขอของทีมในแท็บบัญชี & สิทธิ์ของ Employee Card
+- สิทธิ์รายบุคคลที่เปิดไว้เลือกเป็นผู้อนุมัติได้ แม้นโยบาย Peer Approval ของสาขาปิดอยู่
+- การปิดสิทธิ์รายบุคคลมีผลกับการเลือกผู้อนุมัติและตรวจสิทธิ์ฝั่ง Server; ปิดไม่ได้หากยังมีลูกทีมผูกอยู่จนกว่าจะย้ายสายอนุมัติ
+- แยกสิทธิ์อนุมัติผ่านสายทีมออกจากสิทธิ์ HR/Admin ระดับระบบ และคงค่าเดิมของพนักงานเดิมจนกว่าจะตั้งรายบุคคล
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.85 — Unified Employee and Login Linking
+
+- ตรวจบัญชี Login ผ่าน Employee.user_id และ PR Profile.user_id ร่วมกัน ลดสถานะ “ยังไม่มีบัญชี Login” ที่ผิดพลาด
+- ใช้การเชื่อม PR Profile เดียวกันในสายอนุมัติ, Account & Permissions, Employee lookup, Health check และการ Reset Password
+- ป้องกันสร้างบัญชี/Invite ซ้ำ เมื่อบัญชี Login ผูกอยู่กับ PR Profile แล้ว
+- บันทึก Employee โดยไม่ล้างบัญชี Login ของ PR Profile ที่ยังเชื่อมอยู่
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.84 — Complete Approver Employee List
+
+- แสดงรายชื่อพนักงานที่ยังทำงานในสาขาปัจจุบันครบในหน้าต่างกำหนดหัวหน้า/ผู้อนุมัติ
+- แสดงเหตุผลข้างชื่อที่ยังเลือกไม่ได้ เช่น ไม่มีบัญชี Login, Login ปิด หรือ Peer Approval ยังปิด
+- เมื่อเปิด Peer Approval ผู้มีบัญชีใช้งานในสาขาเดียวกันเลือกเป็นผู้อนุมัติได้ตามเดิม
+- ยังคงป้องกันการเลือก/อนุมัติตัวเองและข้ามสาขา และตรวจเงื่อนไขซ้ำฝั่ง Server
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.83 — Flexible Peer Approval Routing
+
+- เพิ่มนโยบาย Peer Approval แยกตามสาขา ค่าเริ่มต้นปิด และผู้ดูแลเปิดได้จาก Workforce Exceptions
+- เมื่อเปิดนโยบาย เลือกพนักงานที่มีบัญชีใช้งานในสาขาเดียวกันเป็นผู้อนุมัติได้ รวมถึงเพื่อนร่วมงานเพื่อทดสอบ
+- ผู้อนุมัติจัดการได้เฉพาะคำขอลา/แก้เวลา/Attendance Exception ของพนักงานที่มอบหมาย ไม่เห็นรายการของทีมอื่น
+- ป้องกันอนุมัติตัวเองและข้ามสาขา และปิดสิทธิ์ Peer Approval ทันทีเมื่อนโยบายสาขาถูกปิด
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.82 — Admin PIN Protected User Card Archive
+
+- เพิ่มคำสั่งนำบัญชีออกจาก Account Directory โดยเก็บบัญชีและประวัติเดิมไว้ พร้อมปิด Login และ Trusted Devices
+- ยืนยันด้วย PIN 6 หลักของ Admin ที่กำลังใช้งาน จำกัดผิด 5 ครั้งและล็อก 15 นาที
+- ปลดการเชื่อม Employee/PR ของบัญชีที่เก็บถาวรทุกสาขา ป้องกันลบตัวเอง, Admin โดยไม่มี Super Admin และ Super Admin คนสุดท้าย
+- บังคับออกจากระบบเมื่อบัญชีถูกปิดใช้งาน/เก็บถาวร และซ่อนบัญชีที่เก็บถาวรจาก Account Directory
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.81 — Save Confirmation & Supervisor Approval Routing
+
+- เพิ่ม Popup ยืนยันผลหลัง Loading สำหรับฟอร์ม POST และ API POST แบบ JSON แสดงข้อความสำเร็จ/ข้อผิดพลาดจาก Server โดยไม่อ่านกลืน Response ของหน้าเดิม
+- เพิ่มข้อมูลหัวหน้าและจำนวนลูกทีมบน Employee Card พร้อมหน้าต่างกำหนดหัวหน้างานในสาขาเดียวกัน
+- จำกัดหัวหน้าที่กำหนดให้ตรวจและอนุมัติคำขอลาของลูกทีมตรง โดยตรวจสิทธิ์ซ้ำฝั่ง Server และเพิ่มรายการแจ้งเตือนให้หัวหน้า
+- รองรับพนักงานแบบ AUTO/ใกล้ที่สุดในบริบทสาขาปัจจุบัน และป้องกันการตั้งหัวหน้าวนลูป
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.80 — HR Approval UX & Duplicate Notice Fix
+
+- แสดง Approval Notification เฉพาะหน้าหลัก ป้องกัน popup ซ้ำในหน้า iframe/embed
+- ปรับสีหน้า Leave, Workforce Exception และ Payroll ที่ฝังใน Approval Center ให้ตามธีมมืด/สว่าง
+- ปรับกรอบรายละเอียดให้ขยายตามเนื้อหา ลด scrollbar ซ้อนและพื้นที่ใช้งานอึดอัด
+- คง flow และ handler อนุมัติเดิม ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.79 — Time Staff Approval Notifications & Access Guard
+
+- เพิ่มการตรวจสอบ payload ภาพและช่วงพิกัด/ความแม่นยำ GPS ฝั่ง Server สำหรับ Check-in/Check-out ของ Employee และ PR
+- ปิดการเข้าถึงปฏิทินและรายได้ของ Employee ที่ไม่ Active โดยยังคง Admin Preview
+- เพิ่ม Popup คิวอนุมัติแบบ permission-aware แยกตามสาขา พร้อมลิงก์ HR Approval Center และอัปเดตคิวอัตโนมัติ
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.78 — Workforce Dark Theme Contrast
+
+- แก้พื้นและสีข้อความแถวตารางงานทั้งหมดของวันที่เลือกใน Workforce Schedule
+- แก้แผงกฎ PR No-show รวมช่องกรอก แถบแจ้งเตือน และรายการรอตรวจใน Payroll/Attendance
+- คง logic การจัดตารางและการคำนวณค่าปรับเดิม ไม่มี DB migration
+
+# v1.48.77 — Admin Sidebar Navigation Groups
+
+- จัดกลุ่มเมนูใหม่เป็นศูนย์ควบคุม, ทีมงาน/เวลา, ลูกค้า/ช่องทาง, รายงาน/ค่าตอบแทน และตั้งค่าร้าน/ระบบ
+- ย้าย POS Incentive ไปกลุ่มรายงาน, แยก CRM/Customer Web ออกจาก Zone Studio และย้าย Staff Preview ไปกลุ่มทีมงาน
+- คง URL และ permission เดิม พร้อมปรับสีไอคอนให้แยกกลุ่มง่ายขึ้น
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.76 — POS Commission Batch Contrast Fix
+
+- แก้การ์ด Batch สรุปรายละเอียดบิลในหน้าค่าคอม Sales ที่ยังเป็นพื้นสว่างและข้อความจางใน Dark Mode
+- ปรับสีชื่อไฟล์ ช่วงวันที่ ยอดรวม และตัวเลขสรุป พร้อมเพิ่ม cache-busting stylesheet รุ่นใหม่
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.75 — POS Incentive Dark Theme Fix
+
+- แก้คอนทราสต์เมนูขั้นตอน การ์ดค่าดื่ม/ค่าคอม ตาราง และช่องกรอกในธีมมืด
+- ปรับหน้า POS Reports ให้การ์ด ตัวกรอง KPI และตารางอ่านได้ครบในธีมมืด
+- คงสูตรคำนวณและการบันทึกเดิม ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.74 — POS Import Contrast & Validation
+
+- แก้ Dark Mode หน้า Import POS ทั้งแถบขั้นตอน การ์ดสรุป การ์ดอัปโหลด ช่องกรอก และตัวเลือกไฟล์
+- ใช้ Theme stylesheet ชุดเดียวกันในหน้า Process และ Import เพื่อให้สีสอดคล้องกัน
+- ตรวจสอบวันที่ปฏิทินจริงฝั่ง Server ก่อนรับไฟล์ ปฏิเสธวันที่รูปแบบถูกแต่ไม่มีจริง
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.73 — POS Incentive Dark Theme Fix
+
+- แก้ความต่างสีของแถบขั้นตอน POS Incentive ใน Dark Mode ทั้งขั้นปัจจุบันและขั้นอื่นให้อ่านชัด
+- ปรับข้อความกรณี Inbox ว่างให้ระบุว่าแยกไฟล์ตามสาขาที่เลือก พร้อมลิงก์ไปหน้า Import POS
+- คงการแยก Inbox ตามสาขาเพื่อป้องกันการนำไฟล์ของสาขาอื่นมา Process ผิดร้าน
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.72 — System Reports Dashboard
+
+- ปรับหน้า System Reports เป็น Dashboard รายงานกิจกรรม แยกตาม Module และชนิดข้อมูล พร้อมรายการ Audit Log ล่าสุด
+- แยกยอด POS เมนู, Report บิล, ยอดปิดรอบ, ค่าดื่ม และค่าคอมมิชชัน ไม่บวกข้ามประเภทเพื่อเลี่ยงยอดซ้ำ/ความหมายคลาดเคลื่อน
+- แยกมุมมอง ภาพรวม / รายการข้อมูล / Audit Log และคงการค้นหา กรอง เรียง และ Export CSV
+- แสดงรายการ 20 แถวแรก และโหลดชุดถัดไปจาก Server ทีละ 20 แถว โดยไม่ใส่แถวที่เหลือไว้ใน DOM
+- คง Soft Clear สำหรับ Super Admin, Loading กลางระบบ และการแก้ Contrast จากเวอร์ชันก่อนหน้า
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.71 — Global Loading Experience
+
+- เพิ่ม loading overlay สำหรับการเปิด/เปลี่ยนหน้าและการส่งฟอร์ม พร้อมข้อความบอกสถานะ
+- แสดง loading badge แบบไม่บังหน้าจอสำหรับ fetch ที่ใช้เวลานาน และเปิด API MRBarLoading ให้ action อื่นเรียกใช้ได้
+- หน่วงการแสดงสถานะใน request สั้นเพื่อลดการกระพริบ และรองรับ prefers-reduced-motion
+- รวมการแก้ contrast ของ HR Approval Center และ System Reports จาก v1.48.70
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.70 — HR & System Reports Theme Contrast Fix
+
+- แก้สีตัวอักษรจางบนพื้นสว่างใน HR Approval Center และ System Reports ให้สอดคล้องกับธีม Light/Dark
+- ปรับพื้นหลังหัวเรื่อง, KPI, เมนู/ตัวกรอง, ตาราง และแผงอนุมัติ/รายงานตามธีม
+- คงสีสถานะเข้างาน Normal/Late/Wait ให้แยกแยะได้ในธีมมืด
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.68 — Admin Performance Optimization
+
+- ลดการอ่านและ migrate ฐานข้อมูลซ้ำภายใน request โดยใช้ snapshot ที่โหลดแล้ว และไม่ migrate ซ้ำเมื่อต้องสร้าง Branch View ภายใน
+- ไม่ invalidate OPcache ทุกครั้งที่อ่านไฟล์ฐานข้อมูล โดยยัง invalidate หลังเขียนข้อมูลตามเดิม
+- จำกัดการตรวจ Check-out ที่ค้างไว้เฉพาะหน้าที่เกี่ยวข้องและไม่เกินหนึ่งครั้งต่อนาทีต่อ session
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.67 — Admin Integrity & Attendance Guard
+
+- ตรวจจับ Attendance ที่เวลาเข้า/ออกติดลบหรือเกิน 24 ชั่วโมง และพักรายการจาก Payroll/OT จนกว่าจะตรวจสอบ
+- ป้องกันการ Check-out และส่งคำขอแก้เวลาข้าม PR/พนักงาน พร้อมรองรับการส่งรายการเวลาผิดปกติเข้าตรวจสอบ
+- ป้องกันการผูก Table Hotspot ซ้ำใน Zone Studio ทั้งตอนบันทึกและ Publish พร้อมแจ้งรหัสโต๊ะที่ซ้ำ และซ่อน Hotspot ซ้ำจากหน้าลูกค้าจนกว่าจะแก้ผัง
+- สืบทอด Responsive Settings Navigation จาก v1.48.66
+- ไม่มี DB migration และไม่รวมข้อมูล Production
+
+# v1.48.66 — Responsive Settings Navigation
+
+- เปลี่ยนเมนู 9 หมวดใน Settings เป็นกริด 3 คอลัมน์บนแท็บเล็ต และ 2 คอลัมน์บนมือถือ ไม่ต้องเลื่อนแนวนอนเพื่อหาเมนู
+- รักษาขนาดตัวอักษรและการตัดบรรทัดให้ชื่อหมวดอ่านง่ายบนจอเล็ก
+- สืบทอดการแก้ตัวเลือกสาขาไม่ให้ลอยทับเนื้อหาจาก v1.48.65
+- ไม่มี DB migration
+
+# v1.48.65 — Responsive Admin Branch Switcher
+
+- ย้ายตัวเลือกสาขาออกจากตำแหน่ง fixed บนหน้าจอไม่เกิน 900px เพื่อไม่ให้บังฟอร์มและปุ่มหลังบ้าน
+- คงเมนูสาขาให้เปิดขึ้นด้านบนและจำกัดความสูงให้เหมาะกับหน้าจอขนาดเล็ก
+- ปรับ cache version ของ CSS เพื่อให้เบราว์เซอร์โหลดกฎใหม่
+- ไม่มี DB migration
+
+# v1.48.64 — Admin Permission Navigation & Sales QR Setup
+
+- กรองเมนูหลังบ้านตาม permission ที่หน้าเป้าหมายรองรับ ลดเมนูที่ผู้ใช้กดเข้าแล้วถูกปฏิเสธ
+- แก้เมนู active ของหน้าคำขอลา, attendance exceptions และ roster ให้ชี้ไปยังหมวดแม่ที่ถูกต้อง
+- หยุดสร้าง Sales Table QR secret อัตโนมัติเมื่อเปิดหน้า Tools; ผู้มีสิทธิ์ต้องกดตั้งค่าผ่าน POST ที่ตรวจ CSRF
+- คง QR secret เดิมไว้ ไม่หมุนค่าใหม่เมื่อกด setup ซ้ำ
+- ไม่มี DB migration
+
+# v1.48.63 — Portal Customer Hero Gallery Sync
+
+- ซิงก์แถบภาพ Portal กับรายการ Hero Gallery ที่เปิดใช้งานของหน้าร้าน รองรับภาพและวิดีโอ พร้อม fallback แกลเลอรีเดิม
+- คงภาพ Cover ของสาขาและโลโก้ พร้อมแสดง Mini Map และ Facebook Timeline เมื่อกำหนดข้อมูลไว้
+- ไม่มี DB migration
+
+# v1.48.62 — Portal Branch Gallery, Map & Facebook Previews
+
+- ขยายภาพบรรยากาศสาขาเป็นแถบ Gallery ที่แตะเปิดภาพเต็มจอ เลื่อนภาพด้วยปุ่มหรือปุ่มลูกศร และปิดได้
+- เพิ่ม Mini Map ในการ์ดสาขา ใช้พิกัดที่ตั้งไว้ก่อน หรือใช้ที่อยู่เป็นทางเลือก พร้อมลิงก์เปิด Google Maps
+- เพิ่ม Facebook Page Timeline แบบฝังในตัวการ์ด เมื่อสาขามี URL Facebook ที่ถูกต้อง
+- ขยายการ์ดให้รองรับเนื้อหาเสริม พร้อมจัดรูปแบบใหม่บนมือถือ
+- ไม่มี DB migration
+
+# v1.48.61 — Portal Nearby Badge Position Fix
+
+- ย้ายป้ายระยะทางสาขาไปมุมล่างซ้ายของภาพร้านและกำหนดความกว้างให้พอดีกับข้อความ ไม่ยืดเป็นแถบเต็มรูป
+- ปรับตำแหน่งและระยะขอบให้เหมาะกับหน้าจอมือถือ
+- ไม่มี DB migration
+
+# v1.48.60 — Customer Portal Welcome, Background & Daylight Readability
+
+- ซ่อนลิงก์ Config Portal จากหน้าสำหรับลูกค้าทุกคน โดยหน้า Config ยังเข้าได้จากเส้นทางผู้ดูแลโดยตรง
+- เปลี่ยนส่วนตำแหน่งใกล้ฉันเป็นข้อความต้อนรับและแจ้งการใช้งาน GPS ก่อนขออนุญาตอัตโนมัติจากเบราว์เซอร์
+- เมื่ออนุญาตตำแหน่ง จะเรียงสาขาตามระยะทางและแสดงระยะโดยไม่จัดเก็บพิกัด; หากไม่อนุญาตยังดูร้านได้ตามปกติ
+- เพิ่มช่องอัปโหลด/ลบภาพพื้นหลัง Portal แยกจาก Banner และ Hero พร้อมแสดงภาพแบบเบลอหลังเนื้อหา
+- ปรับสีตัวอักษรและคอนทราสต์ของ Light Theme ให้ชัดขึ้น โดยคงธีมกลางคืนเดิม
+- รวมการแก้ภาพ Cover และกรอบ Hero ที่เตรียมไว้ใน v1.48.59
+- ไม่มี DB migration
+
+# v1.48.59 — Portal Branch Cover & Eyebrow Fit Fix
+
+- แก้รูป Cover ของ Branch Card ในหน้า Portal ไม่แสดง เพราะธีม Black/Gold ใช้ `background-image: ... !important` ไปทับ URL รูปของสาขา
+- เปลี่ยนการส่งรูป Cover เป็น CSS custom property แล้ว render เป็น layer ของ card โดยยังคง overlay และโลโก้ร้านไว้
+- แก้กรอบ `CHOOSE YOUR EXPERIENCE` ที่ถูก Grid stretch จนยาวเกินข้อความ ให้กรอบพอดีข้อความทั้ง Desktop/Mobile
+- เพิ่ม responsive guard สำหรับชื่อ/กรอบยาวเพื่อไม่ให้ล้นบนหน้าจอเล็ก
+- ไม่มี DB migration
+
 # v1.48.58 — Portal Black Gold RGB Banner
 
 - เพิ่มช่องอัปโหลดภาพ Banner ส่วนหัว Portal ในหน้า Config แยกจาก Logo และ Hero Background
@@ -680,4 +997,10 @@
 - ปรับลำดับสายตาและขนาด Hero ให้สมดุลขึ้น พร้อมเพิ่มแถบภาพรวมข้อมูลสาขา
 - แสดงจำนวนสาขาพร้อมต้อนรับ โต๊ะว่าง และ PR active พร้อมวันที่และเวลาไทย
 - เพิ่มตัวกรองสาขาที่มีโต๊ะว่าง และปรับโทน Portal ให้หลากหลายขึ้นทั้ง Desktop และ Mobile
+- ไม่มี DB migration
+# v1.48.63 — Portal Customer Hero Gallery Sync
+
+- เปลี่ยนภาพบรรยากาศบนการ์ด Portal ให้ดึงรายการ Active ชุดเดียวกับ Hero Gallery ในหน้าร้าน และเรียงตามลำดับที่กำหนดไว้
+- รองรับภาพ, วิดีโออัปโหลด, YouTube และวิดีโอ URL ภายนอกในตัวดูสื่อแบบเต็มจอ
+- หากสาขายังไม่มี Hero Gallery ที่เปิดใช้งาน จะใช้ Gallery เดิมของ Portal เป็น fallback
 - ไม่มี DB migration

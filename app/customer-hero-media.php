@@ -40,7 +40,6 @@ function chm_pick_storage_dir(): array {
     ];
     foreach($candidates as $c){
         if(!is_dir($c['absolute'])){@mkdir($c['absolute'],0775,true);@chmod($c['absolute'],0775);}clearstatcache(true,$c['absolute']);
-        if(is_dir($c['absolute'])&&is_writable($c['absolute']))return $c;@chmod($c['absolute'],0777);clearstatcache(true,$c['absolute']);
         if(is_dir($c['absolute'])&&is_writable($c['absolute']))return $c;
     }
     throw new RuntimeException('Server ไม่อนุญาตให้เขียนโฟลเดอร์ Hero Media กรุณาตรวจ Permission ของ uploads/ หรือ storage/');

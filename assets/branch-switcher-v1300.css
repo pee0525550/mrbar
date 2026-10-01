@@ -10,3 +10,4 @@
 .mr-branch-menu nav{display:grid;gap:6px;margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,255,255,.1)}.mr-branch-menu nav a{padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.045);color:#dfe7ff;text-decoration:none;font-size:9px;font-weight:850}.mr-branch-menu nav a:hover{background:rgba(137,74,255,.18);color:#fff}
 @media(min-width:1000px){body:has(.sidebar) .mr-branch-switcher{left:17px;width:252px}}
 @media(max-width:720px){.mr-branch-switcher{left:10px;bottom:10px;width:min(270px,calc(100vw - 20px))}.mr-branch-menu{max-height:55vh}}
+@media(max-width:900px){.mr-branch-switcher{position:relative;inset:auto;z-index:20;width:min(420px,calc(100vw - 28px));margin:18px auto 24px}.mr-branch-menu{bottom:calc(100% + 8px);max-height:min(55vh,420px)}}

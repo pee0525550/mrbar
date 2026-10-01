@@ -1,0 +1,17 @@
+/* Embedded HR pages inherit the portal theme and use the parent page scroll. */
+html[data-mr-theme="dark"] body.hr-embedded{background:#0b1220!important;color:#e8eefb!important}
+html[data-mr-theme="dark"] body.hr-embedded :is(.la-head,.wx-head,.pa-head){background:linear-gradient(130deg,#151b2d,#111a29)!important;border-color:#34415a!important;color:#e8eefb!important}
+html[data-mr-theme="dark"] body.hr-embedded :is(.la-head h1,.wx-head h1,.pa-head h1,.la-person h2,.wx-title h2){color:#eef3ff!important}
+html[data-mr-theme="dark"] body.hr-embedded :is(.la-card,.la-kpis article,.la-filter,.wx-panel,.wx-kpis article,.exception-card,.request-card,.sub-card,.pa-card){background:#121b2d!important;border-color:#2e3c56!important;color:#e3ebfb!important}
+html[data-mr-theme="dark"] body.hr-embedded :is(.la-info p,.la-info span,.la-person small,.wx-head span,.wx-title){color:#b8c5db!important}
+html[data-mr-theme="dark"] body.hr-embedded :is(.la-filter input,.la-filter select,.la-actions textarea,.policy-grid input,.policy-grid select,.manual-form input,.manual-form select,.request-card input){background:#0c1424!important;color:#edf3ff!important;border-color:#35435f!important}
+html[data-mr-theme="light"] body.hr-embedded{background:#f3f6fc!important;color:#17233d!important}
+html[data-mr-theme="light"] body.hr-embedded :is(.la-card,.la-kpis article,.la-filter,.wx-panel,.wx-kpis article,.exception-card,.request-card,.sub-card,.pa-card){background:#fff!important;border-color:#dce4f0!important;color:#17233d!important}
+html[data-mr-theme="light"] body.hr-embedded :is(.la-head,.wx-head,.pa-head){background:linear-gradient(130deg,#fff,#f3f6fc)!important;border-color:#dce4f0!important;color:#17233d!important}
+html[data-mr-theme="light"] body.hr-embedded :is(.la-head h1,.wx-head h1,.pa-head h1,.la-person h2,.wx-title h2){color:#17233d!important}
+html[data-mr-theme="light"] body.hr-embedded :is(.la-filter input,.la-filter select,.la-actions textarea,.policy-grid input,.policy-grid select,.manual-form input,.manual-form select,.request-card input){background:#fff!important;color:#17233d!important;border-color:#cbd6e6!important}
+body.hr-embedded :is(.leave-admin,.wx-shell,.pa-wrap){width:100%!important;max-width:none!important;margin:0!important;padding:14px 16px 24px!important}
+body.hr-embedded :is(.la-head h1,.wx-head h1,.pa-head h1){font-size:22px!important}
+body.hr-embedded :is(.la-head>div:last-child,.wx-head>a,.pa-head .head-actions),body.hr-embedded footer{display:none!important}
+body.hr-embedded :is(.sidebar,.admin-sidebar,.admin-v14-sidebar){display:none!important}
+@media(max-width:700px){body.hr-embedded :is(.leave-admin,.wx-shell,.pa-wrap){padding:10px 10px 20px!important}}

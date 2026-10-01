@@ -71,6 +71,10 @@ expect_true($health['orphan_accounts']===0,'has no orphan account after migratio
 expect_true(workforce_account_role_compatible($salesA,$migrated['users'][1]),'accepts Sales role for Sales position');
 $bad=$migrated['users'][1];$bad['role']='pr';
 expect_true(!workforce_account_role_compatible($salesA,$bad),'rejects PR role for Sales position');
+$prLinkedFixture=['users'=>[['id'=>22,'username'=>'pr-user','role'=>'pr','active'=>1]],'employees'=>[['id'=>220,'pr_id'=>320,'user_id'=>null,'position'=>'pr','active'=>1]],'prs'=>[['id'=>320,'employee_id'=>220,'user_id'=>22,'active'=>1]]];
+try { account_create_and_link($prLinkedFixture,220,'duplicate-pr','password-123'); $duplicatePrLinkRejected=false; }
+catch(RuntimeException $error) { $duplicatePrLinkRejected=str_contains($error->getMessage(),'เชื่อมกับบัญชี Login แล้ว'); }
+expect_true($duplicatePrLinkRejected,'does not create a duplicate account for a PR Profile-linked login');
 
 $_SERVER['SCRIPT_NAME']='/it/custumers/reserve.php';
 $options=reservation_sales_options($view);$salesOption=array_values(array_filter($options,fn($row)=>(int)$row['employee_id']===(int)$salesA['id']))[0]??null;

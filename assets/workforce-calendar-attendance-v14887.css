@@ -1,0 +1,8 @@
+.schedule-v19 .mini-avatar.attendance-checked-in{outline:2px solid #20d995;outline-offset:1px;box-shadow:0 0 0 3px rgba(32,217,149,.18),0 0 12px rgba(32,217,149,.5);z-index:2}
+.schedule-v19 .mini-avatar.attendance-absent{outline:2px solid #ff526d;outline-offset:1px;box-shadow:0 0 0 3px rgba(255,82,109,.18),0 0 12px rgba(255,82,109,.48);z-index:2}
+.schedule-v19 .attendance-marker-legend{display:inline-flex;align-items:center;gap:6px;color:#aeb8d0;font-size:9px;font-weight:800;white-space:nowrap}
+.schedule-v19 .attendance-marker-dot{width:10px;height:10px;border-radius:50%;display:inline-block;background:#172237;border:2px solid #20d995;box-shadow:0 0 8px rgba(32,217,149,.48)}
+.schedule-v19 .attendance-marker-dot.absent{border-color:#ff526d;box-shadow:0 0 8px rgba(255,82,109,.45)}
+html[data-mr-theme="light"] .schedule-v19 .attendance-marker-legend{color:#53617b}
+@media(max-width:980px){.schedule-v19 .team-avatars{display:flex;min-height:26px}.schedule-v19 .team-avatars .mini-avatar{width:22px;height:22px;margin-right:-7px}}
+@media(max-width:700px){.schedule-v19 .team-avatars{min-height:20px;padding-top:4px}.schedule-v19 .team-avatars .mini-avatar{width:16px;height:16px;margin-right:-5px;border-width:1px;font-size:7px}.schedule-v19 .attendance-marker-legend{font-size:8px}}

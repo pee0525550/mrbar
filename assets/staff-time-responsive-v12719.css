@@ -118,3 +118,5 @@ html[data-mr-theme="light"] .employee-time-body .mobile-dock{background:rgba(249
   .employee-time-body .map-pulse{animation:none;}
   .employee-time-body .mobile-dock,.employee-time-body .employee-id-card,.employee-time-body .time-home{transition:none!important;}
 }
+.employee-line-account{margin:14px 0 24px;text-align:center}
+.employee-line-account a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 15px;border:1px solid #4b947b;border-radius:6px;background:#14352d;color:#c0f3dd;text-decoration:none;font-size:13px;font-weight:800}

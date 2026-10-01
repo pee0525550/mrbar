@@ -14,9 +14,11 @@ function db_default(): array {
         'settings'=>[
             'shop_name'=>'MR BAR','shop_phone'=>'','maintenance'=>'0','attendance_face_required'=>'1',
             'staff_auto_refresh'=>'1','pr_auto_refresh'=>'1','reservation_enabled'=>'1','reservation_note'=>'',
+            'reservation_deposit_enabled'=>'0','reservation_payment_mode'=>'none','reservation_confirmation_mode'=>'staff',
+            'reservation_deposit_amount'=>'0','reservation_deposit_calculation'=>'per_booking','reservation_payment_receiver'=>'','reservation_payment_instructions'=>'','reservation_payment_qr_url'=>'','reservation_terms'=>'',
             'shop_address'=>'','shop_open_time'=>'18:00','shop_close_time'=>'02:00','timezone'=>'Asia/Bangkok',
             'currency'=>'THB','table_auto_release'=>'1','allow_staff_force_complete'=>'1','customer_call_enabled'=>'1',
-            'notification_sound'=>'1','notification_desktop'=>'0','notification_retention_days'=>'30',
+            'notification_sound'=>'1','notification_desktop'=>'0','reservation_staff_notifications'=>'1','time_staff_notifications'=>'1','notification_retention_days'=>'30',
             'dashboard_refresh_seconds'=>'15','dashboard_compact_mode'=>'0','dashboard_show_revenue'=>'0',
             'reservation_max_party'=>'20','reservation_advance_days'=>'30','reservation_require_phone'=>'1',
             'attendance_late_grace_minutes'=>'15','attendance_camera_required'=>'1','trusted_device_days'=>'30',
@@ -180,7 +182,7 @@ function db_migrate_legacy_array(array $d): array {
 
     /* Employee & Workforce Core (schema v18) */
     $employeeDefaults=[
-        'id'=>0,'code'=>'','name'=>'','user_id'=>null,'pr_id'=>null,'position'=>'staff','department'=>'Operations','employment_type'=>'fulltime','employment_start_date'=>'','branch_id'=>null,'roster_team'=>'flex','active'=>1,'attendance_required'=>1,'identity_source'=>'employee_master',
+        'id'=>0,'code'=>'','name'=>'','user_id'=>null,'pr_id'=>null,'supervisor_employee_id'=>null,'position'=>'staff','department'=>'Operations','employment_type'=>'fulltime','employment_start_date'=>'','branch_id'=>null,'roster_team'=>'flex','active'=>1,'attendance_required'=>1,'identity_source'=>'employee_master',
         'attendance_policy'=>['gps_required'=>null,'camera_required'=>null,'evidence_required'=>null,'geofence_mode'=>'inherit','radius_m'=>null,'max_accuracy_m'=>null],
         'profile'=>['title'=>'','first_name'=>'','last_name'=>'','nickname'=>'','display_name'=>'','phone'=>'','email'=>'','line_id'=>'','birthday'=>'','gender'=>'','address'=>'','emergency_name'=>'','emergency_relation'=>'','emergency_phone'=>'','profile_photo'=>''],
         'payroll'=>['type'=>'daily','daily_rate'=>'0','hourly_rate'=>'0','monthly_salary'=>'0','overtime_rate'=>'0','start_time'=>'18:00','standard_hours'=>'8'],
@@ -272,7 +274,43 @@ function db_migrate_legacy_array(array $d): array {
     $d['meta']['migrated_at']=$d['meta']['migrated_at']??date('c');
     return $d;
 }
-function db_read_file(string $p): array {if(!is_file($p))throw new RuntimeException('Database file missing: '.basename($p));if(!is_readable($p))throw new RuntimeException('Database file is not readable');clearstatcache(true,$p);if(function_exists('opcache_invalidate')){@opcache_invalidate($p,true);}$d=require $p;if(!is_array($d))throw new RuntimeException('Database file is invalid');return $d;}
+function db_read_file_unlocked(string $p): array {
+    clearstatcache(true,$p);
+    if(!is_file($p))throw new RuntimeException('Database file missing: '.basename($p));
+    if(!is_readable($p))throw new RuntimeException('Database file is not readable');
+    $fp=@fopen($p,'rb');
+    if(!$fp)throw new RuntimeException('Database file is not readable');
+    try{return db_read_locked_handle($fp);}finally{fclose($fp);}
+}
+function db_lock_path(): string {
+    return rtrim(sys_get_temp_dir(),'/\\').DIRECTORY_SEPARATOR.'mrbar-db-'.hash('sha256',db_primary_path()).'.lock';
+}
+function db_lock_acquire(int $mode) {
+    $held=(int)($GLOBALS['mrbar_db_lock_mode']??0);
+    if(($held===LOCK_EX||$held===LOCK_SH)&&$mode===LOCK_SH)return null;
+    if($held!==0)throw new RuntimeException('Nested database write transaction is not supported');
+    $path=db_lock_path();
+    $fp=@fopen($path,'c+b');
+    if(!$fp)throw new RuntimeException('Database lock file is not writable');
+    @chmod($path,0600);
+    if(!flock($fp,$mode)){fclose($fp);throw new RuntimeException('Database lock failed');}
+    $GLOBALS['mrbar_db_lock_mode']=$mode;
+    return $fp;
+}
+function db_lock_release($fp): void {
+    if(!is_resource($fp))return;
+    flock($fp,LOCK_UN);
+    unset($GLOBALS['mrbar_db_lock_mode']);
+    fclose($fp);
+}
+function db_read_file(string $p): array {
+    $lock=db_lock_acquire(LOCK_SH);
+    try{return db_read_file_unlocked($p);}finally{db_lock_release($lock);}
+}
+function db_read_current_file(): array {
+    $lock=db_lock_acquire(LOCK_SH);
+    try{return db_read_file_unlocked(db_path());}finally{db_lock_release($lock);}
+}
 function db_branch_bucket_names(): array {
     return [
         'settings','tables','prs','checkins','attendance','notifications','shifts','service_calls','reservations','customers','daily_closes',
@@ -285,7 +323,7 @@ function db_portal_defaults(): array {
     return [
         'enabled'=>'1','brand_name'=>'MR BAR GROUP','eyebrow'=>'CHOOSE YOUR EXPERIENCE',
         'title'=>'เลือกร้านที่คุณต้องการ','subtitle'=>'ดูบรรยากาศ โปรโมชั่น PR และโต๊ะว่างของแต่ละสาขา',
-        'logo'=>'','favicon'=>'','hero_image'=>'','banner_image'=>'','contact_label'=>'ติดต่อเรา','contact_url'=>'','footer_text'=>'MR BAR GROUP',
+        'logo'=>'','favicon'=>'','hero_image'=>'','banner_image'=>'','background_image'=>'','contact_label'=>'ติดต่อเรา','contact_url'=>'','footer_text'=>'MR BAR GROUP',
         'show_closed_branches'=>'0'
     ];
 }
@@ -505,8 +543,8 @@ function db_scope_branch_rows(array $rows,int $branchId): array {
         return $rowBranch<=0||$rowBranch===$branchId;
     }));
 }
-function db_branch_view(array $raw,?int $branchId=null): array {
-    $raw=db_migrate_array($raw);$branchId=$branchId?:db_active_branch_id($raw);
+function db_branch_view_migrated(array $raw,?int $branchId=null): array {
+    $branchId=$branchId?:db_active_branch_id($raw);
     if(!isset($raw['branch_data'][(string)$branchId]))$branchId=(int)($raw['branches'][0]['id']??1);
     $view=$raw['branch_data'][(string)$branchId]??db_empty_branch_data();
     foreach(db_branch_bucket_names() as $bucket)if($bucket!=='settings'&&is_array($view[$bucket]??null))$view[$bucket]=db_scope_branch_rows($view[$bucket],$branchId);
@@ -515,6 +553,9 @@ function db_branch_view(array $raw,?int $branchId=null): array {
     $view['meta']=$raw['meta'];$view['meta']['active_branch_id']=$branchId;
     $view['_branch_context']=['id'=>$branchId];
     return db_sync_sales_table_status($view);
+}
+function db_branch_view(array $raw,?int $branchId=null): array {
+    return db_branch_view_migrated(db_migrate_array($raw),$branchId);
 }
 function db_merge_branch_view(array $raw,array $view,int $branchId): array {
     $view=db_sync_sales_table_status($view);
@@ -533,16 +574,55 @@ function db_merge_branch_view(array $raw,array $view,int $branchId): array {
     $raw['audit']=array_merge($other,$current);
     return db_migrate_array($raw);
 }
-function db_load_raw(): array {return db_migrate_array(db_read_file(db_path()));}
+function db_load_raw(): array {
+    if(isset($GLOBALS['mrbar_request_db_raw'])&&is_array($GLOBALS['mrbar_request_db_raw']))return $GLOBALS['mrbar_request_db_raw'];
+    $raw=db_migrate_array(db_read_current_file());
+    $GLOBALS['mrbar_request_db_raw']=$raw;
+    return $raw;
+}
 function db_load_global(): array {return db_load_raw();}
-function db_load(): array {return db_branch_view(db_load_raw());}
+function db_load(): array {return db_branch_view_migrated(db_load_raw());}
 function db_payload(array $d): string {return "<?php\nreturn ".var_export(db_migrate_array($d),true).";\n";}
-function db_write_locked($fp,array $d): void {$payload=db_payload($d);if(!ftruncate($fp,0))throw new RuntimeException('Database file cannot be truncated');rewind($fp);$n=fwrite($fp,$payload);if($n===false||$n<strlen($payload))throw new RuntimeException('Database file cannot be written completely');fflush($fp);$meta=stream_get_meta_data($fp);$path=(string)($meta['uri']??'');if($path!==''){clearstatcache(true,$path);if(function_exists('opcache_invalidate')){@opcache_invalidate($path,true);}}}
-function db_try_make_primary_writable(): bool {$p=db_primary_path();if(is_writable($p))return true;@chmod($p,0664);clearstatcache(true,$p);if(is_writable($p))return true;@chmod($p,0666);clearstatcache(true,$p);return is_writable($p);}
-function db_prepare_writable_path(): string {$runtime=db_runtime_path();if(is_file($runtime)&&is_writable($runtime))return $runtime;if(db_try_make_primary_writable())return db_primary_path();$dir=dirname(db_primary_path());if(!is_dir($dir))@mkdir($dir,0775,true);@chmod($dir,0775);clearstatcache(true,$dir);if(!is_writable($dir)){@chmod($dir,0777);clearstatcache(true,$dir);}if(is_writable($dir)){$source=db_load_raw();$ok=@file_put_contents($runtime,db_payload($source),LOCK_EX);if($ok!==false){@chmod($runtime,0664);clearstatcache(true,$runtime);return $runtime;}}throw new RuntimeException('Storage is read-only. Set storage folder writable in hosting/FileZilla permissions.');}
+function db_write_locked(string $path,array $d): void {
+    $payload=db_payload($d);$dir=dirname($path);$dirReal=realpath($dir);
+    if($dirReal===false||!is_writable($dir))throw new RuntimeException('Storage folder must be writable for atomic database updates');
+    $tmp=@tempnam($dir,'.mrbar-db-');
+    if($tmp===false||realpath(dirname($tmp))!==$dirReal){if($tmp!==false)@unlink($tmp);throw new RuntimeException('Temporary database file cannot be created beside storage');}
+    $fp=null;
+    try{
+        $fp=@fopen($tmp,'wb');
+        if(!$fp)throw new RuntimeException('Temporary database file cannot be opened');
+        @chmod($tmp,0660);
+        $offset=0;$length=strlen($payload);
+        while($offset<$length){$written=fwrite($fp,substr($payload,$offset));if($written===false||$written===0)throw new RuntimeException('Database file cannot be written completely');$offset+=$written;}
+        if(!fflush($fp))throw new RuntimeException('Database file cannot be flushed');
+        if(function_exists('fsync'))@fsync($fp);
+        fclose($fp);$fp=null;
+        if(!@rename($tmp,$path))throw new RuntimeException('Atomic database replacement failed');
+        @chmod($path,0660);clearstatcache(true,$path);
+        if(function_exists('opcache_invalidate')){@opcache_invalidate($path,true);}
+        unset($GLOBALS['mrbar_request_db_raw']);
+    }finally{if(is_resource($fp))fclose($fp);if(is_file($tmp))@unlink($tmp);}
+}
+function db_prepare_writable_path(): string {
+    if((int)($GLOBALS['mrbar_db_lock_mode']??0)!==LOCK_EX)throw new RuntimeException('Database write lock is required');
+    $primary=db_primary_path();$runtime=db_runtime_path();$dir=dirname($primary);
+    if(!is_dir($dir)&&!@mkdir($dir,0770,true)&&!is_dir($dir))throw new RuntimeException('Storage folder cannot be created');
+    clearstatcache(true,$dir);
+    if(!is_writable($dir)){@chmod($dir,0770);clearstatcache(true,$dir);}
+    if(!is_writable($dir))throw new RuntimeException('Storage folder is read-only. Set the storage folder writable in hosting/FileZilla permissions.');
+    if(is_file($runtime)){
+        if(!is_readable($runtime))throw new RuntimeException('Runtime database file is not readable');
+        return $runtime;
+    }
+    if(is_file($primary)&&is_writable($primary))return $primary;
+    $source=db_read_file_unlocked($primary);
+    db_write_locked($runtime,$source);
+    return $runtime;
+}
 function db_save(array $d): void {
-    $p=db_prepare_writable_path();$fp=@fopen($p,'c+b');if(!$fp)throw new RuntimeException('Database file is not writable');
-    try{if(!flock($fp,LOCK_EX))throw new RuntimeException('Database lock failed');$raw=db_migrate_array(db_read_locked_handle($fp));if(isset($d['_branch_context']['id']))$raw=db_merge_branch_view($raw,$d,(int)$d['_branch_context']['id']);else $raw=db_migrate_array($d);db_write_locked($fp,$raw);flock($fp,LOCK_UN);}finally{fclose($fp);}
+    $lock=db_lock_acquire(LOCK_EX);
+    try{$p=db_prepare_writable_path();$raw=db_migrate_array(db_read_file_unlocked($p));if(isset($d['_branch_context']['id']))$raw=db_merge_branch_view($raw,$d,(int)$d['_branch_context']['id']);else $raw=db_migrate_array($d);db_write_locked($p,$raw);}finally{db_lock_release($lock);}
 }
 function db_read_locked_handle($fp): array {
     rewind($fp);$contents=stream_get_contents($fp);if($contents===false||trim($contents)==='')return db_default();
@@ -550,20 +630,23 @@ function db_read_locked_handle($fp): array {
     file_put_contents($tmp,$contents);$d=require $tmp;@unlink($tmp);if(!is_array($d))throw new RuntimeException('Database file is invalid');return $d;
 }
 function db_mutate(callable $fn): array {
-    $p=db_prepare_writable_path();$fp=@fopen($p,'c+b');if(!$fp)throw new RuntimeException('Database file is not writable');
+    $lock=db_lock_acquire(LOCK_EX);
     try{
-        if(!flock($fp,LOCK_EX))throw new RuntimeException('Database lock failed');
-        $raw=db_migrate_array(db_read_locked_handle($fp));$branchId=db_active_branch_id($raw);$view=db_branch_view($raw,$branchId);
+        $p=db_prepare_writable_path();$raw=db_migrate_array(db_read_file_unlocked($p));$branchId=db_active_branch_id($raw);$view=db_branch_view_migrated($raw,$branchId);
         $view=$fn($view);if(!is_array($view))throw new RuntimeException('Database mutation must return an array');
-        $raw=db_merge_branch_view($raw,$view,$branchId);db_write_locked($fp,$raw);flock($fp,LOCK_UN);return db_branch_view($raw,$branchId);
-    }finally{fclose($fp);}
+        $raw=db_merge_branch_view($raw,$view,$branchId);db_write_locked($p,$raw);return db_branch_view_migrated($raw,$branchId);
+    }finally{db_lock_release($lock);}
 }
 function db_mutate_global(callable $fn): array {
-    $p=db_prepare_writable_path();$fp=@fopen($p,'c+b');if(!$fp)throw new RuntimeException('Database file is not writable');
-    try{if(!flock($fp,LOCK_EX))throw new RuntimeException('Database lock failed');$raw=db_migrate_array(db_read_locked_handle($fp));$raw=$fn($raw);if(!is_array($raw))throw new RuntimeException('Global database mutation must return an array');$raw=db_migrate_array($raw);db_write_locked($fp,$raw);flock($fp,LOCK_UN);return $raw;}finally{fclose($fp);}
+    $lock=db_lock_acquire(LOCK_EX);
+    try{$p=db_prepare_writable_path();$raw=db_migrate_array(db_read_file_unlocked($p));$raw=$fn($raw);if(!is_array($raw))throw new RuntimeException('Global database mutation must return an array');$raw=db_migrate_array($raw);db_write_locked($p,$raw);return $raw;}finally{db_lock_release($lock);}
 }
 function db_auto_migrate(): array {
-    $raw=db_read_file(db_path());$old=(int)($raw['meta']['schema']??0);$m=db_migrate_array($raw);
-    if($old<MRBAR_SCHEMA_VERSION||empty($raw['branch_data'])){try{db_save($m);}catch(Throwable $e){}}
-    return db_branch_view($m);
+    $raw=db_read_current_file();$old=(int)($raw['meta']['schema']??0);$m=db_migrate_array($raw);
+    if($old<MRBAR_SCHEMA_VERSION||empty($raw['branch_data'])){
+        $lock=db_lock_acquire(LOCK_EX);
+        try{$p=db_prepare_writable_path();$latest=db_read_file_unlocked($p);$latestSchema=(int)($latest['meta']['schema']??0);$m=db_migrate_array($latest);if($latestSchema<MRBAR_SCHEMA_VERSION||empty($latest['branch_data']))db_write_locked($p,$m);$raw=$m;}catch(Throwable $e){$raw=$m;}finally{db_lock_release($lock);}
+    }else $raw=$m;
+    $GLOBALS['mrbar_request_db_raw']=$raw;
+    return db_branch_view_migrated($raw);
 }

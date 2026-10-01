@@ -188,8 +188,8 @@ function sr_filter_rows(array $rows, array $filters): array {
             if ($status === 'risk' && (int)$row['risk'] <= 0) return false;
             if (!in_array($status, ['active', 'closed', 'risk'], true) && $s !== $status) return false;
         }
-        if ($from !== '' && $row['day'] !== '' && $row['day'] < $from) return false;
-        if ($to !== '' && $row['day'] !== '' && $row['day'] > $to) return false;
+        if ($from !== '' && ($row['day'] === '' || $row['day'] < $from)) return false;
+        if ($to !== '' && ($row['day'] === '' || $row['day'] > $to)) return false;
         if ($q !== '' && strpos($row['_search'], $q) === false) return false;
         return true;
     }));
@@ -205,6 +205,66 @@ function sr_filter_rows(array $rows, array $filters): array {
         return $cmp * $dir;
     });
     return $rows;
+}
+
+function sr_period_overlaps(array $row, string $from, string $to): bool {
+    $start = sr_day($row['period_start'] ?? $row['from'] ?? $row['date'] ?? '');
+    $end = sr_day($row['period_end'] ?? $row['to'] ?? $row['date'] ?? $start);
+    if ($start === '' && $end === '') {
+        $start = sr_day($row['opened_at'] ?? $row['imported_at'] ?? $row['saved_at'] ?? $row['closed_at'] ?? $row['created_at'] ?? '');
+        $end = $start;
+    }
+    if ($start === '' && $end === '') return false;
+    if ($start === '') $start = $end;
+    if ($end === '') $end = $start;
+    return $end >= $from && $start <= $to;
+}
+
+function sr_financial_summary(array $d, string $from, string $to): array {
+    $out = [
+        'menu_sales' => ['amount' => 0.0, 'count' => 0],
+        'bill_sales' => ['amount' => 0.0, 'count' => 0],
+        'sales_table' => ['amount' => 0.0, 'count' => 0],
+        'daily_close' => ['amount' => 0.0, 'count' => 0],
+        'drink_payout' => ['amount' => 0.0, 'count' => 0],
+        'commission_payout' => ['amount' => 0.0, 'count' => 0],
+    ];
+    foreach ($d['pos_import_batches'] ?? [] as $row) {
+        if (($row['status'] ?? 'active') !== 'active' || !sr_period_overlaps($row, $from, $to)) continue;
+        $out['menu_sales']['amount'] += sr_num($row['total_sales'] ?? 0);
+        $out['menu_sales']['count']++;
+    }
+    foreach ($d['pos_bill_batches'] ?? [] as $row) {
+        if (($row['status'] ?? 'active') !== 'active' || !sr_period_overlaps($row, $from, $to)) continue;
+        $out['bill_sales']['amount'] += sr_num($row['total_sales'] ?? 0);
+        $out['bill_sales']['count']++;
+    }
+    foreach ($d['daily_closes'] ?? [] as $row) {
+        if (!sr_period_overlaps($row, $from, $to)) continue;
+        $out['daily_close']['amount'] += sr_num($row['total'] ?? $row['cash_total'] ?? 0);
+        $out['daily_close']['count']++;
+    }
+    foreach ($d['sales_table_sessions'] ?? [] as $row) {
+        if (!sr_period_overlaps($row, $from, $to)) continue;
+        $out['sales_table']['amount'] += sr_num($row['total_sales'] ?? $row['bill_total'] ?? $row['amount'] ?? 0);
+        $out['sales_table']['count']++;
+    }
+    foreach ([
+        'drink_payout_rounds' => 'drink_payout',
+        'commission_payout_rounds' => 'commission_payout',
+    ] as $bucket => $key) {
+        foreach ($d[$bucket] ?? [] as $row) {
+            if (($row['status'] ?? 'saved') === 'void' || !sr_period_overlaps($row, $from, $to)) continue;
+            $out[$key]['amount'] += sr_num($row['total'] ?? 0);
+            $out[$key]['count']++;
+        }
+    }
+    return $out;
+}
+
+function sr_report_row_html(array $row): string {
+    $risk = !empty($row['risk']) ? ' class="is-risk"' : '';
+    return '<tr'.$risk.'><td><span class="sr-module">'.h((string)$row['module']).'</span></td><td>'.h((string)$row['type']).'</td><td>'.h((string)($row['date'] !== '' ? $row['date'] : '-')).'</td><td><b>'.h((string)$row['title']).'</b></td><td><span class="sr-status">'.h((string)$row['status']).'</span></td><td class="sr-money">'.number_format((float)$row['amount'], 2).'</td><td>'.number_format((int)$row['count']).'</td><td>'.h((string)$row['ref']).'</td><td>'.h((string)$row['detail']).'</td></tr>';
 }
 
 function sr_clear_reports(array $data, string $scope, int $uid, string $reason): array {
@@ -319,6 +379,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$view = (string)($_GET['view'] ?? 'overview');
+if (!in_array($view, ['overview', 'records', 'audit'], true)) $view = 'overview';
 $filters = [
     'module' => (string)($_GET['module'] ?? 'all'),
     'status' => (string)($_GET['status'] ?? 'all'),
@@ -327,18 +389,43 @@ $filters = [
     'q' => (string)($_GET['q'] ?? ''),
     'sort' => (string)($_GET['sort'] ?? 'date'),
     'dir' => (string)($_GET['dir'] ?? 'desc'),
-    'limit' => max(25, min(1000, (int)($_GET['limit'] ?? 250))),
 ];
 
 $allRows = sr_build_rows($d);
-$rows = sr_filter_rows($allRows, $filters);
-$exportRows = $rows;
-$rows = array_slice($rows, 0, (int)$filters['limit']);
+$periodFilters = $filters;
+$periodFilters['module'] = 'all';
+$periodFilters['status'] = 'all';
+$periodFilters['q'] = '';
+$periodRows = sr_filter_rows($allRows, $periodFilters);
+$auditRows = array_values(array_filter($periodRows, fn($r) => $r['type'] === 'Audit Log'));
+$moduleSummary = [];
+foreach ($periodRows as $row) {
+    $key = (string)$row['module'];
+    if (!isset($moduleSummary[$key])) $moduleSummary[$key] = ['count' => 0, 'risk' => 0];
+    $moduleSummary[$key]['count']++;
+    if ((int)$row['risk'] > 0) $moduleSummary[$key]['risk']++;
+}
+uasort($moduleSummary, fn($a, $b) => $b['count'] <=> $a['count']);
+$typeSummary = [];
+foreach ($periodRows as $row) {
+    if ($row['type'] === 'Audit Log') continue;
+    $key = (string)$row['type'];
+    $typeSummary[$key] = ($typeSummary[$key] ?? 0) + 1;
+}
+arsort($typeSummary);
+$financial = sr_financial_summary($d, $filters['from'], $filters['to']);
+$activeCount = count(array_filter($periodRows, fn($r) => in_array(strtolower((string)$r['status']), ['active', 'open', 'pending', 'scheduled', 'saved', 'unread'], true)));
+$riskCount = count(array_filter($periodRows, fn($r) => (int)$r['risk'] > 0));
+$recordRows = array_values(array_filter($allRows, fn($r) => $r['type'] !== 'Audit Log'));
+$auditAllRows = array_values(array_filter($allRows, fn($r) => $r['type'] === 'Audit Log'));
+$listFilters = $filters;
+if ($view === 'audit') $listFilters['module'] = 'all';
+$exportRows = sr_filter_rows($view === 'audit' ? $auditAllRows : $recordRows, $listFilters);
+$pageSize = 20;
+$offset = max(0, (int)($_GET['offset'] ?? 0));
+$rows = array_slice($exportRows, $offset, $pageSize);
 $modules = array_values(array_unique(array_map(fn($r) => $r['module'], $allRows)));
 sort($modules, SORT_NATURAL | SORT_FLAG_CASE);
-$activeCount = count(array_filter($allRows, fn($r) => in_array(strtolower((string)$r['status']), ['active', 'open', 'pending', 'scheduled', 'saved', 'unread'], true)));
-$riskCount = count(array_filter($allRows, fn($r) => (int)$r['risk'] > 0));
-$totalAmount = array_sum(array_map(fn($r) => (float)$r['amount'], $exportRows));
 $branchName = function_exists('branch_current') ? (string)(branch_current($d)['name'] ?? 'MR BAR') : 'MR BAR';
 
 if (($_GET['export'] ?? '') === 'csv') {
@@ -356,14 +443,39 @@ if (($_GET['export'] ?? '') === 'csv') {
     exit;
 }
 
-$sortLink = function (string $field, string $label) use ($filters) {
+if (($_GET['ajax'] ?? '') === 'rows') {
+    $safeRows = array_map(static function ($row) {
+        unset($row['_search'], $row['day']);
+        return $row;
+    }, $rows);
+    header('Content-Type: application/json; charset=UTF-8');
+    header('Cache-Control: no-store, private');
+    echo json_encode(['rows' => $safeRows, 'offset' => $offset, 'total' => count($exportRows), 'has_more' => ($offset + count($rows)) < count($exportRows)], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+    exit;
+}
+
+$sortLink = function (string $field, string $label) use ($filters, $view) {
     $q = $filters;
+    $q['view'] = $view;
     $q['sort'] = $field;
     $q['dir'] = ($filters['sort'] === $field && $filters['dir'] === 'asc') ? 'desc' : 'asc';
     return '<a href="?'.h(http_build_query($q)).'">'.h($label).($filters['sort'] === $field ? ($filters['dir'] === 'asc' ? ' ↑' : ' ↓') : '').'</a>';
 };
 
-$exportUrl = '?'.http_build_query(array_merge($filters, ['export' => 'csv']));
+$exportUrl = '?'.http_build_query(array_merge($filters, ['view' => $view, 'export' => 'csv']));
+$viewUrl = function (string $target) use ($filters): string {
+    $params = [
+        'view' => $target,
+        'from' => $filters['from'],
+        'to' => $filters['to'],
+        'module' => 'all',
+        'status' => 'all',
+        'q' => '',
+        'sort' => $filters['sort'],
+        'dir' => $filters['dir'],
+    ];
+    return '?'.h(http_build_query($params));
+};
 ?><!doctype html>
 <html lang="th">
 <head>
@@ -373,15 +485,17 @@ $exportUrl = '?'.http_build_query(array_merge($filters, ['export' => 'csv']));
   <link rel="stylesheet" href="assets/admin.css?v=1480">
   <link rel="stylesheet" href="assets/admin-v14.css?v=1480">
   <link rel="stylesheet" href="assets/system-reports-v1480.css?v=1480">
+  <link rel="stylesheet" href="assets/system-reports-theme-v14870.css?v=14870">
+  <link rel="stylesheet" href="assets/system-reports-dashboard-v14872.css?v=14872">
 </head>
 <body class="admin-v14-page">
 <?php require_once __DIR__.'/app/admin-nav.php'; echo admin_sidebar('reports', $u); ?>
-<main class="sr-shell">
+<main class="sr-shell sr-dashboard-page">
   <header class="sr-hero">
     <div>
-      <small>REPORT CENTER / <?=h($branchName)?></small>
-      <h1>รายงานรวมทุกฟังก์ชัน</h1>
-      <p>รวมข้อมูลจาก Operations, Workforce, Customer CRM, POS, Sales และ System Audit พร้อม Filter, Search, Sort และ Export</p>
+      <small>MR BAR / MANAGEMENT REPORTS · <?=h($branchName)?></small>
+      <h1>ศูนย์รายงาน</h1>
+      <p>ภาพรวมการดำเนินงานและตัวเลขทางการเงิน แยกตามแหล่งข้อมูล พร้อมรายละเอียดและ Audit Log</p>
     </div>
     <nav>
       <a href="pos-reports.php">POS Reports</a>
@@ -393,23 +507,24 @@ $exportUrl = '?'.http_build_query(array_merge($filters, ['export' => 'csv']));
   <?php if ($msg): ?><div class="sr-notice ok"><?=h($msg)?></div><?php endif; ?>
   <?php if ($err): ?><div class="sr-notice err"><?=h($err)?></div><?php endif; ?>
 
-  <section class="sr-kpis">
-    <article><span>Total Records</span><b><?=number_format(count($allRows))?></b><small>ก่อนกรอง</small></article>
-    <article><span>Filtered</span><b><?=number_format(count($exportRows))?></b><small>แสดง <?=number_format(count($rows))?> แถว</small></article>
-    <article><span>Active / Pending</span><b><?=number_format($activeCount)?></b><small>งานที่ยังมีผล</small></article>
-    <article><span>Need Attention</span><b><?=number_format($riskCount)?></b><small>เปิดค้าง / รออนุมัติ</small></article>
-    <article><span>Amount</span><b><?=number_format($totalAmount, 2)?></b><small>ตามผลกรอง</small></article>
-  </section>
+  <nav class="sr-view-tabs" aria-label="มุมมองรายงาน">
+    <a class="<?=$view==='overview'?'active':''?>" href="<?=$viewUrl('overview')?>"><span>ภาพรวม</span><small>Dashboard</small></a>
+    <a class="<?=$view==='records'?'active':''?>" href="<?=$viewUrl('records')?>"><span>รายการข้อมูล</span><small>Records</small></a>
+    <a class="<?=$view==='audit'?'active':''?>" href="<?=$viewUrl('audit')?>"><span>Audit Log</span><small><?=number_format(count($auditRows))?> events</small></a>
+  </nav>
 
   <section class="sr-filters">
-    <form method="get">
-      <label>Module
+    <form method="get" class="sr-filter-form">
+      <input type="hidden" name="view" value="<?=h($view)?>">
+      <label class="sr-date-filter">ตั้งแต่ <input type="date" name="from" value="<?=h($filters['from'])?>"></label>
+      <label class="sr-date-filter">ถึง <input type="date" name="to" value="<?=h($filters['to'])?>"></label>
+      <label class="sr-module-filter">Module
         <select name="module">
           <option value="all">ทั้งหมด</option>
-          <?php foreach ($modules as $module): ?><option value="<?=h($module)?>" <?=$filters['module'] === $module ? 'selected' : ''?>><?=h($module)?></option><?php endforeach; ?>
+          <?php foreach ($modules as $module): ?><option value="<?=h($module)?>" <?=($view==='audit'?'System':$filters['module']) === $module ? 'selected' : ''?>><?=h($module)?></option><?php endforeach; ?>
         </select>
       </label>
-      <label>Status
+      <label class="sr-status-filter">สถานะ
         <select name="status">
           <option value="all" <?=$filters['status'] === 'all' ? 'selected' : ''?>>ทั้งหมด</option>
           <option value="active" <?=$filters['status'] === 'active' ? 'selected' : ''?>>Active / Pending</option>
@@ -419,61 +534,73 @@ $exportUrl = '?'.http_build_query(array_merge($filters, ['export' => 'csv']));
           <option value="cleared" <?=$filters['status'] === 'cleared' ? 'selected' : ''?>>Cleared</option>
         </select>
       </label>
-      <label>From <input type="date" name="from" value="<?=h($filters['from'])?>"></label>
-      <label>To <input type="date" name="to" value="<?=h($filters['to'])?>"></label>
-      <label>Limit
-        <select name="limit">
-          <?php foreach ([50, 100, 250, 500, 1000] as $limit): ?><option value="<?=$limit?>" <?=((int)$filters['limit'] === $limit) ? 'selected' : ''?>><?=$limit?> rows</option><?php endforeach; ?>
-        </select>
-      </label>
-      <label class="sr-wide">Search <input name="q" value="<?=h($filters['q'])?>" placeholder="ชื่อ, เบอร์, เลขบิล, status, module, audit action"></label>
+      <label class="sr-wide">ค้นหา <input name="q" value="<?=h($filters['q'])?>" placeholder="ชื่อ, เบอร์, เลขบิล, สถานะ หรือ Audit action"></label>
       <input type="hidden" name="sort" value="<?=h($filters['sort'])?>">
       <input type="hidden" name="dir" value="<?=h($filters['dir'])?>">
-      <button>Apply</button>
-      <a class="sr-reset" href="system-reports.php">Reset</a>
+      <button>ใช้ตัวกรอง</button>
+      <a class="sr-reset" href="?view=<?=h($view)?>">ล้างตัวกรอง</a>
       <?php if ($canExport): ?><a class="sr-export" href="<?=h($exportUrl)?>">Export CSV</a><?php endif; ?>
     </form>
   </section>
 
-  <section class="sr-panel">
-    <div class="sr-panel-head">
-      <div><small>TOOL SORT</small><h2>ตาราง Report หลัก</h2><p>กดหัวตารางเพื่อเรียงข้อมูลแบบจริงจัง และใช้ Filter ด้านบนเพื่อตัดข้อมูลเป็นชุดงาน</p></div>
-      <span><?=number_format(count($rows))?> / <?=number_format(count($exportRows))?> rows</span>
+  <?php if ($view === 'overview'): ?>
+  <section class="sr-overview-kpis">
+    <article><span>รายการในช่วงนี้</span><b><?=number_format(count($periodRows))?></b><small><?=h($filters['from'])?> – <?=h($filters['to'])?></small></article>
+    <article><span>กำลังดำเนินการ</span><b><?=number_format($activeCount)?></b><small>Active / Pending</small></article>
+    <article class="attention"><span>ต้องติดตาม</span><b><?=number_format($riskCount)?></b><small>เปิดค้าง / รออนุมัติ</small></article>
+    <article><span>Audit events</span><b><?=number_format(count($auditRows))?></b><small>บันทึกระบบในช่วงนี้</small></article>
+  </section>
+
+  <section class="sr-finance">
+    <div class="sr-section-title"><div><small>FINANCIAL SNAPSHOT</small><h2>สรุปตัวเลขการเงินแยกตามแหล่ง</h2></div><span>ไม่รวมยอดข้ามประเภท</span></div>
+    <div class="sr-finance-grid">
+      <article><small>ยอดขาย POS เมนู</small><b><?=number_format($financial['menu_sales']['amount'],2)?></b><span><?=number_format($financial['menu_sales']['count'])?> batches</span></article>
+      <article><small>ยอดขาย Report บิล</small><b><?=number_format($financial['bill_sales']['amount'],2)?></b><span><?=number_format($financial['bill_sales']['count'])?> batches</span></article>
+      <article><small>ยอด Sales Table</small><b><?=number_format($financial['sales_table']['amount'],2)?></b><span><?=number_format($financial['sales_table']['count'])?> sessions</span></article>
+      <article><small>ยอดปิดรอบ</small><b><?=number_format($financial['daily_close']['amount'],2)?></b><span><?=number_format($financial['daily_close']['count'])?> วัน</span></article>
+      <article class="outflow"><small>จ่ายค่าดื่ม</small><b><?=number_format($financial['drink_payout']['amount'],2)?></b><span><?=number_format($financial['drink_payout']['count'])?> รอบ</span></article>
+      <article class="outflow"><small>จ่ายค่าคอมมิชชัน</small><b><?=number_format($financial['commission_payout']['amount'],2)?></b><span><?=number_format($financial['commission_payout']['count'])?> รอบ</span></article>
     </div>
+    <p class="sr-finance-note">ตัวเลขแต่ละกล่องเป็นคนละแหล่งข้อมูล จึงไม่บวกเป็นยอดรวมเดียว เพื่อป้องกันการนับซ้ำระหว่างรายงาน POS, Bill และยอดปิดรอบ</p>
+  </section>
+
+  <section class="sr-report-grid">
+    <article class="sr-panel sr-module-report">
+      <div class="sr-panel-head"><div><small>ACTIVITY BY MODULE</small><h2>กิจกรรมแยกตามหมวด</h2><p>จำนวนรายการในช่วงวันที่เลือก</p></div><span><?=number_format(count($moduleSummary))?> modules</span></div>
+      <div class="sr-module-bars">
+        <?php $maxModuleCount=max(1,...array_map(fn($v)=>(int)$v['count'],$moduleSummary?:[['count'=>0]])); foreach($moduleSummary as $module=>$summary):?>
+        <div class="sr-module-bar"><div><b><?=h($module)?></b><span><?=number_format($summary['count'])?> รายการ<?=!empty($summary['risk'])?' · ติดตาม '.number_format($summary['risk']):''?></span></div><i><span style="width:<?=max(2,(int)round($summary['count']/$maxModuleCount*100))?>%"></span></i></div>
+        <?php endforeach; if(!$moduleSummary):?><p class="sr-empty">ไม่มีข้อมูลในช่วงวันที่เลือก</p><?php endif;?>
+      </div>
+    </article>
+    <article class="sr-panel sr-type-report">
+      <div class="sr-panel-head"><div><small>RECORD MIX</small><h2>ประเภทข้อมูลที่พบ</h2><p>เรียงตามจำนวนรายการ</p></div><a href="<?=$viewUrl('records')?>">ดูรายละเอียด →</a></div>
+      <div class="sr-type-list"><?php $topTypes=array_slice($typeSummary,0,8,true);$maxType=max(1,...array_values($topTypes?:[0]));foreach($topTypes as $type=>$count):?><div><span><?=h($type)?></span><b><?=number_format($count)?></b><i><span style="width:<?=max(2,(int)round($count/$maxType*100))?>%"></span></i></div><?php endforeach;if(!$topTypes):?><p class="sr-empty">ไม่มีข้อมูลในช่วงวันที่เลือก</p><?php endif;?></div>
+    </article>
+  </section>
+
+  <section class="sr-panel sr-recent-audit">
+    <div class="sr-panel-head"><div><small>RECENT SYSTEM ACTIVITY</small><h2>Audit Log ล่าสุด</h2><p>คงบันทึกตรวจสอบไว้แยกจากรายงานการดำเนินงาน</p></div><a href="<?=$viewUrl('audit')?>">เปิด Audit Log ทั้งหมด →</a></div>
+    <?php $recentAudit=$auditRows;usort($recentAudit,fn($a,$b)=>strcmp((string)$b['date'],(string)$a['date']));$recentAudit=array_slice($recentAudit,0,6);?>
+    <div class="sr-audit-list"><?php if(!$recentAudit):?><p class="sr-empty">ไม่มี Audit Log ในช่วงวันที่เลือก</p><?php endif;foreach($recentAudit as $audit):?><article><time><?=h((string)($audit['date']?:'-'))?></time><b><?=h((string)$audit['title'])?></b><span><?=h((string)$audit['detail'])?></span></article><?php endforeach;?></div>
+  </section>
+  <?php else: ?>
+  <section class="sr-panel sr-data-panel">
+    <div class="sr-panel-head"><div><small><?=$view==='audit'?'SYSTEM AUDIT':'REPORT DETAILS'?></small><h2><?=$view==='audit'?'Audit Log':'รายการข้อมูลรายงาน'?></h2><p><?=$view==='audit'?'ประวัติการกระทำในระบบที่ตรวจสอบย้อนหลังได้':'ค้นหา กรอง และเรียงรายการจากข้อมูลแต่ละโมดูล'?></p></div><span><b data-row-count><?=number_format(min(count($exportRows),$offset+count($rows)))?></b> / <?=number_format(count($exportRows))?> รายการ</span></div>
     <div class="sr-table-wrap">
       <table class="sr-table">
-        <thead>
-          <tr>
-            <th><?=$sortLink('module', 'Module')?></th>
-            <th><?=$sortLink('type', 'Type')?></th>
-            <th><?=$sortLink('date', 'Date')?></th>
-            <th><?=$sortLink('title', 'Title')?></th>
-            <th><?=$sortLink('status', 'Status')?></th>
-            <th><?=$sortLink('amount', 'Amount')?></th>
-            <th><?=$sortLink('count', 'Count')?></th>
-            <th><?=$sortLink('ref', 'Ref')?></th>
-            <th>Detail</th>
-          </tr>
-        </thead>
-        <tbody>
+        <thead><tr>
+          <th><?=$sortLink('module','Module')?></th><th><?=$sortLink('type','Type')?></th><th><?=$sortLink('date','Date')?></th><th><?=$sortLink('title','Title')?></th><th><?=$sortLink('status','Status')?></th><th><?=$sortLink('amount','Amount')?></th><th><?=$sortLink('count','Count')?></th><th><?=$sortLink('ref','Ref')?></th><th>Detail</th>
+        </tr></thead>
+        <tbody id="srRows" data-total="<?=count($exportRows)?>" data-offset="<?=count($rows)?>" data-view="<?=h($view)?>">
           <?php if (!$rows): ?><tr><td colspan="9" class="sr-empty">ไม่พบข้อมูลตามตัวกรอง</td></tr><?php endif; ?>
-          <?php foreach ($rows as $row): ?>
-          <tr class="<?=$row['risk'] ? 'is-risk' : ''?>">
-            <td><span class="sr-module"><?=h($row['module'])?></span></td>
-            <td><?=h($row['type'])?></td>
-            <td><?=h($row['date'] !== '' ? $row['date'] : '-')?></td>
-            <td><b><?=h($row['title'])?></b></td>
-            <td><span class="sr-status"><?=h($row['status'])?></span></td>
-            <td class="sr-money"><?=number_format((float)$row['amount'], 2)?></td>
-            <td><?=number_format((int)$row['count'])?></td>
-            <td><?=h($row['ref'])?></td>
-            <td><?=h($row['detail'])?></td>
-          </tr>
-          <?php endforeach; ?>
+          <?php foreach ($rows as $row) echo sr_report_row_html($row); ?>
         </tbody>
       </table>
     </div>
+    <div class="sr-load-more-wrap"><button type="button" class="sr-load-more" id="srLoadMore" <?=$offset+count($rows)>=count($exportRows)?'hidden':''?>>โหลดเพิ่มอีก 20 รายการ</button><span id="sr-load-state" role="status" aria-live="polite"></span></div>
   </section>
+  <?php endif; ?>
 
   <?php if ($isSuper): ?>
   <section class="sr-super">
@@ -510,5 +637,6 @@ $exportUrl = '?'.http_build_query(array_merge($filters, ['export' => 'csv']));
   <?php endif; ?>
 </main>
 <script src="assets/system-reports-v1480.js?v=1480" defer></script>
+<script src="assets/system-reports-dashboard-v14872.js?v=14872" defer></script>
 </body>
 </html>

@@ -106,6 +106,10 @@ function posi_unmatched_items(array $d,string $month,int $limit=30): array {$agg
 function posi_remap_rows(array &$d,string $month): int {$changed=0;[$from,$to]=posi_month_bounds($month);if(!isset($d['pos_sales_rows'])||!is_array($d['pos_sales_rows']))return 0;foreach($d['pos_sales_rows'] as &$r){if(empty($r['active']))continue;$date=(string)($r['sale_date']??'');if($date<$from||$date>$to||!posi_row_is_candidate($r))continue;$m=posi_match_employee($d,(string)($r['item_name']??''));$new=$m['employee_id'];if((int)($r['employee_id']??0)!==(int)($new??0)||($r['match_method']??'')!==$m['method']){$r['employee_id']=$new;$r['match_method']=$m['method'];$r['matched_alias']=$m['alias'];$changed++;}}unset($r);return $changed;}
 
 function posi_parse_number($v): float {$s=trim((string)$v);$s=str_replace([',','฿','THB',' '],['','','',''],$s);$s=preg_replace('/[^0-9.\-]/','',$s)??'';return is_numeric($s)?(float)$s:0.0;}
+function posi_valid_date(string $value): bool {
+    if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $value, $parts)) return false;
+    return checkdate((int)$parts[2], (int)$parts[3], (int)$parts[1]);
+}
 function posi_parse_date($v): string {
     $s=trim((string)$v);if($s==='')return '';
     if(is_numeric($s)&&((float)$s)>20000&&((float)$s)<90000){$ts=(int)round((((float)$s)-25569)*86400);return gmdate('Y-m-d',$ts);}

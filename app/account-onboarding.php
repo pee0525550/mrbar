@@ -40,7 +40,7 @@ function account_create_and_link(array &$d,int $employeeId,string $username,stri
     $username=trim($username);if(!account_username_valid($username))throw new RuntimeException('Username ใช้ A-Z, 0-9, จุด, ขีดกลาง หรือ _ จำนวน 3-40 ตัว');
     if(strlen($password)<8)throw new RuntimeException('Password ต้องมีอย่างน้อย 8 ตัวอักษร');
     $idx=null;foreach($d['employees']??[] as $i=>$e)if((int)($e['id']??0)===$employeeId){$idx=$i;break;}if($idx===null)throw new RuntimeException('ไม่พบพนักงาน');
-    $employee=$d['employees'][$idx];if(empty($employee['active']))throw new RuntimeException('พนักงานคนนี้ถูกปิดใช้งาน');if(!empty($employee['user_id']))throw new RuntimeException('พนักงานคนนี้มีบัญชีเข้าสู่ระบบแล้ว');
+    $employee=$d['employees'][$idx];if(empty($employee['active']))throw new RuntimeException('พนักงานคนนี้ถูกปิดใช้งาน');$linkedAccount=function_exists('workforce_employee_login_account')?workforce_employee_login_account($d,$employee):null;if($linkedAccount||!empty($employee['user_id']))throw new RuntimeException('Employee/PR Profile นี้เชื่อมกับบัญชี Login แล้ว กรุณาใช้บัญชีเดิมหรือจัดการที่ Account Directory');
     foreach($d['users']??[] as $x)if(strcasecmp((string)($x['username']??''),$username)===0)throw new RuntimeException('Username นี้ถูกใช้แล้ว');
     $role=account_employee_role($employee);$uid=next_id($d['users']??[]);
     $branchId=(int)($employee['branch_id']??0);if($branchId<=0)$branchId=(int)($d['_branch_context']['id']??$d['meta']['active_branch_id']??1);

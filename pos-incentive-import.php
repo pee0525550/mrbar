@@ -7,7 +7,7 @@ $u = require_permission('employees.manage');
 $uid = (int)($u['id'] ?? 0);
 $msg = '';
 $err = '';
-$validDate = fn(string $date) => (bool)preg_match('/^\d{4}-\d{2}-\d{2}$/', $date);
+$validDate = 'posi_valid_date';
 $dateFrom = (string)($_POST['date_from'] ?? date('Y-m-01'));
 $dateTo = (string)($_POST['date_to'] ?? date('Y-m-t'));
 $postedKind = (string)($_POST['report_kind'] ?? '');
@@ -163,6 +163,7 @@ function posi_import_list(string $title, array $items, int $waiting): void {
   <link rel="stylesheet" href="assets/pos-wizard-strict-v1410.css?v=1410">
   <link rel="stylesheet" href="assets/pos-suite.css?v=1481">
   <link rel="stylesheet" href="assets/pos-import-split-v1481.css?v=1481">
+  <link rel="stylesheet" href="assets/pos-incentive-theme-v14874.css?v=14874">
 </head>
 <body class="admin-v14-page posi-page">
 <?php require_once __DIR__.'/app/admin-nav.php'; echo admin_sidebar('incentive', $u); ?>

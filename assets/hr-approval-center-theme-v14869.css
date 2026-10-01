@@ -1,0 +1,112 @@
+/* HR Approval Center contrast fixes for the global theme engine. */
+html[data-mr-theme="light"] body.admin-v14-page main.ha-shell {
+  color: #17233d !important;
+  background:
+    radial-gradient(circle at 8% 0, rgba(140, 95, 255, .11), transparent 25%),
+    radial-gradient(circle at 94% 8%, rgba(54, 168, 255, .12), transparent 27%),
+    linear-gradient(180deg, #f7f9fe 0%, #f2f5fb 100%) !important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .ha-shell :is(.ha-head h1, .ha-section-head h2, .ha-live-head h2, .ha-detail-head h2, .ha-kpis article:not(:first-child) b, .ha-local-nav a b, .ha-att-row b, .ha-att-row strong) {
+  color: #17233d !important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .ha-shell :is(.ha-head span, .ha-section-head p, .ha-live-head p, .ha-detail-head p, .ha-kpis article:not(:first-child) small, .ha-kpis article:not(:first-child) span, .ha-local-title, .ha-local-nav a small, .ha-att-row small, .ha-empty, .ha-shell footer) {
+  color: #586782 !important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .ha-shell :is(.ha-section-head small, .ha-live-head small, .ha-detail-head small) {
+  color: #6845bd !important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .ha-shell .ha-local-nav a {
+  color: #24314d !important;
+}
+html[data-mr-theme="light"] body.admin-v14-page .ha-shell .ha-local-nav a.active :is(b, small) {
+  color: #302453 !important;
+}
+
+html[data-mr-theme="dark"] body.admin-v14-page main.ha-shell {
+  color: #eaf0ff !important;
+  background:
+    radial-gradient(circle at 8% 0, rgba(137, 74, 255, .12), transparent 25%),
+    radial-gradient(circle at 94% 8%, rgba(35, 151, 224, .12), transparent 27%),
+    linear-gradient(180deg, #0a1020 0%, #0d1424 100%) !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-head {
+  background: linear-gradient(130deg, #111a2c, #151a30) !important;
+  border-color: #34415c !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell :is(.ha-head h1, .ha-section-head h2, .ha-live-head h2, .ha-detail-head h2, .ha-kpis article:not(:first-child) b, .ha-local-nav a b, .ha-att-row b, .ha-att-row strong:not(.is-ok):not(.is-late):not(.is-wait)) {
+  color: #edf2ff !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell :is(.ha-head span, .ha-section-head p, .ha-live-head p, .ha-detail-head p, .ha-kpis article:not(:first-child) small, .ha-kpis article:not(:first-child) span, .ha-local-title, .ha-local-nav a small, .ha-att-row small, .ha-shell footer) {
+  color: #aab7d0 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell :is(.ha-section-head small, .ha-live-head small, .ha-detail-head small) {
+  color: #cfb5ff !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell :is(.ha-kpis article:not(:first-child), .ha-local-nav, .ha-work, .ha-side) {
+  background: #121b2e !important;
+  border-color: #2a3852 !important;
+  color: #eaf0ff !important;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, .22) !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-kpis article:first-child {
+  background: linear-gradient(145deg, #27365e, #394875) !important;
+  border-color: #53638d !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-local-nav a {
+  color: #dbe5fa !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-local-nav a>span {
+  background: #202c43 !important;
+  color: #c6d3ec !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-local-nav a.active {
+  background: linear-gradient(120deg, #292344, #1b2940) !important;
+  border-color: #7957d3 !important;
+  box-shadow: inset 3px 0 #b18aff !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell :is(.ha-attendance-table, .ha-att-row, .ha-urgent>a, .ha-leave-card) {
+  background: #151f33 !important;
+  border-color: #2c3a54 !important;
+  color: #e3ebfb !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-att-head {
+  background: #1a2740 !important;
+  border-color: #34415c !important;
+  color: #b5c3de !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-att-row strong.is-ok { color: #73e1b4 !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-att-row strong.is-late { color: #ff9aa8 !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-att-row strong.is-wait { color: #c3cce0 !important; }
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-empty {
+  color: #b5c3de !important;
+  background: #111a2c !important;
+  border-color: #45536c !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-live-head,
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-detail-head {
+  border-color: #2d3a54 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell :is(.ha-live-actions a, .ha-attendance-tabs a, .ha-leave-date-nav a) {
+  color: #dbe5fa !important;
+  background: #18243a !important;
+  border-color: #35435f !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell :is(.ha-live-actions a.active, .ha-attendance-tabs a.active) {
+  color: #d9c5ff !important;
+  background: #2a2442 !important;
+  border-color: #8066cf !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-leave-date-nav span {
+  color: #cbd6eb !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-frame-wrap {
+  background: #101929 !important;
+  border-color: #2b3953 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .ha-shell .ha-workframe {
+  background: #101929 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.admin-v14-page .ha-shell * { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}

@@ -18,6 +18,12 @@ function st_sales(array $d,int $id): array {
 }
 function st_label(array $e): string { return trim((string)($e['code']??'').' · '.(string)($e['name']??$e['display_name']??'')); }
 function st_public_secret(array $d): string {return trim((string)($d['settings']['sales_table_qr_secret']??''));}
+function st_initialize_public_secret(array &$d): string {
+    $secret=st_public_secret($d);if($secret!=='')return $secret;
+    if(!isset($d['settings'])||!is_array($d['settings']))$d['settings']=[];
+    $d['settings']['sales_table_qr_secret']=bin2hex(random_bytes(32));
+    return $d['settings']['sales_table_qr_secret'];
+}
 function st_public_token(array $d,string $slug,int $tableId): string {$secret=st_public_secret($d);if($secret===''||$tableId<1)return '';return hash_hmac('sha256',strtolower(trim($slug)).'|'.$tableId,$secret);}
 function st_public_token_valid(array $d,string $slug,int $tableId,string $token): bool {$expected=st_public_token($d,$slug,$tableId);return $expected!==''&&$token!==''&&hash_equals($expected,$token);}
 function st_apply_public(array $d,array $input,string $actorLabel='QR Public'): array {

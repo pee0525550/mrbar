@@ -1,0 +1,21 @@
+/* HR approval detail surfaces: remove nested scrolling and keep embedded pages on-theme. */
+.ha-workframe{height:820px!important;min-height:620px;overflow:hidden;background:transparent!important}
+.ha-frame-wrap{overflow:hidden;background:transparent!important;border-color:rgba(122,143,183,.28)!important}
+.ha-detail-head{align-items:center}
+.ha-detail-head p{max-width:680px;line-height:1.65}
+.ha-shell .ha-side:not(.ha-quick-leave) .ha-urgent>a{min-height:58px}
+
+html[data-mr-theme="dark"] body.hr-embedded{background:#0b1220!important;color:#e8eefb!important}
+html[data-mr-theme="dark"] body.hr-embedded :is(.la-head,.wx-head,.pa-head){background:linear-gradient(130deg,#151b2d,#111a29)!important;border-color:#34415a!important;color:#e8eefb!important}
+html[data-mr-theme="dark"] body.hr-embedded :is(.la-head h1,.wx-head h1,.pa-head h1,.la-person h2,.wx-title h2){color:#eef3ff!important}
+html[data-mr-theme="dark"] body.hr-embedded :is(.la-card,.la-kpis article,.la-filter,.wx-panel,.wx-kpis article,.exception-card,.request-card,.sub-card,.pa-card){background:#121b2d!important;border-color:#2e3c56!important;color:#e3ebfb!important}
+html[data-mr-theme="dark"] body.hr-embedded :is(.la-info p,.la-info span,.la-person small,.wx-head span,.wx-title,.facts,.pa-wrap){color:#b8c5db}
+html[data-mr-theme="dark"] body.hr-embedded :is(.la-filter input,.la-filter select,.la-actions textarea,.policy-grid input,.policy-grid select,.manual-form input,.manual-form select,.request-card input){background:#0c1424!important;color:#edf3ff!important;border-color:#35435f!important}
+html[data-mr-theme="light"] body.hr-embedded{background:#f3f6fc!important;color:#17233d!important}
+html[data-mr-theme="light"] body.hr-embedded :is(.la-card,.la-kpis article,.la-filter,.wx-panel,.wx-kpis article,.exception-card,.request-card,.sub-card,.pa-card){background:#fff!important;border-color:#dce4f0!important;color:#17233d!important}
+html[data-mr-theme="light"] body.hr-embedded :is(.la-head,.wx-head,.pa-head){background:linear-gradient(130deg,#fff,#f3f6fc)!important;border-color:#dce4f0!important;color:#17233d!important}
+html[data-mr-theme="light"] body.hr-embedded :is(.la-head h1,.wx-head h1,.pa-head h1,.la-person h2,.wx-title h2){color:#17233d!important}
+html[data-mr-theme="light"] body.hr-embedded :is(.la-filter input,.la-filter select,.la-actions textarea,.policy-grid input,.policy-grid select,.manual-form input,.manual-form select,.request-card input){background:#fff!important;color:#17233d!important;border-color:#cbd6e6!important}
+
+@media(max-width:900px){.ha-workframe{min-height:720px}}
+@media(max-width:520px){.ha-shell .ha-work{padding:12px!important}.ha-workframe{min-height:680px}.ha-detail-head{gap:8px}}

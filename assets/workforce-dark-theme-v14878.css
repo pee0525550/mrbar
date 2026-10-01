@@ -1,0 +1,75 @@
+html[data-mr-theme="dark"] body.schedule-v19-page .v14829-team-row {
+  color: #e8eefb !important;
+  background: linear-gradient(135deg, #17243a, #111b2d) !important;
+  border-color: #3a4964 !important;
+  box-shadow: none !important;
+}
+html[data-mr-theme="dark"] body.schedule-v19-page .v14829-team-row:hover {
+  background: linear-gradient(135deg, #1b2b43, #142239) !important;
+  border-color: #6a5ba7 !important;
+}
+html[data-mr-theme="dark"] body.schedule-v19-page .v14829-team-info b,
+html[data-mr-theme="dark"] body.schedule-v19-page .v14829-team-time b {
+  color: #f1f5ff !important;
+}
+html[data-mr-theme="dark"] body.schedule-v19-page .v14829-team-info small,
+html[data-mr-theme="dark"] body.schedule-v19-page .v14829-team-time small {
+  color: #aab9d1 !important;
+}
+
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-panel {
+  color: #e7edf9 !important;
+  background: linear-gradient(145deg, #171a2a, #111827) !important;
+  border-color: #684251 !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .24) !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-head h2 {
+  color: #f4f6ff !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-head p {
+  color: #b8c3d7 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-head .flag {
+  color: #ffc0cd !important;
+  background: #3b202b !important;
+  border-color: #754052 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-rule,
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-row,
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-list .empty-card {
+  color: #e5ebf8 !important;
+  background: #101a2b !important;
+  border-color: #36445d !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-rule label,
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-row b {
+  color: #e8eefb !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-rule input:not([type="checkbox"]),
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-rule select,
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-actions input[type="number"] {
+  color: #f0f4ff !important;
+  background: #091322 !important;
+  border-color: #40506b !important;
+  color-scheme: dark;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-rule input::placeholder {
+  color: #8797b1 !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-scan {
+  background: #302819 !important;
+  border-color: #76602f !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-scan span {
+  color: #f0d58e !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-row small {
+  color: #aab7ce !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-row .amount {
+  color: #ff879c !important;
+}
+html[data-mr-theme="dark"] body.admin-v14-page .pr-penalty-actions .waive {
+  color: #dce5f4 !important;
+  background: #27344a !important;
+}
