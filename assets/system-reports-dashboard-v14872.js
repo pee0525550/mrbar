@@ -21,8 +21,8 @@
       {text:row.date||'-'},
       {text:row.title,bold:true},
       {text:row.status,badge:'sr-status'},
-      {text:Number(row.amount||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}),className:'sr-money'},
-      {text:Number(row.count||0).toLocaleString()},
+      {text:row.amount===null?'-':Number(row.amount||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}),className:'sr-money'},
+      {text:Number(row.count||0).toLocaleString()+' '+(row.count_unit||'รายการ')},
       {text:row.ref},
       {text:row.detail}
     ];
@@ -68,7 +68,7 @@
     }).finally(function(){
       busy=false;
       button.disabled=false;
-      if(!button.hidden&&button.textContent==='กำลังโหลด...')button.textContent='โหลดเพิ่มอีก 20 รายการ';
+      if(!button.hidden&&button.textContent==='กำลังโหลด...')button.textContent='โหลดเพิ่มอีก '+(body.dataset.pageSize||'20')+' รายการ';
     });
   });
 })();

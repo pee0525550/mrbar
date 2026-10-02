@@ -28,6 +28,24 @@ if($route==='/__qa/admin'){
     $_SESSION['user']=['id'=>1,'username'=>$user['username'],'display_name'=>$user['display_name'],'role'=>'admin','super_admin'=>true,'branch_ids'=>[1],'active'=>1,'credential_version'=>hash('sha256',$user['password_hash'])];
     echo 'admin';exit;
 }
+if($route==='/__qa/report-data'){
+    db_mutate(static function(array $data):array{
+        for($id=100;$id<135;$id++)$data['reservations'][]=['id'=>$id,'guest_name'=>$id===100?'=QA Formula':'ทดสอบรายงานลูกค้าชื่อยาว '.$id,'date'=>date('Y-m-d'),'time'=>'19:00','status'=>'confirmed','deposit_status'=>'verified','deposit_amount'=>500,'party_size'=>2];
+        $data['daily_closes'][]=['id'=>100,'date'=>date('Y-m-d'),'checkins'=>8,'completed'=>6,'cancelled'=>2];
+        $data['audit'][]=['at'=>date('c'),'action'=>'qa_report','after'=>['name'=>'QA','password_hash'=>'must-not-export-secret']];
+        return $data;
+    });
+    echo 'reports seeded';exit;
+}
+if($route==='/__qa/report-reader'){
+    db_mutate_global(static function(array $data):array{
+        $data['users'][]=['id'=>99,'username'=>'qa_reader','display_name'=>'QA Reader','role'=>'staff','active'=>1,'branch_ids'=>[1],'password_hash'=>password_hash('QA-local-only',PASSWORD_DEFAULT),'permission_overrides'=>['reports.view'=>1,'reports.export'=>0,'employees.manage'=>0,'audit.view'=>0]];
+        return $data;
+    });
+    $data=db_load_global();$user=end($data['users']);
+    $_SESSION['user']=['id'=>99,'username'=>$user['username'],'display_name'=>$user['display_name'],'role'=>'staff','active'=>1,'branch_ids'=>[1],'credential_version'=>hash('sha256',$user['password_hash'])];
+    echo 'reader';exit;
+}
 if($route==='/__qa/device'){
     unset($_SESSION['user']);$token=str_repeat('a',64);
     db_mutate_global(static function(array $data)use($token):array{

@@ -40,8 +40,8 @@ function posr_filter_sort(array $rounds,array $q): array {
 
 function posr_employee_summary(array $rounds,array $q): array {
     $sum=[];
-    foreach(posr_filter_sort($rounds,$q) as $round)foreach($round['rows']??[] as $r){
-        $id=(int)($r['employee_id']??0);$key=$id.'|'.($r['name']??'');
+    foreach(posr_filter_sort($rounds,$q) as $round)foreach(($round['status']??'saved')==='void'?[]:($round['rows']??[]) as $r){
+        $id=(int)($r['employee_id']??0);$key=$id>0?'employee:'.$id:'name:'.($r['name']??'');
         if(!isset($sum[$key]))$sum[$key]=['employee_id'=>$id,'name'=>(string)($r['name']??''),'role'=>(string)($r['role']??''),'d'=>0.0,'m'=>0.0,'drinks'=>0.0,'commission'=>0.0,'total'=>0.0];
         $amount=(float)($r['amount']??0);$sum[$key]['d']+=(float)($r['d']??0);$sum[$key]['m']+=(float)($r['m']??0);
         $sum[$key][$round['core']]+=$amount;$sum[$key]['total']+=$amount;

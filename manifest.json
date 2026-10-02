@@ -1,16 +1,16 @@
 {
-  "version": "1.49.19",
-  "build_id": "MRBAR-v1.49.19-20261001",
-  "name": "Mobile Design and Approval Usability",
-  "date": "2026-10-01",
+  "version": "1.49.20",
+  "build_id": "MRBAR-v1.49.20-20261002",
+  "name": "Report Completeness and Viewing Tools",
+  "date": "2026-10-02",
   "schema": "v28",
   "migration_required": false,
-  "base": "1.49.18",
+  "base": "1.49.19",
   "highlights": [
-    "Accessible mobile navigation with focus restoration",
-    "Responsive headers and consistent Staff Time calendar navigation",
-    "Readable HR dates and automatic embedded approval height",
-    "Fix module chart data causing report rendering failure"
+    "Correct report source fields, units and deposit states",
+    "Coverage, type filters, pagination, safe CSV and print view",
+    "Void-round exclusion and report permission boundaries",
+    "Payroll summary CSV and cross-month monthly payroll guard"
   ],
   "production_data_included": false
 }

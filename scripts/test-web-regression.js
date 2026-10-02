@@ -119,7 +119,46 @@ async function run() {
       assert.ok(dimensions.document <= width + 1 && dimensions.main <= dimensions.mainWidth + 1, `horizontal overflow at ${width}: ${JSON.stringify(dimensions)}`);
     }
     const designReport = [];
-    const designRoutes = ['admin.php', 'admin-tools.php', 'reservations.php', 'reservation-settings.php', 'night-ops.php', 'employees.php', 'workforce-schedule.php', 'payroll-attendance.php', 'hr-approval-center.php', 'hr-approval-center.php?view=exception', 'admin-leaves.php?embed=1', 'workforce-exceptions.php?embed=1', 'customers.php', 'customer-web.php', 'system-reports.php', 'admin-manage.php', 'role-permissions.php', 'settings.php', 'line-settings.php', 'account.php', 'employee-time.php', 'employee-calendar.php', 'employee-income.php'];
+    await context.request.get(`${url}/__qa/report-data`);
+    await page.goto(`${url}/system-reports.php?view=records&type=Reservation&page_size=20`);
+    assert.equal(await page.locator('#srRows tr').count(), 20);
+    await page.locator('#srLoadMore').click();
+    await page.waitForFunction(() => document.querySelector('#srRows').dataset.offset === '37');
+    assert.equal(await page.locator('#srRows tr').count(), 37, 'report load-more preserves type filters without duplication');
+    const reportCsv = await context.request.get(`${url}/system-reports.php?view=records&type=Reservation&export=csv`);
+    const csvText = await reportCsv.text();
+    assert.equal(reportCsv.status(), 200);
+    assert.ok(csvText.includes("'=QA Formula"), 'report CSV neutralizes formula text');
+    assert.ok(csvText.includes('Count Unit'));
+    const invalidReport = await context.request.get(`${url}/system-reports.php?export=csv&from=2026-02-30`);
+    assert.equal(invalidReport.status(), 422);
+    const auditCsv = await context.request.get(`${url}/system-reports.php?view=audit&export=csv`);
+    assert.ok(!(await auditCsv.text()).includes('must-not-export-secret'));
+    const payrollCsv = await context.request.get(`${url}/payroll-attendance.php?export=summary_csv`);
+    assert.equal(payrollCsv.status(), 200);
+    assert.ok((await payrollCsv.text()).includes('Review Required'));
+    assert.equal((await context.request.get(`${url}/payroll-attendance.php?export=summary_csv&from=2026-02-30`)).status(), 422);
+    assert.equal((await context.request.get(`${url}/pos-reports.php?export=csv&from=2026-02-30`)).status(), 422);
+    await page.goto(`${url}/system-reports.php?view=records&type=Reservation&print=1`);
+    assert.equal(await page.locator('#srRows tr').count(), 37, 'print includes all filtered rows below the print cap');
+    await page.emulateMedia({ media: 'print' });
+    assert.equal(await page.locator('.sr-filters').isVisible(), false);
+    assert.equal(await page.locator('.admin-v14-sidebar').isVisible(), false, 'sidebar excluded from print');
+    assert.equal(await page.locator('.mr-theme-toggle').first().isVisible(), false, 'theme control excluded from print');
+    assert.equal(await page.locator('#srRows td').first().evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(255, 255, 255)');
+    assert.ok(await page.locator('main.sr-shell').evaluate(el => el.getBoundingClientRect().left < 2));
+    await page.screenshot({ path: path.join(artifacts, 'report-print.png'), fullPage: true });
+    await page.pdf({ path: path.join(artifacts, 'report-print.pdf'), preferCSSPageSize: true, printBackground: true });
+    await page.emulateMedia({ media: 'screen' });
+    await context.request.get(`${url}/__qa/report-reader`);
+    for (const route of ['system-reports.php?export=csv', 'system-reports.php?view=audit', 'pos-reports.php?export=csv', 'payroll-attendance.php?export=summary_csv']) {
+      assert.equal((await context.request.get(`${url}/${route}`)).status(), 403, 'report permission boundary: '+route);
+    }
+    await page.goto(`${url}/pos-reports.php`);
+    assert.equal(await page.locator('.danger-zone').count(), 0);
+    assert.equal((await context.request.post(`${url}/pos-reports.php`, { form: { action: 'void_round' } })).status(), 403);
+    await context.request.get(`${url}/__qa/admin`);
+    const designRoutes = ['admin.php', 'admin-tools.php', 'reservations.php', 'reservation-settings.php', 'night-ops.php', 'employees.php', 'workforce-schedule.php', 'payroll-attendance.php', 'hr-approval-center.php', 'hr-approval-center.php?view=exception', 'admin-leaves.php?embed=1', 'workforce-exceptions.php?embed=1', 'customers.php', 'customer-web.php', 'system-reports.php', 'pos-reports.php', 'system-reports.php?view=records', 'admin-manage.php', 'role-permissions.php', 'settings.php', 'line-settings.php', 'account.php', 'employee-time.php', 'employee-calendar.php', 'employee-income.php'];
     for (const width of [390, 1440]) {
       await page.setViewportSize({ width, height: 900 });
       for (const route of designRoutes) {

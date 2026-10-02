@@ -1,0 +1,37 @@
+.sr-period-tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.sr-period-tools a,.sr-print-actions button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:8px 14px;border:1px solid var(--mr-border,#ccd6e6);border-radius:6px;background:var(--mr-surface,#fff);color:var(--mr-text,#17233d);font-size:13px;text-decoration:none;letter-spacing:0}
+.sr-report-context{font-size:12px;line-height:1.7;overflow-wrap:anywhere;color:var(--mr-text-2,#52637b)}
+.sr-dashboard-page .sr-table th{position:sticky;top:0;z-index:1}
+.sr-dashboard-page .sr-table :is(th,td){font-size:12px;line-height:1.6}
+.sr-dashboard-page .sr-table tbody tr:nth-child(even){background:rgba(128,145,170,.06)}
+.sr-dashboard-page .sr-table tbody tr:hover{background:rgba(32,201,151,.09)}
+.sr-dashboard-page .sr-money{font-variant-numeric:tabular-nums;white-space:nowrap}
+.sr-dashboard-page .sr-table-wrap{max-height:70vh;overflow:auto;overscroll-behavior:contain}
+.sr-dashboard-page :is(a,button,input,select):focus-visible{outline:2px solid #20c997;outline-offset:3px}
+.sr-print-actions{display:flex;align-items:center;gap:12px;margin:12px 0}
+.sr-coverage{margin:20px 0;border-top:1px solid var(--mr-border,#ccd6e6);padding-top:16px}
+.sr-dashboard-page .sr-coverage .sr-table{min-width:640px}
+.sr-dashboard-page .sr-coverage .sr-table td:last-child{max-width:none}
+@media(max-width:600px){.sr-dashboard-page .sr-filter-form :is(input,select){font-size:16px;min-height:44px}.sr-dashboard-page .sr-filter-form label{min-width:0}.sr-dashboard-page .sr-finance-grid b{font-size:22px;overflow-wrap:anywhere}.sr-dashboard-page .sr-filter-form button{min-height:44px}}
+@media print{
+  html[data-mr-theme] body.admin-v14-page{background-image:none!important}
+  html[data-mr-theme] body.admin-v14-page #srReport,html[data-mr-theme] body.admin-v14-page #srReport *{background:#fff!important;color:#000!important;background-image:none!important;-webkit-text-fill-color:#000!important;border-color:#ccc!important}
+  html[data-mr-theme] body.admin-v14-page main.sr-shell #srRows td,html[data-mr-theme] body.admin-v14-page main.sr-shell #srRows td *{background:#fff!important;color:#000!important}
+  html[data-mr-theme] body.admin-v14-page{--admin-sidebar-space:0px;--sidebar:0px;margin:0!important;background:#fff!important;color:#000!important}
+  html[data-mr-theme] body.admin-v14-page :is(.admin-v14-sidebar,.admin-sidebar-backdrop,.admin-mobile-launcher,.mr-theme-toggle,.sr-filters,.sr-view-tabs,.sr-print-actions,.sr-load-more-wrap,.sr-super){display:none!important}
+  html[data-mr-theme] body.admin-v14-page main.sr-shell{margin:0!important;padding:0!important;width:100%!important;max-width:none!important;min-width:0!important;left:0!important;transform:none!important;transition:none!important}
+  html[data-mr-theme] body.admin-v14-page main.sr-shell *{color:#000!important;background:#fff!important;box-shadow:none!important;text-shadow:none!important;transition:none!important}
+  html[data-mr-theme] body.admin-v14-page main.sr-shell .sr-table-wrap{max-height:none!important;overflow:visible!important}
+  html[data-mr-theme] body.admin-v14-page main.sr-shell .sr-table{width:100%!important;min-width:0!important;table-layout:fixed!important}
+  @page{size:A4 landscape;margin:12mm}
+  html,body{background:white!important;color:black!important}
+  body::before,.admin-v14-sidebar,.admin-sidebar-backdrop,.admin-mobile-launcher,.mr-theme-toggle,.mr-approval-toast,.mr-live-notifications,.sr-super,.sr-filters,.sr-view-tabs,.sr-print-actions,.sr-load-more-wrap,.sr-hero nav,[class*="branch-switcher"],#mrPageLoader{display:none!important}
+  body .admin-v14-sidebar ~ main.sr-shell{margin:0!important;padding:0!important;width:100%!important}
+  .sr-dashboard-page .sr-table-wrap{max-height:none;overflow:visible}
+  .sr-dashboard-page .sr-table{min-width:0;width:100%;table-layout:fixed;border-collapse:collapse}
+  .sr-dashboard-page .sr-table :is(th,td){min-width:0!important;max-width:none!important;position:static;font-size:9px;color:black!important;background:white!important;overflow-wrap:anywhere;border-bottom:1px solid #ccc}
+  .sr-dashboard-page .sr-table thead{display:table-header-group}
+  .sr-dashboard-page .sr-table tr{break-inside:avoid}
+  .sr-dashboard-page .sr-table :is(a,span,b){color:black!important}
+  .sr-dashboard-page :is(.sr-hero,.sr-panel){background:white!important;box-shadow:none!important;border:0!important}
+}
