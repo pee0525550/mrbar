@@ -32,6 +32,11 @@ if($route==='/__qa/report-data'){
     db_mutate(static function(array $data):array{
         for($id=100;$id<135;$id++)$data['reservations'][]=['id'=>$id,'guest_name'=>$id===100?'=QA Formula':'ทดสอบรายงานลูกค้าชื่อยาว '.$id,'date'=>date('Y-m-d'),'time'=>'19:00','status'=>'confirmed','deposit_status'=>'verified','deposit_amount'=>500,'party_size'=>2];
         $data['daily_closes'][]=['id'=>100,'date'=>date('Y-m-d'),'checkins'=>8,'completed'=>6,'cancelled'=>2];
+        $data['pos_bill_batches'][]=['id'=>21,'status'=>'active','filename'=>'QA-bills.csv','period_start'=>date('Y-m-d'),'period_end'=>date('Y-m-d'),'imported_at'=>date('c'),'bill_count'=>2,'total_sales'=>1500,'matched_sessions'=>0];
+        $data['pos_bill_rows'][]=['id'=>21,'batch_id'=>21,'active'=>1,'sale_date'=>date('Y-m-d'),'receipt_no'=>'QA-001','net_sales'=>1000];
+        $data['pos_bill_rows'][]=['id'=>22,'batch_id'=>21,'active'=>1,'sale_date'=>date('Y-m-d'),'receipt_no'=>'QA-002','net_sales'=>500];
+        $data['pos_import_batches'][]=['id'=>22,'status'=>'active','filename'=>'QA-menu.csv','source_name'=>'QA-POS','period_start'=>date('Y-m-d'),'period_end'=>date('Y-m-d'),'imported_at'=>date('c'),'report_type'=>'product_summary','rows_imported'=>1,'total_sales'=>800];
+        $data['pos_sales_rows'][]=['id'=>22,'batch_id'=>22,'active'=>1,'sale_date'=>date('Y-m-d'),'item_name'=>'QA Menu','net_sales'=>800,'qty'=>4];
         $data['audit'][]=['at'=>date('c'),'action'=>'qa_report','after'=>['name'=>'QA','password_hash'=>'must-not-export-secret']];
         return $data;
     });

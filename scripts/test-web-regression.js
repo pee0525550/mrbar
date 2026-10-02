@@ -11,6 +11,7 @@ const artifacts = process.env.MRBAR_QA_ARTIFACTS || path.join(path.dirname(sourc
 async function run() {
   for (const dir of ['app', 'api', 'config', 'assets', 'custumers']) fs.cpSync(path.join(source, dir), path.join(fixture, dir), { recursive: true });
   for (const file of fs.readdirSync(source).filter(name => name.endsWith('.php'))) fs.copyFileSync(path.join(source, file), path.join(fixture, file));
+  fs.copyFileSync(path.join(source, 'manifest.json'), path.join(fixture, 'manifest.json'));
   fs.mkdirSync(path.join(fixture, 'scripts'));
   fs.copyFileSync(path.join(source, 'scripts', 'line-outbox-worker.php'), path.join(fixture, 'scripts', 'line-outbox-worker.php'));
   fs.mkdirSync(path.join(fixture, 'storage')); fs.mkdirSync(artifacts, { recursive: true });
@@ -158,6 +159,18 @@ async function run() {
     assert.equal(await page.locator('.danger-zone').count(), 0);
     assert.equal((await context.request.post(`${url}/pos-reports.php`, { form: { action: 'void_round' } })).status(), 403);
     await context.request.get(`${url}/__qa/admin`);
+    await page.goto(`${url}/admin.php?sales_source=bills`);
+    assert.equal(await page.locator('[data-countup]').getAttribute('data-countup'), '1500');
+    assert.equal(await page.locator('[data-sales-point]').count(), 1);
+    await page.locator('[data-dash-view="ops"]').click();
+    assert.equal(await page.locator('#salesOverview').isVisible(), false);
+    await page.locator('[data-dash-view="all"]').click();
+    assert.equal(await page.locator('#salesOverview').isVisible(), true);
+    await page.locator('[data-sales-point]').click();
+    assert.ok((await page.locator('#salesReadout').textContent()).includes('1,500.00'));
+    await page.goto(`${url}/admin.php?sales_source=menu`);
+    assert.equal(await page.locator('[data-countup]').getAttribute('data-countup'), '800');
+    assert.equal(await page.locator('[data-sales-point]').count(), 0, 'summary imports have no invented daily trend');
     const designRoutes = ['admin.php', 'admin-tools.php', 'reservations.php', 'reservation-settings.php', 'night-ops.php', 'employees.php', 'workforce-schedule.php', 'payroll-attendance.php', 'hr-approval-center.php', 'hr-approval-center.php?view=exception', 'admin-leaves.php?embed=1', 'workforce-exceptions.php?embed=1', 'customers.php', 'customer-web.php', 'system-reports.php', 'pos-reports.php', 'system-reports.php?view=records', 'admin-manage.php', 'role-permissions.php', 'settings.php', 'line-settings.php', 'account.php', 'employee-time.php', 'employee-calendar.php', 'employee-income.php'];
     for (const width of [390, 1440]) {
       await page.setViewportSize({ width, height: 900 });
@@ -169,6 +182,7 @@ async function run() {
           width: innerWidth, documentWidth: document.documentElement.scrollWidth,
           overflow: Array.from(document.querySelectorAll('main *')).filter(el => {
             const box = el.getBoundingClientRect();
+            if (!el.checkVisibility()) return false;
             if (!box.width || box.left >= innerWidth || box.right <= 0) return false;
             for (let parent = el.parentElement; parent; parent = parent.parentElement) {
               if (['auto', 'scroll'].includes(getComputedStyle(parent).overflowX)) return false;
@@ -195,7 +209,7 @@ async function run() {
     assert.equal(await page.locator('.mr-theme-toggle').count(), 0, 'embedded approvals use parent theme without a duplicate toggle');
     for (const width of [320, 768]) {
       await page.setViewportSize({ width, height: 844 });
-      for (const route of ['employee-time.php', 'employee-calendar.php', 'employee-income.php', 'hr-approval-center.php?view=exception']) {
+      for (const route of ['admin.php?sales_source=bills', 'admin.php?sales_source=menu', 'employee-time.php', 'employee-calendar.php', 'employee-income.php', 'hr-approval-center.php?view=exception']) {
         await page.goto(`${url}/${route}`);
         await page.waitForFunction(() => !document.documentElement.classList.contains('mr-loading-init'));
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${route} fits ${width}`);

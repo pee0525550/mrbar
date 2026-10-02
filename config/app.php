@@ -2,6 +2,6 @@
 return [
  'name'=>'MR BAR',
  'timezone'=>'Asia/Bangkok',
- 'version'=>'1.49.20',
- 'pack'=>'Report Completeness and Viewing Tools v1.49.20',
+ 'version'=>'1.49.21',
+ 'pack'=>'POS Sales and Interactive Dashboard v1.49.21',
 ];

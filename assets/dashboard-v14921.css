@@ -1,0 +1,47 @@
+body.dash-v21{background:#101216!important;background-image:none!important}
+.dash-v21::before,.dash-v21::after,.dash-v21 .ambient{display:none!important}
+.dash-v21 main{max-width:none}
+.dash-v21 .dash-grid{align-items:start}
+.dash-v21 .chartbox{gap:6px;padding-left:0;padding-right:0}
+.dash-v21 .barcol{min-width:0}
+.dash-v21 .barcol small{font-size:10px}
+.dash-v21 .panel-head{flex-wrap:wrap;gap:12px}
+.dash-v21 .panel-head>div{min-width:0}
+.dash-v21 .table-mini :is(b,small){display:block;overflow-wrap:anywhere}
+.dash-v21 .table-mini{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}
+.dash-v21 main :is(.panel,.kpi){background:#191d24!important;border-color:#ffffff20!important}
+.dash-v21 main .barcol i{background:#57a8ed!important;box-shadow:none!important}
+.ds-bar button{max-width:48px}
+.ds-view-switch{display:flex;gap:4px;margin:0 0 16px;border-bottom:1px solid #ffffff18}.ds-view-switch button{border:0;border-bottom:2px solid transparent;background:transparent;color:#aab4c2;padding:12px 16px;cursor:pointer;font-size:13px}.ds-view-switch button[aria-pressed=true]{border-color:#4ee0b3;color:#4ee0b3}.dash-v21 main [hidden]{display:none!important}
+html[data-mr-theme=light] .dash-v21 main :is(.panel,.kpi){background:#fff!important;border-color:#d7dde4!important}
+html[data-mr-theme=light] .dash-v21 :is(.ds-source a[aria-current=page],.ds-view-switch button[aria-pressed=true]){color:#097657!important}
+html[data-mr-theme=light] .dash-v21 :is(.ds-list b,.ds-list strong,.ds-title h2,.ds-layout h3,.ds-metrics strong){color:#19212b}
+html[data-mr-theme=light] body.dash-v21 main .ds-controls :is(a,button){background:#e4f1ed!important;color:#174b3b!important;border-color:#92b9ac!important}
+html[data-mr-theme=light] body.dash-v21 main .ds-view-switch button{color:#526475}
+html[data-mr-theme=light] body.dash-v21 main .donut:after{background:#fff}
+html[data-mr-theme=light] body.dash-v21 main .donut strong{color:#19212b!important}
+html[data-mr-theme=light] body.dash-v21 main .clock-card{background:#fff;color:#19212b}
+html[data-mr-theme=light] body.dash-v21 main .badge2{background:#edf2f6;color:#42536b}
+html[data-mr-theme=light] body.dash-v21 main .kpi.pink span{color:#a31b75!important}
+html[data-mr-theme=light] body.dash-v21 main .kpi.blue span{color:#216ca0!important}
+html[data-mr-theme=light] body.dash-v21 main .kpi.green span{color:#087754!important}
+html[data-mr-theme=light] body.dash-v21 main .kpi.gold span{color:#956313!important}
+.dash-v21 .topbar{background:transparent!important;border-bottom:1px solid #ffffff18;box-shadow:none!important;min-height:100px;margin-bottom:20px}
+.dash-v21 .topbar h1{font-size:28px!important;letter-spacing:0}
+.dash-v21 .topbar p{font-size:12px}
+.dash-v21 .topbar:after{display:none}
+.dash-v21 .kpi,.dash-v21 .panel{border-radius:8px!important;box-shadow:none!important;background:#191d24!important;transform:none!important;opacity:1!important;animation:none!important;min-width:0}
+.dash-v21 .kpis{gap:12px!important}.dash-v21 .kpi{min-height:118px!important;padding:18px!important}.dash-v21 .kpi b{font-size:32px!important;font-variant-numeric:tabular-nums}
+.dash-v21 .dash-grid{gap:14px}.dash-v21 .panel h2{font-size:17px!important}.dash-v21 .panel p{font-size:12px}
+.ds-section{border-top:1px solid #ffffff18;padding:22px 0;margin-bottom:18px}
+.ds-title{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:16px}.ds-title h2{font-size:22px;margin:0 0 5px}.ds-title p,.ds-note{color:#aab4c2;font-size:12px;line-height:1.7;margin:4px 0}
+.ds-source{display:flex;gap:4px;border-bottom:1px solid #ffffff20}.ds-source a{padding:10px 15px;text-decoration:none;color:#aab4c2;border-bottom:2px solid transparent}.ds-source a[aria-current=page]{color:#4ee0b3;border-color:#4ee0b3}
+.ds-controls{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:16px 0}.ds-controls label{flex:1;min-width:200px;display:grid;gap:6px;font-size:12px;color:#aab4c2}.ds-controls select{min-height:44px;width:100%;background:#191d24;color:#f4f6fa;border:1px solid #3b4351;border-radius:6px;padding:8px;font-size:14px}.ds-controls button,.ds-controls a{min-height:44px;display:inline-flex;align-items:center;padding:9px 14px;border-radius:6px;background:#25353a;border:1px solid #3c605d;color:#dafaf0;text-decoration:none;cursor:pointer}
+.ds-metrics{display:grid;grid-template-columns:2fr 1fr 1fr;gap:0;border-top:1px solid #ffffff18;border-bottom:1px solid #ffffff18;margin:18px 0}.ds-metrics>div{padding:18px 20px;border-right:1px solid #ffffff18}.ds-metrics>div:first-child{padding-left:0}.ds-metrics>div:last-child{border:0}.ds-metrics small{color:#abb6c4}.ds-metrics strong{display:block;font-size:28px;margin:6px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.ds-metrics>div:first-child strong{color:#4ee0b3;font-size:38px}.ds-metrics span{font-size:12px;color:#abb6c4}
+.ds-layout{display:grid;grid-template-columns:1.7fr 1fr;gap:24px}.ds-chart{display:grid;grid-template-columns:repeat(auto-fit,minmax(36px,1fr));align-items:end;gap:8px;min-width:0;height:240px;border-bottom:1px solid #566171;padding:24px 0 0;overflow:auto}.ds-bar{display:flex;flex-direction:column;align-items:center;height:100%;justify-content:end;min-width:36px;position:relative}.ds-bar button{display:block;width:70%;height:var(--height);min-height:2px;background:#35cba1;border:0;border-radius:4px 4px 0 0;cursor:pointer;transform-origin:bottom;animation:ds-rise .65s ease both}.ds-bar button:hover,.ds-bar button:focus-visible{background:#71edcc;outline:2px solid #fff;outline-offset:2px}.ds-bar small{font-size:10px;white-space:nowrap;color:#aab4c2;margin:8px 0}.ds-readout{min-height:27px;font-size:13px;color:#4ee0b3;margin:8px 0}.ds-list{display:grid;gap:0}.ds-list>div{padding:12px 0;border-bottom:1px solid #ffffff12;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px}.ds-list b{font-size:13px;overflow-wrap:anywhere}.ds-list small{display:block;color:#9faebc;font-size:11px;margin-top:4px}.ds-list strong{font-size:15px;font-variant-numeric:tabular-nums}.ds-empty{min-height:130px;display:grid;place-content:center;color:#aab4c2;text-align:center;border:1px dashed #46515d;padding:20px;margin:16px 0;font-size:14px}.ds-warning{color:#ffd272!important}
+.dash-v21 .table-mini div,.dash-v21 .quick a{border-radius:6px!important}.dash-v21 .chartbox{height:200px}.dash-v21 .barcol i{background:#57a8ed;box-shadow:none;border-radius:4px 4px 0 0}.dash-v21 .ghost{font-size:12px}.dash-v21 .wide{margin-top:16px}
+html[data-mr-theme=light] body.dash-v21{background:#f3f5f7!important;color:#19212b!important}html[data-mr-theme=light] .dash-v21 :is(.kpi,.panel){background:#fff!important;border-color:#d7dde4!important}html[data-mr-theme=light] .dash-v21 :is(.ds-title p,.ds-note,.ds-metrics small,.ds-metrics span,.ds-bar small,.ds-controls label,.ds-list small){color:#526475!important}html[data-mr-theme=light] .dash-v21 :is(.ds-section,.ds-metrics,.ds-list>div,.ds-metrics>div,.ds-source){border-color:#d7dde4!important}html[data-mr-theme=light] .dash-v21 .ds-controls select{background:#fff;color:#19212b}html[data-mr-theme=light] .dash-v21 :is(.ds-metrics>div:first-child strong,.ds-readout){color:#097657!important}html[data-mr-theme=light] .dash-v21 .ds-empty{color:#526475}
+@keyframes ds-rise{from{transform:scaleY(.05)}to{transform:scaleY(1)}}
+@media(max-width:900px){.ds-layout{grid-template-columns:1fr}.ds-metrics{grid-template-columns:1fr 1fr}.ds-metrics>div:first-child{grid-column:1/-1;border-bottom:1px solid #ffffff18;border-right:0}.ds-metrics>div{padding:14px 12px}.ds-metrics strong{font-size:24px}.ds-metrics>div:first-child strong{font-size:32px}}
+@media(max-width:450px){.dash-v21 .kpis{grid-template-columns:1fr 1fr!important}.dash-v21 .kpi{padding:12px!important;min-height:110px!important}.dash-v21 .kpi i{display:none}.dash-v21 .topbar h1{font-size:24px!important}.ds-controls label{min-width:0;flex-basis:100%}.ds-controls select{font-size:16px}.ds-source a{padding:10px;font-size:12px}.ds-chart{height:210px}.ds-metrics strong{font-size:22px}.ds-title h2{font-size:20px}}
+@media(prefers-reduced-motion:reduce){.ds-bar button{animation:none}.dash-v21 *{scroll-behavior:auto!important}}
